@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Past Events - Kalenjin Vibes</title>
+    <meta name="description" content="Browse all our past events and memorable experiences at Kalenjin Vibes.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#BA0909',
+                        secondary: '#222',
+                        light: '#f8f9fa',
+                        dark: '#1a1a1a'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- SweetAlert2 CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z93DQW5D1S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z93DQW5D1S');
+    </script>
+    
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <!-- Header and Footer CSS -->
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/past-events.css">
+    
+    <style>
+        /* WhatsApp Button Styles for Past Events Page */
+        .whatsapp-button-past-events {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .whatsapp-button-past-events:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .whatsapp-button-past-events img {
+            width: 35px;
+            height: 35px;
+            filter: brightness(0) invert(1);
+        }
+        
+        @media (max-width: 768px) {
+            .whatsapp-button-past-events {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                left: 15px;
+            }
+            
+            .whatsapp-button-past-events img {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Include Header -->
+    <div id="header-container"></div>
+
+    <!-- Past Events Page Content -->
+    <div class="min-h-screen">
+        <!-- Page Header -->
+        <section class="bg-primary py-16">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <a href="index.html" class="back-button inline-flex items-center text-white hover:text-gray-200 mb-6">
+                            <i class="fas fa-arrow-left mr-2"></i> Back to Home
+                        </a>
+                        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">All Past Events</h1>
+                        <p class="text-gray-200 text-lg">Relive all our memorable past events and experiences</p>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-full p-4">
+                            <i class="fas fa-history text-white text-4xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Filter/Search -->
+        <section class="py-8 bg-white shadow-sm">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <p class="text-gray-600">Showing <span id="eventCount" class="font-bold text-primary">0</span> past events</p>
+                    </div>
+                    <div class="flex gap-4 w-full md:w-auto">
+                        <input type="text" id="searchInput" placeholder="Search past events..." 
+                               class="flex-grow md:w-64 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <button id="searchButton" class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors duration-300">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Past Events Grid -->
+        <section class="py-16">
+            <div class="container mx-auto px-4">
+                <!-- Loading State -->
+                <div id="loadingState" class="text-center py-20">
+                    <div class="inline-block loading-spinner">
+                        <i class="fas fa-spinner text-primary text-5xl animate-spin"></i>
+                    </div>
+                    <p class="text-gray-600 mt-4 text-lg">Loading past events...</p>
+                </div>
+
+                <!-- Events Grid -->
+                <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 hidden">
+                    <!-- Events will be loaded here dynamically -->
+                </div>
+
+                <!-- No Results Message -->
+                <div id="noResults" class="text-center py-20 hidden">
+                    <i class="fas fa-calendar-times text-gray-400 text-6xl mb-6"></i>
+                    <h3 class="text-2xl font-semibold text-gray-700 mb-3">No Events Found</h3>
+                    <p class="text-gray-600 mb-8">Try adjusting your search or filter to find what you're looking for.</p>
+                    <button id="clearSearch" class="bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-800 transition-colors duration-300">
+                        Clear Search
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pagination -->
+        <section class="py-8 bg-white border-t border-gray-200">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-center items-center space-x-4">
+                    <button id="prevPage" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-chevron-left mr-2"></i> Previous
+                    </button>
+                    <span id="pageInfo" class="text-gray-600">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+                    <button id="nextPage" class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Next <i class="fas fa-chevron-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scroll To Top -->
+    <a href="#" class="scrollToTop scroll-btn fixed bottom-8 right-8 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-red-800 transition-colors duration-300 z-50 hidden">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+    
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/+254797265275" class="whatsapp-button-past-events" target="_blank" title="Chat with us on WhatsApp">
+        <img src="assets/img/WhatsApp.svg" alt="WhatsApp">
+    </a>
+
+    <!-- JavaScript Files -->
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    
+    <!-- Load Header and Footer -->
+    <script>
+        // Load header from partials folder
+        fetch('partials/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                
+                // Initialize mobile menu after header is loaded
+                const mobileMenu = document.querySelector('.mobile-menu');
+                const menuToggle = document.querySelector('.vs-menu-toggle');
+                const closeBtn = document.querySelector('.menu-close');
+                const overlay = document.querySelector('.menu-overlay');
+                
+                if (menuToggle && mobileMenu) {
+                    menuToggle.addEventListener('click', function() {
+                        mobileMenu.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    });
+                }
+                
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                if (overlay) {
+                    overlay.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                // Close menu when clicking links
+                const menuLinks = document.querySelectorAll('.menu-link');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+            })
+            .catch(error => console.error('Error loading header:', error));
+            
+        // Load footer from partials folder
+        fetch('partials/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+                
+                // Initialize footer functionality
+                const yearElements = document.querySelectorAll('.current-year');
+                yearElements.forEach(element => {
+                    element.textContent = new Date().getFullYear();
+                });
+                
+                // Newsletter form submission
+                const newsletterForm = document.getElementById('newsletter-form');
+                if (newsletterForm) {
+                    newsletterForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const emailInput = newsletterForm.querySelector('input[type="email"]');
+                        const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+                        const email = emailInput.value.trim();
+                        
+                        // Simple email validation
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!emailRegex.test(email)) {
+                            alert('Please enter a valid email address');
+                            return;
+                        }
+                        
+                        // Show loading state
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+                        submitBtn.disabled = true;
+                        
+                        // Simulate API call
+                        setTimeout(() => {
+                            // Save to localStorage
+                            localStorage.setItem('kalenjin_vibes_subscribed', JSON.stringify({
+                                email: email,
+                                date: new Date().toISOString()
+                            }));
+                            
+                            // Update UI
+                            emailInput.value = email;
+                            emailInput.disabled = true;
+                            submitBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
+                            submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                            
+                            // Show success message
+                            alert('Successfully subscribed to our newsletter!');
+                        }, 1000);
+                    });
+                }
+                
+                // Check if already subscribed
+                const isSubscribed = localStorage.getItem('kalenjin_vibes_subscribed');
+                if (isSubscribed) {
+                    const newsletterForm = document.getElementById('newsletter-form');
+                    if (newsletterForm) {
+                        const input = newsletterForm.querySelector('input[type="email"]');
+                        const button = newsletterForm.querySelector('button[type="submit"]');
+                        if (input && button) {
+                            const data = JSON.parse(isSubscribed);
+                            input.value = data.email;
+                            input.disabled = true;
+                            button.textContent = 'Subscribed ✓';
+                            button.disabled = true;
+                            button.classList.add('bg-green-600', 'hover:bg-green-700');
+                        }
+                    }
+                }
+            })
+            .catch(error => console.error('Error loading footer:', error));
+    </script>
+    
+    <!-- Main JS File -->
+    <script src="assets/js/main.js"></script>
+    
+    <!-- Shared Header / Cart JS -->
+    <script src="assets/js/mobile-menu.js"></script>
+    <script src="assets/js/cart.js"></script>
+    
+    <!-- Past Events JavaScript -->
+    <script src="assets/js/past-events.js"></script>
+
+    <!-- Scroll to Top Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollToTopBtn = document.querySelector('.scrollToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.remove('hidden');
+            } else {
+                scrollToTopBtn.classList.add('hidden');
+            }
+        });
+        
+        scrollToTopBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    });
+    </script>
+
+</body>
+</html>

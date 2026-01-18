@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Kalenjin Vibes | Talents</title>
+    <meta name="author" content="Kalenjin Vibes">
+    <meta name="description" content="now Browse talented artists, DJs, producers, and MCs">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#BA0909',
+                        secondary: '#222',
+                        light: '#f8f9fa',
+                        dark: '#1a1a1a'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/talents.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    
+    <style>
+        /* WhatsApp Button */
+        .whatsapp-button-talents {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .whatsapp-button-talents:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .whatsapp-button-talents img {
+            width: 35px;
+            height: 35px;
+            filter: brightness(0) invert(1);
+        }
+        
+        /* Compact Breadcrumb */
+        .breadcumb-wrapper {
+            position: relative;
+            padding: 40px 0 30px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .breadcumb-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(186, 9, 9, 0.8));
+        }
+        
+        .breadcumb-content {
+            position: relative;
+            z-index: 2;
+            text-align: right;
+            color: white;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcumb-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .breadcumb-menu {
+            display: flex;
+            justify-content: flex-end;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .breadcumb-menu li {
+            margin: 0 5px;
+        }
+        
+        .breadcumb-menu a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        .breadcumb-menu a:hover {
+            color: white;
+        }
+        
+        .breadcumb-menu li:not(:last-child)::after {
+            content: '/';
+            margin-left: 8px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Talent Card Styles */
+        .talent-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .talent-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .talent-img {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .talent-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .talent-card:hover .talent-img img {
+            transform: scale(1.05);
+        }
+        
+        .talent-body {
+            padding: 20px;
+        }
+        
+        .talent-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        
+        .talent-role {
+            color: #BA0909;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .talent-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        @media (max-width: 768px) {
+            .breadcumb-wrapper {
+                padding: 30px 0 20px;
+            }
+            
+            .breadcumb-title {
+                font-size: 1.2rem;
+            }
+            
+            .breadcumb-content {
+                text-align: center;
+            }
+            
+            .breadcumb-menu {
+                justify-content: center;
+                font-size: 0.85rem;
+            }
+            
+            .whatsapp-button-talents {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                left: 15px;
+            }
+            
+            .whatsapp-button-talents img {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div id="header-container"></div>
+
+    <!-- Compact Breadcrumb -->
+    <div class="breadcumb-wrapper" style="background-image: url('assets/img/breadcumb/breadcumb-bg.jpg');">
+        <div class="container mx-auto px-4">
+            <div class="breadcumb-content">
+                <h3 class="breadcumb-title">Our Talents</h3>
+                <div class="breadcumb-menu-wrap">
+                    <ul class="breadcumb-menu">
+                        <li><a href="index.html">Home</a></li>
+                        <li>Talents</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Talents Section -->
+    <main class="py-5">
+        <div class="container mx-auto px-4">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-3 mb-4">
+                    <div class="bg-white rounded-lg shadow p-4">
+                        <h4 class="font-bold text-lg mb-4 border-b pb-2">Filter Talents</h4>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <input type="radio" id="filter-all" name="talent-filter" value="all" class="mr-2" checked>
+                                <label for="filter-all" class="cursor-pointer">All Talents</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="filter-artists" name="talent-filter" value="artists" class="mr-2">
+                                <label for="filter-artists" class="cursor-pointer">Artists</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="filter-djs" name="talent-filter" value="djs" class="mr-2">
+                                <label for="filter-djs" class="cursor-pointer">DJs</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="filter-mcs" name="talent-filter" value="mcs" class="mr-2">
+                                <label for="filter-mcs" class="cursor-pointer">MCs</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="filter-producers" name="talent-filter" value="producers" class="mr-2">
+                                <label for="filter-producers" class="cursor-pointer">Producers</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <h4 class="font-bold text-lg mb-3 border-b pb-2">Search</h4>
+                            <div class="relative">
+                                <input type="text" id="talentSearch" placeholder="Search talents..." class="w-full border rounded-lg px-4 py-2 pl-10">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Talents Grid -->
+                <div class="col-lg-9">
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading talents...</span>
+                        </div>
+                        <p class="mt-3 text-gray-600">Loading talents...</p>
+                    </div>
+                    
+                    <!-- Talents Grid -->
+                    <div id="talentGrid" class="row g-4">
+                        <!-- Talents will be loaded here by JavaScript -->
+                    </div>
+                    
+                    <!-- No Results -->
+                    <div id="noResults" class="text-center py-10" style="display: none;">
+                        <i class="fas fa-users-slash text-4xl text-gray-400 mb-3"></i>
+                        <h4 class="text-xl font-semibold text-gray-700 mb-2">No Talents Found</h4>
+                        <p class="text-gray-600">Try adjusting your filters or search terms.</p>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div id="paginationContainer" class="flex justify-center mt-8"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scroll To Top -->
+    <a href="#" class="scrollToTop scroll-btn fixed bottom-8 right-8 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-red-800 transition-colors duration-300 z-50 hidden">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+    
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/+254797265275" class="whatsapp-button-talents" target="_blank" title="Chat with us on WhatsApp">
+        <img src="assets/img/WhatsApp.svg" alt="WhatsApp">
+    </a>
+    
+    <!-- JavaScript Files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Shared Header / Cart JS -->
+    <script src="assets/js/mobile-menu.js"></script>
+    <script src="assets/js/cart.js"></script>
+    
+    <!-- Load Header and Footer -->
+    <script>
+        // Load header from partials folder
+        fetch('partials/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                
+                // Initialize mobile menu after header is loaded
+                const mobileMenu = document.querySelector('.mobile-menu');
+                const menuToggle = document.querySelector('.vs-menu-toggle');
+                const closeBtn = document.querySelector('.menu-close');
+                const overlay = document.querySelector('.menu-overlay');
+                
+                if (menuToggle && mobileMenu) {
+                    menuToggle.addEventListener('click', function() {
+                        mobileMenu.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    });
+                }
+                
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                if (overlay) {
+                    overlay.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                // Close menu when clicking links
+                const menuLinks = document.querySelectorAll('.menu-link');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+            })
+            .catch(error => console.error('Error loading header:', error));
+            
+        // Load footer from partials folder
+        fetch('partials/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+                
+                // Initialize footer functionality
+                const yearElements = document.querySelectorAll('.current-year');
+                yearElements.forEach(element => {
+                    element.textContent = new Date().getFullYear();
+                });
+            })
+            .catch(error => console.error('Error loading footer:', error));
+    </script>
+    
+    <!-- Scroll to Top Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollToTopBtn = document.querySelector('.scrollToTop');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.remove('hidden');
+                } else {
+                    scrollToTopBtn.classList.add('hidden');
+                }
+            });
+            
+            scrollToTopBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+    
+    <!-- Talent System JavaScript - DYNAMIC LOADING FROM JSON -->
+    <script>
+        // Configuration
+        const TALENTS_PER_PAGE = 6;
+        let currentPage = 1;
+        let currentFilter = 'all';
+        let searchTerm = '';
+        let allTalents = [];
+        
+        // Fetch talents from JSON file
+        async function fetchTalents() {
+            try {
+                const response = await fetch('talents.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                return data.talents || [];
+            } catch (error) {
+                console.error('Error loading talents:', error);
+                showError('Failed to load talents. Please refresh the page.');
+                return [];
+            }
+        }
+        
+        // Initialize talents
+        async function initTalents() {
+            try {
+                // Fetch talents from JSON
+                allTalents = await fetchTalents();
+                
+                if (allTalents.length === 0) {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    document.getElementById('noResults').style.display = 'block';
+                    document.getElementById('noResults').innerHTML = `
+                        <i class="fas fa-exclamation-circle text-4xl text-gray-400 mb-3"></i>
+                        <h4 class="text-xl font-semibold text-gray-700 mb-2">No Talents Available</h4>
+                        <p class="text-gray-600">Please check back later.</p>
+                    `;
+                    return;
+                }
+                
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+                
+                // Set up filter listeners
+                document.querySelectorAll('input[name="talent-filter"]').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        currentFilter = this.value;
+                        currentPage = 1;
+                        updateTalentGrid();
+                    });
+                });
+                
+                // Set up search listener
+                document.getElementById('talentSearch').addEventListener('input', function() {
+                    searchTerm = this.value.toLowerCase();
+                    currentPage = 1;
+                    updateTalentGrid();
+                });
+                
+                // Initial render
+                updateTalentGrid();
+            } catch (error) {
+                console.error('Error initializing talents:', error);
+                showError('Failed to initialize talents.');
+            }
+        }
+        
+        // Filter talents
+        function filterTalents() {
+            let filtered = [...allTalents];
+            
+            // Apply category filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(talent => talent.category === currentFilter);
+            }
+            
+            // Apply search filter
+            if (searchTerm) {
+                filtered = filtered.filter(talent => 
+                    talent.name.toLowerCase().includes(searchTerm) ||
+                    talent.role.toLowerCase().includes(searchTerm) ||
+                    talent.description.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            return filtered;
+        }
+        
+        // Update talent grid
+        function updateTalentGrid() {
+            const talents = filterTalents();
+            const talentGrid = document.getElementById('talentGrid');
+            const noResults = document.getElementById('noResults');
+            
+            if (talents.length === 0) {
+                talentGrid.innerHTML = '';
+                noResults.style.display = 'block';
+                document.getElementById('paginationContainer').innerHTML = '';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            // Calculate pagination
+            const totalPages = Math.ceil(talents.length / TALENTS_PER_PAGE);
+            const startIndex = (currentPage - 1) * TALENTS_PER_PAGE;
+            const endIndex = startIndex + TALENTS_PER_PAGE;
+            const pageTalents = talents.slice(startIndex, endIndex);
+            
+            // Render talents
+            talentGrid.innerHTML = pageTalents.map(talent => `
+                <div class="col-lg-4 col-md-6">
+                    <div class="talent-card">
+                        <div class="talent-img">
+                            <a href="talent-details.html?talent=${talent.id}">
+                                <img src="${talent.image}" alt="${talent.name}" onerror="this.src='assets/img/placeholder.jpg'">
+                            </a>
+                        </div>
+                        <div class="talent-body">
+                            <h3 class="talent-name">${talent.name}</h3>
+                            <div class="talent-role">${talent.role}</div>
+                            <p class="talent-description">${talent.description}</p>
+                            <a href="talent-details.html?talent=${talent.id}" class="bg-primary text-white px-4 py-2 rounded hover:bg-red-800 transition-colors inline-block">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Render pagination
+            renderPagination(totalPages);
+        }
+        
+        // Render pagination
+        function renderPagination(totalPages) {
+            const paginationContainer = document.getElementById('paginationContainer');
+            
+            if (totalPages <= 1) {
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '<nav class="flex items-center space-x-2">';
+            
+            // Previous button
+            if (currentPage > 1) {
+                paginationHTML += `
+                    <button onclick="changePage(${currentPage - 1})" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded hover:bg-primary hover:text-white transition-colors">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                `;
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    paginationHTML += `
+                        <button class="w-10 h-10 flex items-center justify-center bg-primary text-white rounded">${i}</button>
+                    `;
+                } else {
+                    paginationHTML += `
+                        <button onclick="changePage(${i})" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded hover:bg-primary hover:text-white transition-colors">${i}</button>
+                    `;
+                }
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                paginationHTML += `
+                    <button onclick="changePage(${currentPage + 1})" class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded hover:bg-primary hover:text-white transition-colors">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                `;
+            }
+            
+            paginationHTML += '</nav>';
+            paginationContainer.innerHTML = paginationHTML;
+        }
+        
+        // Change page function (must be global for onclick handlers)
+        window.changePage = function(page) {
+            currentPage = page;
+            updateTalentGrid();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        
+        // Show error message
+        function showError(message) {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('noResults').style.display = 'block';
+            document.getElementById('noResults').innerHTML = `
+                <i class="fas fa-exclamation-circle text-4xl text-red-500 mb-3"></i>
+                <h4 class="text-xl font-semibold text-gray-700 mb-2">Error</h4>
+                <p class="text-gray-600">${message}</p>
+            `;
+        }
+        
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to show loading spinner
+            setTimeout(initTalents, 500);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Kalenjin Vibes | Event Details</title>
+    <meta name="author" content="Kalenjin Vibes">
+    <meta name="description" content="Kalenjin Vibes event details. Book tickets for upcoming events.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#BA0909',
+                        secondary: '#222',
+                        light: '#f8f9fa',
+                        dark: '#1a1a1a'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z93DQW5D1S"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Z93DQW5D1S');
+    </script>
+    
+    <style>
+        /* Compact Breadcrumb */
+        .breadcumb-wrapper {
+            position: relative;
+            padding: 40px 0 30px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .breadcumb-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(186, 9, 9, 0.8));
+        }
+        
+        .breadcumb-content {
+            position: relative;
+            z-index: 2;
+            text-align: right;
+            color: white;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcumb-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .breadcumb-menu {
+            display: flex;
+            justify-content: flex-end;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .breadcumb-menu li {
+            margin: 0 5px;
+        }
+        
+        .breadcumb-menu a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        .breadcumb-menu a:hover {
+            color: white;
+        }
+        
+        .breadcumb-menu li:not(:last-child)::after {
+            content: '/';
+            margin-left: 8px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Event Details */
+        .event-header {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        .event-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .booking-section {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .meta-icon {
+            width: 40px;
+            height: 40px;
+            background: #BA0909;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .cart_table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .cart_table th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .cart_table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .qty-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        
+        .order-summary {
+            background: #fff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #eee;
+        }
+        
+        /* WhatsApp Button */
+        .whatsapp-button-events {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .whatsapp-button-events:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .whatsapp-button-events img {
+            width: 35px;
+            height: 35px;
+            filter: brightness(0) invert(1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .breadcumb-wrapper {
+                padding: 30px 0 20px;
+            }
+            
+            .breadcumb-title {
+                font-size: 1.2rem;
+            }
+            
+            .breadcumb-content {
+                text-align: center;
+            }
+            
+            .breadcumb-menu {
+                justify-content: center;
+                font-size: 0.85rem;
+            }
+            
+            .event-title {
+                font-size: 1.5rem;
+            }
+            
+            .booking-section {
+                padding: 1rem;
+            }
+            
+            .whatsapp-button-events {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                left: 15px;
+            }
+            
+            .whatsapp-button-events img {
+                width: 28px;
+                height: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div id="header-container"></div>
+
+    <!-- Compact Breadcrumb -->
+    <div class="breadcumb-wrapper" style="background-image: url('assets/img/breadcumb/breadcumb-bg.jpg');">
+        <div class="container mx-auto px-4">
+            <div class="breadcumb-content">
+                <h3 class="breadcumb-title" id="eventTitle">Event Details</h3>
+                <div class="breadcumb-menu-wrap">
+                    <ul class="breadcumb-menu">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="eventslist.html">Events</a></li>
+                        <li id="currentEventName">Details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Event Info -->
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="event-header">
+                        <h1 class="event-title" id="eventTitleMain">Kalenjin Vibes Night</h1>
+                    </div>
+                    
+                    <div class="event-image mb-4">
+                        <img id="eventImage" src="assets/img/event-latest.jpg" alt="Event" class="img-fluid rounded">
+                    </div>
+                    
+                    <div class="event-description">
+                        <h4>Event Description</h4>
+                        <p id="eventDescription">Join us for an unforgettable night of music, dance, and cultural celebration. Featuring the best Kalenjin artists, DJs, and performers.</p>
+                        <p id="eventDescriptionExtra">Experience authentic Kalenjin music and entertainment in a vibrant atmosphere with great food and drinks.</p>
+                    </div>
+                </div>
+                
+                <!-- Ticket Booking -->
+                <div class="col-lg-6">
+                    <div class="booking-section">
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="far fa-calendar-alt"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="d-block text-muted small">Event Date</span>
+                                <span class="fw-bold" id="eventDate">23 January, 2026</span>
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="d-block text-muted small">Location</span>
+                                <span class="fw-bold" id="eventLocation">Winter Villa Resort & Spa - Embu</span>
+                            </div>
+                        </div>
+                        
+                        <div class="meta-item mb-4">
+                            <div class="meta-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="d-block text-muted small">Time</span>
+                                <span class="fw-bold" id="eventTime">6:00 PM - 2:00 AM</span>
+                            </div>
+                        </div>
+                        
+                        <h3 class="mb-4">Buy Tickets</h3>
+                        
+                        <form id="EventForm">
+                            <div class="table-responsive">
+                                <table class="cart_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cartItems">
+                                        <tr class="cart_item">
+                                            <td>Early Bird Ticket</td>
+                                            <td>Ksh 350</td>
+                                            <td>
+                                                <div class="quantity">
+                                                    <button type="button" class="quantity-minus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" class="qty-input" data-category="Early Bird Ticket" data-price="350" value="0" min="0" max="99">
+                                                    <button type="button" class="quantity-plus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td><span class="total-price">Ksh 0</span></td>
+                                        </tr>
+                                        
+                                        <tr class="cart_item">
+                                            <td>Early Bird Couples</td>
+                                            <td>Ksh 650</td>
+                                            <td>
+                                                <div class="quantity">
+                                                    <button type="button" class="quantity-minus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" class="qty-input" data-category="Early Bird Couples" data-price="650" value="0" min="0" max="99">
+                                                    <button type="button" class="quantity-plus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td><span class="total-price">Ksh 0</span></td>
+                                        </tr>
+                                        
+                                        <tr class="cart_item">
+                                            <td>Couples Ticket</td>
+                                            <td>Ksh 700</td>
+                                            <td>
+                                                <div class="quantity">
+                                                    <button type="button" class="quantity-minus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" class="qty-input" data-category="Couples Ticket" data-price="700" value="0" min="0" max="99">
+                                                    <button type="button" class="quantity-plus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td><span class="total-price">Ksh 0</span></td>
+                                        </tr>
+                                        
+                                        <tr class="cart_item">
+                                            <td>Regular Ticket</td>
+                                            <td>Ksh 400</td>
+                                            <td>
+                                                <div class="quantity">
+                                                    <button type="button" class="quantity-minus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                    <input type="number" class="qty-input" data-category="Regular Ticket" data-price="400" value="0" min="0" max="99">
+                                                    <button type="button" class="quantity-plus btn btn-sm btn-outline-secondary">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td><span class="total-price">Ksh 0</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Order Summary -->
+                            <div class="order-summary mt-4">
+                                <h5 class="mb-3">Ticket Summary</h5>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Sub Total:</span>
+                                    <span id="grandTotal">Ksh 0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Service Fee:</span>
+                                    <span>Ksh 0</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between">
+                                    <strong>Total:</strong>
+                                    <strong id="finalTotal">Ksh 0</strong>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-danger w-100 py-3">
+                                    Continue to Checkout <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Include Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Scroll To Top -->
+    <a href="#" class="scrollToTop scroll-btn fixed bottom-8 right-8 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-red-800 transition-colors duration-300 z-50 hidden">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/+254797265275" class="whatsapp-button-events" target="_blank" title="Chat with us on WhatsApp">
+        <img src="assets/img/WhatsApp.svg" alt="WhatsApp">
+    </a>
+
+    <!-- JavaScript Files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Load Header and Footer -->
+    <script>
+        // Load header from partials folder
+        fetch('partials/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                
+                // Initialize mobile menu after header is loaded
+                const mobileMenu = document.querySelector('.mobile-menu');
+                const menuToggle = document.querySelector('.vs-menu-toggle');
+                const closeBtn = document.querySelector('.menu-close');
+                const overlay = document.querySelector('.menu-overlay');
+                
+                if (menuToggle && mobileMenu) {
+                    menuToggle.addEventListener('click', function() {
+                        mobileMenu.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    });
+                }
+                
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                if (overlay) {
+                    overlay.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                }
+                
+                // Close menu when clicking links
+                const menuLinks = document.querySelectorAll('.menu-link');
+                menuLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.remove('active');
+                        document.body.style.overflow = '';
+                    });
+                });
+            })
+            .catch(error => console.error('Error loading header:', error));
+            
+        // Load footer from partials folder
+        fetch('partials/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+                
+                // Initialize footer functionality
+                const yearElements = document.querySelectorAll('.current-year');
+                yearElements.forEach(element => {
+                    element.textContent = new Date().getFullYear();
+                });
+            })
+            .catch(error => console.error('Error loading footer:', error));
+    </script>
+    
+    <!-- Scroll to Top Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollToTopBtn = document.querySelector('.scrollToTop');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.remove('hidden');
+                } else {
+                    scrollToTopBtn.classList.add('hidden');
+                }
+            });
+            
+            scrollToTopBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+    
+    <!-- Event Ticket Booking Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Quantity Controls
+            function setupQuantityControls() {
+                document.querySelectorAll('.quantity-plus').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const input = this.parentElement.querySelector('.qty-input');
+                        let value = parseInt(input.value) || 0;
+                        const max = parseInt(input.getAttribute('max')) || 99;
+                        if (value < max) {
+                            input.value = value + 1;
+                            updateCart();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.quantity-minus').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const input = this.parentElement.querySelector('.qty-input');
+                        let value = parseInt(input.value) || 0;
+                        const min = parseInt(input.getAttribute('min')) || 0;
+                        if (value > min) {
+                            input.value = value - 1;
+                            updateCart();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.qty-input').forEach(input => {
+                    input.addEventListener('input', function() {
+                        let value = parseInt(this.value) || 0;
+                        const max = parseInt(this.getAttribute('max')) || 99;
+                        const min = parseInt(this.getAttribute('min')) || 0;
+                        
+                        if (value > max) this.value = max;
+                        if (value < min) this.value = min;
+                        
+                        if (isNaN(value)) this.value = min;
+                        
+                        updateCart();
+                    });
+                });
+            }
+            
+            // Update Cart Function
+            function updateCart() {
+                let subtotal = 0;
+                
+                document.querySelectorAll('.cart_item').forEach(row => {
+                    const input = row.querySelector('.qty-input');
+                    const price = parseFloat(input.getAttribute('data-price'));
+                    const quantity = parseInt(input.value) || 0;
+                    const total = price * quantity;
+                    
+                    const totalElement = row.querySelector('.total-price');
+                    if (totalElement) {
+                        totalElement.textContent = `Ksh ${total.toLocaleString()}`;
+                    }
+                    
+                    subtotal += total;
+                });
+                
+                // Update totals
+                document.getElementById('grandTotal').textContent = `Ksh ${subtotal.toLocaleString()}`;
+                document.getElementById('finalTotal').textContent = `Ksh ${subtotal.toLocaleString()}`;
+            }
+            
+            // Form Submission
+            document.getElementById('EventForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Check if any tickets selected
+                let hasTickets = false;
+                document.querySelectorAll('.qty-input').forEach(input => {
+                    if (parseInt(input.value) > 0) {
+                        hasTickets = true;
+                    }
+                });
+                
+                if (!hasTickets) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Tickets Selected',
+                        text: 'Please select at least one ticket to proceed.',
+                        confirmButtonColor: '#BA0909'
+                    });
+                    return;
+                }
+                
+                // Collect ticket data
+                const tickets = [];
+                document.querySelectorAll('.cart_item').forEach(row => {
+                    const input = row.querySelector('.qty-input');
+                    const quantity = parseInt(input.value) || 0;
+                    
+                    if (quantity > 0) {
+                        tickets.push({
+                            type: input.getAttribute('data-category'),
+                            price: parseFloat(input.getAttribute('data-price')),
+                            quantity: quantity,
+                            total: parseFloat(input.getAttribute('data-price')) * quantity
+                        });
+                    }
+                });
+                
+                // Get event details from page
+                const eventName = document.getElementById('eventTitleMain').textContent;
+                const eventDate = document.getElementById('eventDate').textContent;
+                const eventLocation = document.getElementById('eventLocation').textContent;
+                const totalAmount = document.getElementById('finalTotal').textContent;
+                
+                // Prepare data for redirect to payments page
+                const params = new URLSearchParams();
+                params.append('type', 'event_ticket');
+                params.append('event_name', eventName);
+                params.append('event_date', eventDate);
+                params.append('event_location', eventLocation);
+                params.append('tickets', JSON.stringify(tickets));
+                params.append('amount', totalAmount.replace('Ksh ', '').replace(',', ''));
+                
+                // Redirect to payments page
+                window.location.href = `payments.html?${params.toString()}`;
+            });
+            
+            // Initialize
+            setupQuantityControls();
+            updateCart();
+        });
+    </script>
+</body>
+</html>

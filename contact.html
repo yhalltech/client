@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Contact Us | Kalenjin Vibes</title>
+    <meta name="author" content="kalenjin vibes">
+    <meta name="description" content="Contact Kalenjin Vibes for event planning, artist bookings, DJ services, and entertainment solutions.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- Tailwind CSS for consistency -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#BA0909',
+              secondary: '#222',
+              light: '#f8f9fa',
+              dark: '#1a1a1a'
+            },
+            fontFamily: {
+              'jost': ['Jost', 'sans-serif'],
+              'poppins': ['Poppins', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+    <link rel="stylesheet" href="assets/css/header.css">
+    
+    <style>
+        :root {
+            --primary: #BA0909;
+            --primary-light: #e53e3e;
+            --secondary: #2d3748;
+            --accent: #4f46e5;
+            --gradient-1: linear-gradient(135deg, #BA0909 0%, #e53e3e 100%);
+            --gradient-2: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-3: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Jost', sans-serif;
+        }
+        
+        /* Enhanced Breadcrumb Section */
+        .breadcumb-wrapper {
+            position: relative;
+            padding: 100px 0 60px;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('assets/img/slider/blog.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .breadcumb-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .breadcumb-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #ffcccb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .breadcrumb-menu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+        
+        .breadcrumb-menu a {
+            color: #ffcccb;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .breadcrumb-menu a:hover {
+            color: white;
+        }
+        
+        .breadcrumb-separator {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Enhanced Contact Section - COMPACT */
+        .contact-section {
+            padding: 60px 0;
+            position: relative;
+        }
+        
+        .section-subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            max-width: 500px;
+            margin: 0 auto 40px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        /* Compact Animated Cards */
+        .contact-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            height: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(186, 9, 9, 0.1);
+        }
+        
+        .contact-form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .contact-form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+        }
+        
+        /* Compact Contact Info Items */
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .contact-info-item:hover {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+        
+        .contact-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            background: var(--gradient-1);
+            color: white;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(186, 9, 9, 0.2);
+        }
+        
+        .contact-info-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #374151;
+            font-family: 'Jost', sans-serif;
+        }
+        
+        .contact-info-content p,
+        .contact-info-content a {
+            color: #6b7280;
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .contact-info-content a:hover {
+            color: var(--primary);
+        }
+        
+        /* COMPACT Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-family: 'Jost', sans-serif;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(186, 9, 9, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+        
+        /* Compact Gradient Button */
+        .gradient-btn {
+            background: var(--gradient-1);
+            color: white;
+            padding: 14px 25px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            font-family: 'Jost', sans-serif;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(186, 9, 9, 0.25);
+        }
+        
+        /* Compact WhatsApp Button */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 1000;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.25);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 25px rgba(37, 211, 102, 0.35);
+        }
+        
+        .whatsapp-button img {
+            width: 32px;
+            height: 32px;
+            filter: brightness(0) invert(1);
+        }
+        
+        /* Compact Scroll to Top */
+        .scrollToTop {
+            position: fixed;
+            bottom: 100px;
+            right: 25px;
+            z-index: 1000;
+            background: var(--gradient-1);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(186, 9, 9, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .scrollToTop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scrollToTop:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(186, 9, 9, 0.3);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Responsive Design - Optimized for Desktop */
+        @media (min-width: 768px) {
+            /* Special desktop optimizations */
+            .contact-section .container {
+                max-width: 1200px;
+            }
+            
+            .contact-card,
+            .contact-form-card {
+                padding: 25px;
+            }
+            
+            .form-control {
+                padding: 10px 12px;
+                font-size: 13px;
+            }
+            
+            .gradient-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+            
+            .contact-info-item {
+                padding: 12px;
+                margin-bottom: 20px;
+            }
+            
+            .section-subtitle {
+                font-size: 0.95rem;
+                max-width: 450px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .contact-section {
+                padding: 50px 0;
+            }
+            
+            .contact-card {
+                padding: 20px;
+            }
+            
+            .contact-form-card {
+                padding: 30px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .breadcumb-title {
+                font-size: 2rem;
+            }
+            
+            .contact-section {
+                padding: 40px 0;
+            }
+            
+            .contact-card,
+            .contact-form-card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .whatsapp-button,
+            .scrollToTop {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                left: 20px;
+            }
+            
+            .scrollToTop {
+                right: 20px;
+                bottom: 80px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .breadcumb-title {
+                font-size: 1.8rem;
+            }
+            
+            .contact-info-item {
+                padding: 12px;
+            }
+            
+            .contact-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .gradient-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be loaded here -->
+    <div id="header-container"></div>
+
+    <!-- Compact Breadcrumb Section -->
+    <div class="breadcumb-wrapper">
+        <div class="container mx-auto px-4">
+            <div class="breadcumb-content">
+                <h1 class="breadcumb-title mb-4">Contact Us</h1>
+                <div class="breadcrumb-menu">
+                    <a href="/">Home</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>Contact</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Contact Section -->
+    <section class="contact-section">
+        <div class="container mx-auto px-4">
+            <div class="row justify-center mb-8">
+                <div class="col-lg-6 text-center">
+                    <p class="section-subtitle">
+                        Get in touch for any inquiries, support, or tailored quotes for your event needs.
+                    </p>
+                    <div class="w-20 h-1 bg-gradient-to-r from-primary to-primary-light mx-auto rounded-full mb-6"></div>
+                </div>
+            </div>
+            
+            <div class="row justify-center">
+                <!-- Contact Information -->
+                <div class="col-lg-4 mb-6 lg:mb-0 lg:pr-4">
+                    <div class="contact-card">
+                        <h3 class="text-xl font-bold mb-6 text-gray-800">Contact Info</h3>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Phone</h4>
+                                <a href="tel:+254797265275" class="text-sm font-semibold hover:text-primary">
+                                    +254 797 265 275
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Email</h4>
+                                <a href="mailto:kalenjinvibezke@gmail.com" class="text-sm font-semibold hover:text-primary">
+                                    kalenjinvibezke@gmail.com
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Location</h4>
+                                <p class="text-sm font-semibold">Nairobi, Kenya</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-info-content">
+                                <h4>Hours</h4>
+                                <p class="text-sm font-semibold">Mon-Sun: 9AM - 10PM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <h4 class="text-sm font-semibold mb-3 text-gray-800">Follow Us</h4>
+                            <div class="flex gap-3">
+                                <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-blue-800 flex items-center justify-center text-white hover:scale-110 transition-transform text-sm">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-r from-pink-600 to-pink-800 flex items-center justify-center text-white hover:scale-110 transition-transform text-sm">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center text-white hover:scale-110 transition-transform text-sm">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="col-lg-8">
+                    <div class="contact-form-card">
+                        <h3 class="text-xl font-bold mb-6 text-gray-800">Send Message</h3>
+                        <form action="#" method="post" id="contactForm">
+                            <div class="form-group">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" name="full_name" placeholder="Enter your name" required>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="your@email.com" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone" class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="+254 XXX XXX XXX" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="service" class="form-label">Service Needed</label>
+                                <select class="form-control" id="service" name="service_name" required>
+                                    <option value="" selected disabled>Select service</option>
+                                    <option value="Ticket Booking">Ticket Booking</option>
+                                    <option value="Talent Booking">Talent Booking</option>
+                                    <option value="Event Planning">Event Planning</option>
+                                    <option value="DJ Services">DJ Services</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message" class="form-label">Message</label>
+                                <textarea class="form-control" id="message" name="details" rows="4" placeholder="Tell us about your needs..." required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="gradient-btn">
+                                <span>Send Message</span>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer will be loaded here -->
+    <div id="footer-container"></div>
+
+    <!-- Scroll To Top -->
+    <a href="#" class="scrollToTop scroll-btn">
+      <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/+254797265275?text=Hello%20Kalenjin%20Vibes,%20I%20would%20like%20to%20inquire%20about%20your%20services" 
+       class="whatsapp-button" target="_blank" aria-label="Chat on WhatsApp">
+        <img src="assets/img/WhatsApp.svg" alt="WhatsApp">
+    </a>
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Shared Header / Cart JS -->
+    <script src="assets/js/mobile-menu.js"></script>
+    <script src="assets/js/cart.js"></script>
+    
+    <script>
+        // Load header and footer
+        fetch('partials/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                initHeader();
+            })
+            .catch(error => console.error('Error loading header:', error));
+            
+        fetch('partials/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-container').innerHTML = data;
+                initFooter();
+            })
+            .catch(error => console.error('Error loading footer:', error));
+        
+        // Initialize header
+        function initHeader() {
+            const menuToggle = document.querySelector('.vs-menu-toggle');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const closeBtn = document.querySelector('.menu-close');
+            const overlay = document.querySelector('.menu-overlay');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            function closeMenu() {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+            if (overlay) overlay.addEventListener('click', closeMenu);
+        }
+        
+        // Initialize footer
+        function initFooter() {
+            document.querySelectorAll('.current-year').forEach(element => {
+                element.textContent = new Date().getFullYear();
+            });
+        }
+        
+        // Compact Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.disabled = true;
+            
+            // Quick validation
+            let isValid = true;
+            const requiredFields = ['full_name', 'email', 'phone', 'service_name', 'details'];
+            
+            requiredFields.forEach(field => {
+                if (!formData.get(field)) isValid = false;
+            });
+            
+            if (!isValid) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Missing Info',
+                    text: 'Please fill all fields.',
+                    confirmButtonColor: '#BA0909',
+                    confirmButtonText: 'OK'
+                });
+                
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                return;
+            }
+            
+            // Simulate sending
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Message Sent!',
+                    text: 'We\'ll contact you soon.',
+                    confirmButtonColor: '#BA0909',
+                    confirmButtonText: 'Great!'
+                }).then(() => {
+                    document.getElementById('contactForm').reset();
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                });
+            }, 1000);
+        });
+        
+        // Scroll to top
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollBtn = document.querySelector('.scrollToTop');
+            
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollBtn.classList.add('show');
+                } else {
+                    scrollBtn.classList.remove('show');
+                }
+            });
+            
+            scrollBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Focus form inputs
+            const inputs = document.querySelectorAll('.form-control');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = '#BA0909';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = '#e5e7eb';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

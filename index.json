@@ -1,0 +1,13 @@
+{
+  "upcomingEvents": [
+    {
+      "id": 20,
+      "title": "Kalenjin Vibes Night",
+      "date": "January 23, 2026",
+      "location": "Winter Villa Resort & Spa - Embu",
+      "price": "Ksh 350",
+      "image": "./assets/img/event-latest.jpg",
+      "link": "eventslist-details.html"
+    }
+  ]
+}

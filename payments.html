@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zxx">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Kalenjin Vibes | Payments</title>
+  <meta name="author" content="Kalenjin Vibes">
+  <meta name="description" content="Secure payment processing for events, talent bookings, and merchandise.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+  
+  <!-- Tailwind CSS for header/footer consistency -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#BA0909',
+            secondary: '#222',
+            light: '#f8f9fa',
+            dark: '#1a1a1a'
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- SweetAlert2 CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z93DQW5D1S"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z93DQW5D1S');
+  </script>
+
+  <!-- Bootstrap CSS (for payment form only) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Custom CSS Files -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/header.css">
+  <link rel="stylesheet" href="assets/css/footer.css">
+  
+  <!-- PAYMENTS PAGE CSS -->
+  <link rel="stylesheet" href="assets/css/payments.css">
+  
+  <style>
+    /* WhatsApp Button Styles for Payments Page */
+    .whatsapp-button-payments {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1000;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    
+    .whatsapp-button-payments:hover {
+      transform: scale(1.1) translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    .whatsapp-button-payments img {
+      width: 35px;
+      height: 35px;
+      filter: brightness(0) invert(1);
+    }
+    
+    /* Breadcrumb Styles */
+    .breadcumb-wrapper {
+      position: relative;
+      padding: 100px 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    .breadcumb-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(186, 9, 9, 0.8));
+    }
+    
+    .breadcumb-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+    }
+    
+    .breadcumb-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    
+    .breadcumb-menu {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .breadcumb-menu li {
+      margin: 0 10px;
+    }
+    
+    .breadcumb-menu a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .breadcumb-menu a:hover {
+      color: #ffcccb;
+    }
+    
+    .breadcumb-menu li:not(:last-child)::after {
+      content: '/';
+      margin-left: 10px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    @media (max-width: 768px) {
+      .breadcumb-wrapper {
+        padding: 70px 0;
+      }
+      
+      .breadcumb-title {
+        font-size: 2rem;
+      }
+      
+      .whatsapp-button-payments {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        left: 15px;
+      }
+      
+      .whatsapp-button-payments img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Include Header -->
+  <div id="header-container"></div>
+
+  <!-- Breadcrumb -->
+  <div class="breadcumb-wrapper" style="background-image: url('assets/img/breadcumb/breadcumb-bg.jpg');">
+    <div class="container mx-auto px-4">
+      <div class="breadcumb-content">
+        <div class="breadcumb-menu-wrap">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Form Section -->
+  <div class="container py-5">
+    <div class="col-xxl-6 col-xl-8 col-lg-10 col-md-12 bg-light card dashboard-bg-box mx-auto">
+      <div class="card-body p-4">
+        <!-- Order Summary -->
+        <div id="orderSummary" class="mb-4" style="display: none;">
+          <div class="order-summary-box">
+            <h5 class="mb-3" style="color: #333; font-weight: 600;">Order Summary</h5>
+            <div id="order-items" style="margin-bottom: 15px;"></div>
+            <div class="order-total">
+              <div class="d-flex justify-content-between align-items-center">
+                <span>Total Amount:</span>
+                <span id="total-amount-display">Ksh 0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Booking Summary -->
+        <div id="bookingSummary" class="mb-4" style="display: none;">
+          <h4 class="mb-3">Booking Summary</h4>
+          <div class="alert alert-info">
+            <p><strong>Talent:</strong> <span id="summaryTalentName"></span></p>
+            <p><strong>Event:</strong> <span id="summaryEventName">Kalenjin Vibes Night</span></p>
+            <p><strong>Date:</strong> <span id="summaryEventDate"></span></p>
+            <p><strong>Location:</strong> <span id="summaryLocation"></span></p>
+            <p><strong>Amount:</strong> Ksh <span id="summaryAmount"></span></p>
+          </div>
+        </div>
+
+        <!-- Payment Form -->
+        <form id="payment-form">
+          <input type="hidden" id="bookingType" name="booking_type" value="">
+          <input type="hidden" id="bookingTalentId" name="talent_id" value="">
+          <input type="hidden" id="bookingTalentName" name="talent_name" value="">
+          <input type="hidden" id="bookingEventName" name="event_name" value="Kalenjin Vibes Night">
+          <input type="hidden" id="bookingLocation" name="location" value="">
+          <input type="hidden" id="bookingEventDate" name="event_date" value="">
+          <input type="hidden" id="bookingAmount" name="amount" value="">
+          <input type="hidden" id="bookingNotes" name="notes" value="">
+          
+          <!-- Contact Information -->
+          <div class="mb-4">
+            <h5 class="mb-3" style="color: #333; font-weight: 600;">Contact Information</h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <label for="full_name"><i class="fas fa-user"></i> Full Name <span class="text-danger">*</span></label>
+                  <input class="form-control" id="full_name" name="full_name" type="text" placeholder="Enter your full name" required>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <label for="email"><i class="fas fa-envelope"></i> Email <span class="text-danger">*</span></label>
+                  <input class="form-control" id="email" name="email" type="email" placeholder="your@email.com" required>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <label for="phone_number"><i class="fas fa-phone"></i> Phone Number <span class="text-danger">*</span></label>
+                  <input class="form-control" id="phone_number" name="phone_number" type="text" placeholder="e.g 07XX XXX XXX" required>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Method Selection -->
+          <div class="form-group mb-4">
+            <label for="payment_method" style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 10px; text-align: center; display: block;">
+              <i class="fas fa-credit-card"></i> Select Payment Method
+            </label>
+            <select class="form-control" id="payment_method" name="payment_method" required style="max-width: 300px; margin: 0 auto; display: block;">
+              <option value="">Choose payment method...</option>
+              <option value="mpesa">📱 M-Pesa (Till Number)</option>
+              <option value="paybill">🏢 Paybill</option>
+            </select>
+          </div>
+
+          <!-- M-Pesa Instructions -->
+          <div id="mpesa-details" style="display: none;">
+            <div class="alert alert-info">
+              <div class="form-group text-center mb-3">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/2560px-M-PESA_LOGO-01.svg.png" style="width:30%; max-width: 200px;" class="img-fluid" alt="M-Pesa">
+              </div>
+              <div class="form-group text-center mb-3">
+                <h4><u>LIPA NA MPESA</u></h4>
+              </div>
+              <ul>
+                <li>1. Go to M-PESA on your phone</li>
+                <li>2. Select <strong>Lipa Na M-PESA</strong></li>
+                <li>3. Select <strong>Buy Goods and Services</strong></li>
+                <li>4. Enter Till Number: <strong style="color: #28a745; font-size: 18px;">3049015</strong></li>
+                <li>5. Enter Amount: <strong id="mpesaAmount" style="color: #28a745; font-size: 18px;">Ksh 0</strong></li>
+                <li>6. Enter your M-PESA PIN and confirm</li>
+                <li>7. After payment, enter the Transaction Code below</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Paybill Instructions -->
+          <div id="paybill-details" style="display: none;">
+            <div class="alert alert-info">
+              <div class="form-group text-center mb-3">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/2560px-M-PESA_LOGO-01.svg.png" style="width:30%; max-width: 200px;" class="img-fluid" alt="M-Pesa">
+              </div>
+              <div class="form-group text-center mb-3">
+                <h4><u>LIPA NA MPESA - PAYBILL</u></h4>
+              </div>
+              <ul>
+                <li>1. Go to M-PESA on your phone</li>
+                <li>2. Select <strong>Lipa Na M-PESA</strong></li>
+                <li>3. Select <strong>Pay Bill</strong></li>
+                <li>4. Enter Business Number: <strong style="color: #28a745; font-size: 18px;">542542</strong></li>
+                <li>5. Enter Account Number: <strong style="color: #28a745; font-size: 18px;">79233</strong></li>
+                <li>6. Enter Amount: <strong id="paybillAmount" style="color: #28a745; font-size: 18px;">Ksh 0</strong></li>
+                <li>7. Enter your M-PESA PIN and confirm</li>
+                <li>8. After payment, enter the Transaction Code below</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Transaction Reference -->
+          <div class="form-group mb-4" id="transaction-reference-group" style="display: none;">
+            <label for="transaction_reference">
+              <i class="fas fa-receipt"></i> Transaction Code
+            </label>
+            <input type="text" class="form-control" id="transaction_reference" name="transaction_reference" placeholder="Enter your M-Pesa code (e.g., QX2A3B4C5D)" required>
+            <small class="form-text text-muted mt-2">
+              <i class="fas fa-info-circle"></i> Enter the transaction code you received via SMS after completing the payment
+            </small>
+            <div id="transaction-error" class="text-danger mt-2" style="display: none;">
+              <i class="fas fa-exclamation-circle"></i> You must enter transaction code
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-flex gap-3 justify-content-center mt-4">
+            <button type="submit" class="btn btn-success" id="complete-purchase-btn">
+              <i class="fas fa-check-circle"></i> Complete Payment
+            </button>
+            <button type="button" class="btn btn-secondary" id="cancel-btn">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include Footer -->
+  <div id="footer-container"></div>
+
+  <!-- Scroll To Top -->
+  <a href="#" class="scrollToTop scroll-btn fixed bottom-8 right-8 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-red-800 transition-colors duration-300 z-50 hidden">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+  
+  <!-- WhatsApp Button -->
+  <a href="https://wa.me/+254797265275" class="whatsapp-button-payments" target="_blank" title="Chat with us on WhatsApp">
+    <img src="assets/img/WhatsApp.svg" alt="WhatsApp">
+  </a>
+
+  <!-- JavaScript Files -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Load Header and Footer -->
+  <script>
+    // Load header from partials folder
+    fetch('partials/header.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('header-container').innerHTML = data;
+        
+        // Initialize mobile menu after header is loaded
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const menuToggle = document.querySelector('.vs-menu-toggle');
+        const closeBtn = document.querySelector('.menu-close');
+        const overlay = document.querySelector('.menu-overlay');
+        
+        if (menuToggle && mobileMenu) {
+          menuToggle.addEventListener('click', function() {
+            mobileMenu.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          });
+        }
+        
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+          });
+        }
+        
+        if (overlay) {
+          overlay.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+          });
+        }
+        
+        // Close menu when clicking links
+        const menuLinks = document.querySelectorAll('.menu-link');
+        menuLinks.forEach(link => {
+          link.addEventListener('click', function() {
+            mobileMenu.classList.remove('active');
+            document.body.style.overflow = '';
+          });
+        });
+      })
+      .catch(error => console.error('Error loading header:', error));
+      
+    // Load footer from partials folder
+    fetch('partials/footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer-container').innerHTML = data;
+        
+        // Initialize footer functionality
+        const yearElements = document.querySelectorAll('.current-year');
+        yearElements.forEach(element => {
+          element.textContent = new Date().getFullYear();
+        });
+        
+        // Newsletter form submission
+        const newsletterForm = document.getElementById('newsletter-form');
+        if (newsletterForm) {
+          newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const emailInput = newsletterForm.querySelector('input[type="email"]');
+            const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+            const email = emailInput.value.trim();
+            
+            // Simple email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+              alert('Please enter a valid email address');
+              return;
+            }
+            
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+              // Save to localStorage
+              localStorage.setItem('kalenjin_vibes_subscribed', JSON.stringify({
+                email: email,
+                date: new Date().toISOString()
+              }));
+              
+              // Update UI
+              emailInput.value = email;
+              emailInput.disabled = true;
+              submitBtn.innerHTML = '<i class="fas fa-check"></i> Subscribed';
+              submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+              
+              // Show success message
+              alert('Successfully subscribed to our newsletter!');
+            }, 1000);
+          });
+        }
+        
+        // Check if already subscribed
+        const isSubscribed = localStorage.getItem('kalenjin_vibes_subscribed');
+        if (isSubscribed) {
+          const newsletterForm = document.getElementById('newsletter-form');
+          if (newsletterForm) {
+            const input = newsletterForm.querySelector('input[type="email"]');
+            const button = newsletterForm.querySelector('button[type="submit"]');
+            if (input && button) {
+              const data = JSON.parse(isSubscribed);
+              input.value = data.email;
+              input.disabled = true;
+              button.textContent = 'Subscribed ✓';
+              button.disabled = true;
+              button.classList.add('bg-green-600', 'hover:bg-green-700');
+            }
+          }
+        }
+      })
+      .catch(error => console.error('Error loading footer:', error));
+  </script>
+  
+  <!-- Scroll to Top Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const scrollToTopBtn = document.querySelector('.scrollToTop');
+      
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+          scrollToTopBtn.classList.remove('hidden');
+        } else {
+          scrollToTopBtn.classList.add('hidden');
+        }
+      });
+      
+      scrollToTopBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

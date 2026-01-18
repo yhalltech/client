@@ -1,0 +1,236 @@
+[file name]: footer.css
+[file content begin]
+/* assets/css/footer.css */
+
+/* Footer Styles */
+.footer-wrapper {
+    background: #111;
+    color: #fff;
+    padding-top: 60px;
+}
+
+.footer-top {
+    padding-bottom: 40px;
+    border-bottom: 1px solid #333;
+}
+
+.footer-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #BA0909;
+    margin-bottom: 20px;
+}
+
+.footer-text {
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #222;
+    color: #fff;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    background: #BA0909;
+    transform: translateY(-3px);
+}
+
+/* Footer Widgets */
+.footer-widget {
+    height: 100%;
+}
+
+.footer-widget h4 {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-widget h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 2px;
+    background: #BA0909;
+}
+
+/* Footer Links */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #aaa;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.footer-links a:hover {
+    color: #BA0909;
+    padding-left: 5px;
+}
+
+.footer-links i {
+    margin-right: 10px;
+    color: #BA0909;
+    width: 20px;
+}
+
+/* Contact Info */
+.contact-info p {
+    color: #aaa;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.contact-info i {
+    color: #BA0909;
+    margin-right: 15px;
+    margin-top: 5px;
+    min-width: 20px;
+}
+
+.contact-info a {
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: #BA0909;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    padding: 20px 0;
+    background: #000;
+    margin-top: 40px;
+}
+
+.copyright-text {
+    color: #aaa;
+    margin: 0;
+    font-size: 14px;
+}
+
+.copyright-text a {
+    color: #BA0909;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.copyright-text a:hover {
+    color: #e53e3e;
+}
+
+.footer-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+.footer-menu a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.footer-menu a:hover {
+    color: #BA0909;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .footer-wrapper {
+        padding-top: 40px;
+    }
+    
+    .footer-widget {
+        margin-bottom: 30px;
+    }
+    
+    .footer-bottom {
+        margin-top: 20px;
+    }
+    
+    .footer-menu {
+        justify-content: center;
+        margin-top: 15px;
+    }
+    
+    .copyright-text {
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .footer-top {
+        padding-bottom: 20px;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+    
+    .footer-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .footer-menu li {
+        margin: 0 5px;
+    }
+}
+
+/* Remove old styles and keep only the necessary ones */
+/* WhatsApp Button Styles are handled on individual pages */
+
+/* Remove conflicting styles */
+.footer-content,
+.footer-main,
+.newsletter-form,
+.newsletter-input,
+.newsletter-button,
+.footer-contact-cards,
+.footer-contact-card,
+.footer-brand,
+.footer-legal {
+    display: none !important;
+}
+[file content end]

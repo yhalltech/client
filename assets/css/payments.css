@@ -1,0 +1,314 @@
+/* Payment Page Styles - BIGGER Copy Buttons Only */
+
+/* COPY BUTTON - BIGGER & MORE VISIBLE */
+.copy-btn-inline {
+    background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+    border: none;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 800;
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 15px;
+    vertical-align: middle;
+}
+
+.copy-btn-inline:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
+    background: linear-gradient(135deg, #FF8E53 0%, #FF6B6B 100%);
+}
+
+.copy-btn-inline:active {
+    transform: translateY(-2px);
+}
+
+.copy-btn-inline i {
+    font-size: 18px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* Payment Details - Text Style Only */
+#mpesa-details .alert,
+#paybill-details .alert {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-left: 6px solid #FF6B6B;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+#mpesa-details ul,
+#paybill-details ul {
+    list-style: none;
+    padding-left: 0;
+    line-height: 2.8;
+}
+
+#mpesa-details ul li,
+#paybill-details ul li {
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#mpesa-details ul li:last-child,
+#paybill-details ul li:last-child {
+    border-bottom: none;
+}
+
+/* Number Styling - Plain Text */
+#mpesa-details ul li strong,
+#paybill-details ul li strong {
+    font-size: 24px;
+    color: #28a745;
+    font-weight: 800;
+    padding: 6px 16px;
+    background: rgba(40, 167, 69, 0.15);
+    border-radius: 8px;
+    display: inline-block;
+    margin: 0 10px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* M-Pesa Logo - CENTERED */
+#mpesa-details .form-group.text-center,
+#paybill-details .form-group.text-center {
+    text-align: center !important;
+    margin-bottom: 20px;
+}
+
+#mpesa-details img,
+#paybill-details img {
+    max-width: 200px;
+    height: auto;
+    filter: drop-shadow(0 6px 15px rgba(0,0,0,0.15));
+    margin: 0 auto;
+    display: block;
+}
+
+/* Payment Method Headers */
+#mpesa-details h4,
+#paybill-details h4 {
+    color: #FF6B6B;
+    font-weight: 800;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 20px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+/* Dashboard Box */
+.dashboard-bg-box {
+    border-radius: 25px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: 35px;
+    background: white;
+}
+
+/* Form Controls */
+.form-control {
+    padding: 16px 20px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #FF6B6B;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.15);
+}
+
+/* Payment Method Select */
+#payment_method {
+    padding: 16px 24px;
+    font-size: 17px;
+    font-weight: 600;
+    border: 3px solid #e0e0e0;
+    border-radius: 12px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#payment_method:focus {
+    border-color: #FF6B6B;
+    box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.15);
+}
+
+/* Transaction Reference */
+#transaction_reference {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+/* Submit Buttons */
+#complete-purchase-btn {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    border: none;
+    padding: 18px 45px;
+    font-size: 17px;
+    font-weight: 800;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#complete-purchase-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(37, 211, 102, 0.5);
+}
+
+#cancel-btn {
+    background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+    border: none;
+    padding: 18px 45px;
+    font-size: 17px;
+    font-weight: 800;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(255, 68, 68, 0.4);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#cancel-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(255, 68, 68, 0.5);
+}
+
+/* Order Summary */
+.order-summary-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 30px;
+    color: white;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+}
+
+.order-summary-box h5 {
+    color: white;
+    font-weight: 800;
+    margin-bottom: 25px;
+    font-size: 20px;
+}
+
+.order-item {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.95);
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.order-total {
+    font-size: 22px;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    padding-top: 25px;
+    margin-top: 25px;
+}
+
+.order-total .d-flex {
+    font-weight: 900;
+    color: #FFD700;
+}
+
+/* Booking Summary */
+#bookingSummary h4 {
+    color: #667eea;
+    font-weight: 800;
+    font-size: 24px;
+}
+
+#bookingSummary .alert-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-left: 6px solid #667eea;
+    border-radius: 15px;
+    color: #1a237e;
+    font-weight: 600;
+}
+
+/* Form Labels */
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .copy-btn-inline {
+        padding: 12px 20px;
+        font-size: 15px;
+        width: 100%;
+        justify-content: center;
+        margin-top: 12px;
+        margin-left: 0;
+    }
+    
+    #mpesa-details ul li,
+    #paybill-details ul li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    #mpesa-details ul li strong,
+    #paybill-details ul li strong {
+        margin: 10px 0;
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .dashboard-bg-box {
+        padding: 20px;
+    }
+    
+    #complete-purchase-btn,
+    #cancel-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .copy-btn-inline {
+        font-size: 14px;
+        padding: 10px 16px;
+    }
+    
+    #mpesa-details ul li strong,
+    #paybill-details ul li strong {
+        font-size: 20px;
+    }
+}

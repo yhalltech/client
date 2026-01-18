@@ -1,0 +1,225 @@
+/* assets/css/past-events.css */
+
+/* Past Events Specific Styles */
+
+/* Header Styles (Tailwind compatible) */
+.vs-header {
+    position: relative;
+    z-index: 50;
+}
+
+.header-top-bar {
+    background-color: #000;
+    color: white;
+    padding: 8px 0;
+}
+
+.header-top-bar a:hover {
+    color: #BA0909;
+}
+
+.main-header {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 40;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+}
+
+.mobile-menu.active {
+    display: block;
+}
+
+.menu-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+
+.menu-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    max-width: 320px;
+    height: 100%;
+    background-color: white;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.menu-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.menu-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+}
+
+.menu-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-nav li {
+    margin-bottom: 10px;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.menu-link:hover {
+    background-color: #f8f9fa;
+    color: #BA0909;
+}
+
+.menu-link i {
+    margin-right: 10px;
+    width: 20px;
+}
+
+/* Page Specific Styles */
+.event-card {
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+
+.event-img {
+    height: 280px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.event-img img {
+    transition: transform 0.5s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-card:hover .event-img img {
+    transform: scale(1.05);
+}
+
+.past-event-badge {
+    background: linear-gradient(135deg, #666, #444);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.section-title {
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: #BA0909;
+    border-radius: 2px;
+}
+
+.back-button {
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.back-button:hover {
+    transform: translateX(-5px);
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Scroll to Top Button */
+.scrollToTop {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.scrollToTop:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* WhatsApp Button */
+.whatsapp-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .event-img {
+        height: 200px;
+    }
+    
+    .header-top-bar .md\\:flex {
+        display: none !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .grid-cols-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}

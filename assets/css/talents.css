@@ -1,0 +1,473 @@
+/* ===============================================
+   TALENTS PAGE STYLES
+   =============================================== */
+
+/* Talent Grid Layout */
+#talentGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+/* Talent Card Styles */
+.package-style1 {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 100%;
+    background-color: #fff;
+}
+
+.package-style1:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Talent Image */
+.package-img {
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+}
+
+.package-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.package-style1:hover .package-img img {
+    transform: scale(1.05);
+}
+
+/* Talent Content */
+.package-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.package-title {
+    font-size: 1.25rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.package-title a {
+    color: #333;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.package-title a:hover {
+    color: #BA0909;
+}
+
+.package-text {
+    color: #BA0909;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+.package-footer {
+    margin-top: auto;
+}
+
+/* Book Talent Button */
+.vs-btn {
+    background-color: #BA0909;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 500;
+}
+
+.vs-btn:hover {
+    background-color: #900707;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ===============================================
+   FILTER SIDEBAR STYLES
+   =============================================== */
+
+.sidebar-area {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.widget_title {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 600;
+}
+
+.widget_text {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Filter Checkbox Area */
+.chekbox-area {
+    margin-bottom: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease;
+}
+
+.chekbox-area:last-child {
+    border-bottom: none;
+}
+
+.chekbox-area:hover {
+    background-color: rgba(186, 9, 9, 0.05);
+}
+
+.chekbox-area input[type="radio"] {
+    margin-right: 10px;
+    cursor: pointer;
+    accent-color: #BA0909;
+}
+
+.chekbox-area label {
+    cursor: pointer;
+    user-select: none;
+    font-weight: 500;
+    color: #555;
+    transition: color 0.2s ease;
+}
+
+.chekbox-area:hover label {
+    color: #BA0909;
+}
+
+.chekbox-area input[type="radio"]:checked + label {
+    color: #BA0909;
+    font-weight: 600;
+}
+
+/* ===============================================
+   PAGINATION STYLES
+   =============================================== */
+
+.vs-pagination {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.vs-pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.vs-pagination li {
+    margin: 0;
+}
+
+.vs-pagination a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    min-width: 40px;
+    text-align: center;
+}
+
+.vs-pagination a:hover,
+.vs-pagination li.active a {
+    background-color: #BA0909;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.vs-pagination a i {
+    font-size: 0.85rem;
+}
+
+/* ===============================================
+   LOADING & ERROR STATES
+   =============================================== */
+
+/* Loading Spinner */
+#loadingSpinner {
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border-width: 0.3rem;
+}
+
+/* No Results Message */
+#noResults {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+#noResults p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* ===============================================
+   TALENT DETAILS PAGE STYLES
+   =============================================== */
+
+/* Talent Image Display */
+.info-image {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.info-image img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Tab Title */
+.tab-title {
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Tour Price (Role) */
+.tour-price {
+    margin-bottom: 20px;
+}
+
+.tour-price strong {
+    color: #BA0909;
+    font-size: 1.2rem;
+}
+
+/* ===============================================
+   BOOKING FORM STYLES
+   =============================================== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    border-color: #BA0909;
+    box-shadow: 0 0 0 0.2rem rgba(186, 9, 9, 0.25);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Submit Button */
+.vs-btn.style4 {
+    background-color: #BA0909;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.vs-btn.style4:hover {
+    background-color: #900707;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(186, 9, 9, 0.3);
+}
+
+/* ===============================================
+   DETAILS PAGE LOADING & ERROR
+   =============================================== */
+
+#loadingDetails {
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#errorMessage {
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+#errorMessage a {
+    color: #BA0909;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+#errorMessage a:hover {
+    color: #900707;
+}
+
+/* ===============================================
+   RESPONSIVE ADJUSTMENTS
+   =============================================== */
+
+@media (max-width: 1200px) {
+    #talentGrid {
+        gap: 25px;
+    }
+}
+
+@media (max-width: 992px) {
+    .package-img {
+        height: 220px;
+    }
+    
+    #talentGrid {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .package-img {
+        height: 200px;
+    }
+    
+    .info-image img {
+        max-height: 300px;
+        object-fit: cover;
+    }
+    
+    #talentGrid {
+        gap: 20px;
+    }
+    
+    .sidebar-area {
+        margin-bottom: 30px;
+    }
+    
+    .col-md-6 {
+        margin-bottom: 15px;
+    }
+    
+    .vs-pagination a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .package-img {
+        height: 180px;
+    }
+    
+    .package-content {
+        padding: 15px;
+    }
+    
+    .package-title {
+        font-size: 1.1rem;
+    }
+    
+    .vs-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .vs-pagination a {
+        padding: 6px 10px;
+        min-width: 35px;
+    }
+}
+
+/* ===============================================
+   FILTER ITEM ANIMATION
+   =============================================== */
+
+.filter-item {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===============================================
+   UTILITIES
+   =============================================== */
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+/* Shadow Content */
+.shadow-content1 {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+    .shadow-content1 {
+        padding: 20px;
+    }
+}

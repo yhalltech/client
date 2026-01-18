@@ -1,0 +1,123 @@
+<!-- partials/footer.html -->
+<footer class="footer-wrapper">
+  <div class="container">
+    <div class="footer-top">
+      <div class="row">
+        <!-- About Column -->
+        <div class="col-lg-4 col-md-6 mb-5">
+          <div class="footer-widget">
+            <div class="footer-logo">Kalenjin Vibes</div>
+            <p class="footer-text">
+              Your trusted source for top-tier event creatives and professionals. 
+              We specialize in connecting you with the best DJs, producers, artists, 
+              and event planning services to bring your vision to life.
+            </p>
+            <div class="social-links">
+              <a href="https://www.facebook.com/profile.php?id=61586555704211" target="_blank" title="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://www.tiktok.com/@kalenjinvibezke?_r=1&_t=ZP-935QaDbYH0w" target="_blank" title="TikTok">
+                <i class="fab fa-tiktok"></i>
+              </a>
+              <a href="https://wa.me/+254797265275" target="_blank" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Quick Links Column -->
+        <div class="col-lg-2 col-md-6 mb-5">
+          <div class="footer-widget">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+              <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+              <li><a href="eventslist.html"><i class="fas fa-calendar-alt"></i> Events</a></li>
+              <li><a href="talentlist.html"><i class="fas fa-users"></i> Talents</a></li>
+              <li><a href="shop.html"><i class="fas fa-shopping-cart"></i> Shop</a></li>
+              <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Services Column -->
+        <div class="col-lg-3 col-md-6 mb-5">
+          <div class="footer-widget">
+            <h4>Our Services</h4>
+            <ul class="footer-links">
+              <li><a href="#"><i class="fas fa-music"></i> DJ Services</a></li>
+              <li><a href="#"><i class="fas fa-microphone"></i> MC Services</a></li>
+              <li><a href="#"><i class="fas fa-user-tie"></i> Artist Booking</a></li>
+              <li><a href="#"><i class="fas fa-calendar-check"></i> Event Planning</a></li>
+              <li><a href="#"><i class="fas fa-ticket-alt"></i> Ticket Sales</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <!-- Contact Info Column -->
+        <div class="col-lg-3 col-md-6 mb-5">
+          <div class="footer-widget">
+            <h4>Contact Info</h4>
+            <div class="contact-info">
+              <p>
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Nairobi, Kenya</span>
+              </p>
+              <p>
+                <i class="fas fa-phone-alt"></i>
+                <a href="tel:+254797265275">+254 797 265 275</a>
+              </p>
+              <p>
+                <i class="fas fa-envelope"></i>
+                <a href="mailto:kalenjinvibezke@gmail.com">kalenjinvibezke@gmail.com</a>
+              </p>
+              <p>
+                <i class="fas fa-clock"></i>
+                <span>24/7 Support Available</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <p class="copyright-text">
+              Copyright © <span id="currentYear">2026</span> 
+              <a href="index.html">Kalenjin Vibes</a>. 
+              All Rights Reserved.
+            </p>
+          </div>
+          <div class="col-md-6">
+            <ul class="footer-menu">
+              <li><a href="#">Privacy Policy</a></li>
+              <li><a href="#">Terms & Conditions</a></li>
+              <li><a href="#">Cookie Policy</a></li>
+              <li><a href="contact.html">Support</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Update current year in footer
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+  
+  // Add event listeners for social links
+  document.addEventListener('DOMContentLoaded', function() {
+    const socialLinks = document.querySelectorAll('.social-links a');
+    socialLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        // You can add tracking here if needed
+        console.log('Social link clicked:', this.href);
+      });
+    });
+  });
+</script>
