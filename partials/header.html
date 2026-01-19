@@ -1,466 +1,268 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles for header gradient and animations */
-        .header-gradient {
-            background: linear-gradient(135deg, #BA0909 0%, #8B0000 100%);
-        }
-        
-        .logo-gradient {
-            background: linear-gradient(135deg, #8B0000 0%, #BA0909 100%);
-        }
-        
-        .download-ticket-gradient {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-        }
-        
-        .download-ticket-gradient:hover {
-            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
-        }
-        
-        /* CRITICAL: Mobile menu MUST be visible and clickable */
-        .mobile-menu {
-            position: fixed !important;
-            top: 0 !important;
-            left: -100% !important;
-            width: 85% !important;
-            max-width: 320px !important;
-            height: 100vh !important;
-            height: 100dvh !important;
-            background: white !important;
-            z-index: 99999 !important;
-            transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
-            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3) !important;
-            overflow-y: auto !important;
-            overflow-x: hidden !important;
-            -webkit-overflow-scrolling: touch !important;
-        }
-        
-        .mobile-menu.active {
-            left: 0 !important;
-        }
-        
-        .mobile-overlay {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            height: 100dvh !important;
-            background: rgba(0, 0, 0, 0.7) !important;
-            z-index: 99998 !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            transition: all 0.3s ease !important;
-            backdrop-filter: blur(3px) !important;
-            pointer-events: none !important;
-        }
-        
-        .mobile-overlay.active {
-            opacity: 1 !important;
-            visibility: visible !important;
-            pointer-events: auto !important;
-        }
-        
-        /* Menu item slide-in animation */
-        @keyframes slideInFromLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .mobile-menu.active .menu-item {
-            animation: slideInFromLeft 0.3s ease forwards;
-            opacity: 0;
-        }
-        
-        .mobile-menu.active .menu-item:nth-child(1) { animation-delay: 0.1s; }
-        .mobile-menu.active .menu-item:nth-child(2) { animation-delay: 0.15s; }
-        .mobile-menu.active .menu-item:nth-child(3) { animation-delay: 0.2s; }
-        .mobile-menu.active .menu-item:nth-child(4) { animation-delay: 0.25s; }
-        .mobile-menu.active .menu-item:nth-child(5) { animation-delay: 0.3s; }
-        .mobile-menu.active .menu-item:nth-child(6) { animation-delay: 0.35s; }
-        
-        /* Prevent body scroll when menu is open */
-        body.menu-open {
-            overflow: hidden !important;
-            position: fixed !important;
-            width: 100% !important;
-            height: 100% !important;
-        }
-        
-        /* Nav link hover effect */
-        .nav-link {
-            position: relative;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #BA0909;
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
-        /* Ensure buttons are always clickable */
-        button, a {
-            cursor: pointer !important;
-            pointer-events: auto !important;
-        }
-        
-        /* Mobile menu toggle - FORCE CLICKABLE */
-        #mobileMenuToggle {
-            position: relative !important;
-            z-index: 100000 !important;
-            pointer-events: auto !important;
-            touch-action: manipulation !important;
-        }
-    </style>
-</head>
-<body>
-    <!-- Header Wrapper - Fixed at top -->
-    <div class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
-        
-        <!-- Top Bar - Desktop Only -->
-        <div class="header-gradient hidden lg:block">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center py-2.5">
-                    <!-- Contact Info -->
-                    <div class="flex items-center gap-6 text-white text-sm">
-                        <a href="tel:+254797265275" class="flex items-center gap-2 hover:opacity-80 transition">
-                            <i class="fas fa-phone"></i>
-                            <span>+254 797 265 275</span>
-                        </a>
-                        <a href="mailto:kalenjinvibezke@gmail.com" class="flex items-center gap-2 hover:opacity-80 transition">
-                            <i class="fas fa-envelope"></i>
-                            <span>kalenjinvibezke@gmail.com</span>
-                        </a>
-                    </div>
-                    
-                    <!-- Social Media -->
-                    <div class="flex items-center gap-3">
-                        <a href="https://www.facebook.com/profile.php?id=61586555704211" target="_blank" 
-                           class="w-8 h-8 flex items-center justify-center rounded-full bg-white bg-opacity-10 hover:bg-opacity-20 transition text-white">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="https://www.tiktok.com/@kalenjinvibezke?_r=1&_t=ZP-935QaDbYH0w" target="_blank" 
-                           class="w-8 h-8 flex items-center justify-center rounded-full bg-white bg-opacity-10 hover:bg-opacity-20 transition text-white">
-                            <i class="fab fa-tiktok"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+<!-- partials/header.html -->
+<style>
+  /* CRITICAL: Mobile menu MUST work */
+  .mobile-menu-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 99999;
+    backdrop-filter: blur(5px);
+  }
+  
+  .mobile-menu-modal.active {
+    display: block !important;
+  }
+  
+  .mobile-menu-content {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 85%;
+    max-width: 350px;
+    height: 100%;
+    background: white;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+  }
+  
+  .mobile-menu-modal.active .mobile-menu-content {
+    left: 0;
+  }
+  
+  body.menu-open {
+    overflow: hidden;
+  }
+  
+  .header-gradient {
+    background: linear-gradient(135deg, #BA0909 0%, #8B0000 100%);
+  }
+  
+  .logo-gradient {
+    background: linear-gradient(135deg, #8B0000 0%, #BA0909 100%);
+  }
+  
+  .nav-link {
+    position: relative;
+  }
+  
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #BA0909;
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link:hover::after {
+    width: 100%;
+  }
+</style>
+
+<!-- Header Wrapper -->
+<div class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+  
+  <!-- Top Bar - Desktop Only -->
+  <div class="header-gradient hidden lg:block">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-2.5">
+        <div class="flex items-center gap-6 text-white text-sm">
+          <a href="tel:+254797265275" class="flex items-center gap-2 hover:opacity-80 transition">
+            <i class="fas fa-phone"></i>
+            <span>+254 797 265 275</span>
+          </a>
+          <a href="mailto:kalenjinvibezke@gmail.com" class="flex items-center gap-2 hover:opacity-80 transition">
+            <i class="fas fa-envelope"></i>
+            <span>kalenjinvibezke@gmail.com</span>
+          </a>
         </div>
         
-        <!-- Main Header -->
-        <header class="bg-white border-b border-gray-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center py-3 lg:py-4">
-                    
-                    <!-- Left: Mobile Menu Toggle + Logo -->
-                    <div class="flex items-center gap-3 lg:gap-4">
-                        <!-- Mobile Menu Toggle - Only on Mobile/Tablet -->
-                        <button type="button" id="mobileMenuToggle" aria-label="Open Menu"
-                                class="lg:hidden header-gradient text-white w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center hover:opacity-90 transition shadow-lg active:scale-95">
-                            <i class="fas fa-bars text-lg sm:text-xl"></i>
-                        </button>
-                        
-                        <!-- Logo -->
-                        <div class="logo-gradient px-5 py-1.5 sm:px-6 sm:py-2 rounded-full shadow-lg">
-                            <a href="index.html" class="text-white font-black text-xs sm:text-sm tracking-wider hover:opacity-90 transition">
-                                KALENJIN VIBES
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Center: Desktop Navigation -->
-                    <nav class="hidden lg:block">
-                        <ul class="flex items-center gap-8">
-                            <li>
-                                <a href="index.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
-                                    <i class="fas fa-home"></i>
-                                    <span>Home</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="eventslist.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
-                                    <i class="fas fa-calendar-alt"></i>
-                                    <span>Events</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="talentlist.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
-                                    <i class="fas fa-users"></i>
-                                    <span>Talents</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="shop.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
-                                    <i class="fas fa-store"></i>
-                                    <span>Shop</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="contact.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
-                                    <i class="fas fa-headset"></i>
-                                    <span>Contact</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    
-                    <!-- Right: Download Ticket Button -->
-                    <div>
-                        <a href="ticket.html" 
-                           class="download-ticket-gradient inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span class="hidden sm:inline">Download Ticket</span>
-                            <span class="sm:hidden">Ticket</span>
-                        </a>
-                    </div>
-                    
-                </div>
-            </div>
-        </header>
+        <div class="flex items-center gap-3">
+          <a href="https://www.facebook.com/profile.php?id=61586555704211" target="_blank" 
+             class="w-8 h-8 flex items-center justify-center rounded-full bg-white bg-opacity-10 hover:bg-opacity-20 transition text-white">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.tiktok.com/@kalenjinvibezke?_r=1&_t=ZP-935QaDbYH0w" target="_blank" 
+             class="w-8 h-8 flex items-center justify-center rounded-full bg-white bg-opacity-10 hover:bg-opacity-20 transition text-white">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
+      </div>
     </div>
-    
-    <!-- Mobile Menu Overlay - MUST BE CLICKABLE -->
-    <div id="mobileOverlay" 
-         class="mobile-overlay">
-    </div>
-    
-    <!-- Mobile Menu Sidebar - MUST BE VISIBLE -->
-    <div id="mobileMenu" 
-         class="mobile-menu">
+  </div>
+  
+  <!-- Main Header -->
+  <header class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-3 lg:py-4">
         
-        <!-- Mobile Menu Header -->
-        <div class="header-gradient px-5 py-6 flex justify-content-between items-center">
-            <div class="text-white font-black text-lg tracking-wider">
-                KALENJIN VIBES
-            </div>
-            <button type="button" id="mobileClose" aria-label="Close Menu"
-                    class="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-20 hover:bg-white hover:text-red-700 text-white transition-all duration-300 active:scale-95">
-                <i class="fas fa-times text-xl"></i>
-            </button>
+        <!-- Left: Mobile Menu Toggle + Logo -->
+        <div class="flex items-center gap-3 lg:gap-4">
+          <!-- Mobile Menu Button -->
+          <button onclick="openMobileMenu()" type="button"
+                  class="lg:hidden header-gradient text-white w-12 h-12 rounded-xl flex items-center justify-center hover:opacity-90 transition shadow-lg">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+          
+          <!-- Logo -->
+          <div class="logo-gradient px-6 py-2 rounded-full shadow-lg">
+            <a href="index.html" class="text-white font-black text-sm tracking-wider hover:opacity-90 transition">
+              KALENJIN VIBES
+            </a>
+          </div>
         </div>
         
-        <!-- Mobile Navigation -->
-        <nav class="flex-1 overflow-y-auto px-5 py-6">
-            <ul class="space-y-2">
-                <li class="menu-item">
-                    <a href="index.html" 
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:translate-x-1">
-                        <i class="fas fa-home text-lg w-6"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="eventslist.html" 
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:translate-x-1">
-                        <i class="fas fa-calendar-alt text-lg w-6"></i>
-                        <span>Events</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="talentlist.html" 
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:translate-x-1">
-                        <i class="fas fa-users text-lg w-6"></i>
-                        <span>Talents</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="shop.html" 
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:translate-x-1">
-                        <i class="fas fa-store text-lg w-6"></i>
-                        <span>Shop</span>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="contact.html" 
-                       class="flex items-center gap-4 px-4 py-3.5 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all duration-300 shadow-sm hover:shadow-md hover:translate-x-1">
-                        <i class="fas fa-headset text-lg w-6"></i>
-                        <span>Contact</span>
-                    </a>
-                </li>
-                
-                <!-- Download Ticket in Mobile Menu -->
-                <li class="menu-item pt-4">
-                    <a href="ticket.html" 
-                       class="flex items-center justify-center gap-3 px-4 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                        <i class="fas fa-ticket-alt text-lg"></i>
-                        <span>Download Ticket</span>
-                    </a>
-                </li>
-            </ul>
+        <!-- Center: Desktop Navigation -->
+        <nav class="hidden lg:block">
+          <ul class="flex items-center gap-8">
+            <li>
+              <a href="index.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+              </a>
+            </li>
+            <li>
+              <a href="eventslist.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Events</span>
+              </a>
+            </li>
+            <li>
+              <a href="talentlist.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
+                <i class="fas fa-users"></i>
+                <span>Talents</span>
+              </a>
+            </li>
+            <li>
+              <a href="shop.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
+                <i class="fas fa-store"></i>
+                <span>Shop</span>
+              </a>
+            </li>
+            <li>
+              <a href="contact.html" class="nav-link flex items-center gap-2 text-gray-700 hover:text-red-700 font-semibold transition pb-1">
+                <i class="fas fa-headset"></i>
+                <span>Contact</span>
+              </a>
+            </li>
+          </ul>
         </nav>
         
-        <!-- Mobile Footer - Social Media -->
-        <div class="px-5 py-6 border-t border-gray-200">
-            <p class="text-sm font-bold text-red-700 mb-3 flex items-center gap-2">
-                <i class="fas fa-share-alt"></i>
-                Connect With Us
-            </p>
-            <div class="flex gap-3 mb-3">
-                <a href="https://www.facebook.com/profile.php?id=61586555704211" target="_blank" 
-                   class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition shadow-md hover:shadow-lg">
-                    <i class="fab fa-facebook-f"></i>
-                    <span>Facebook</span>
-                </a>
-                <a href="https://www.tiktok.com/@kalenjinvibezke?_r=1&_t=ZP-935QaDbYH0w" target="_blank" 
-                   class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-black text-white font-semibold text-sm hover:bg-gray-800 transition shadow-md hover:shadow-lg">
-                    <i class="fab fa-tiktok"></i>
-                    <span>TikTok</span>
-                </a>
-            </div>
-            <a href="https://wa.me/+254797265275" target="_blank" 
-               class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-green-500 text-white font-semibold text-sm hover:bg-green-600 transition shadow-md hover:shadow-lg w-full">
-                <i class="fab fa-whatsapp text-lg"></i>
-                <span>WhatsApp Us</span>
-            </a>
+        <!-- Right: Download Ticket Button -->
+        <div>
+          <a href="ticket.html" 
+             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+             style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);">
+            <i class="fas fa-ticket-alt"></i>
+            <span class="hidden sm:inline">Download Ticket</span>
+            <span class="sm:hidden">Ticket</span>
+          </a>
         </div>
+      </div>
+    </div>
+  </header>
+</div>
+
+<!-- Spacer for fixed header -->
+<div style="height: 140px;" class="lg:hidden"></div>
+<div style="height: 120px;" class="hidden lg:block"></div>
+
+<!-- Mobile Menu Modal -->
+<div id="mobileMenuModal" class="mobile-menu-modal" onclick="closeMobileMenu()">
+  <div class="mobile-menu-content" onclick="event.stopPropagation()">
+    
+    <!-- Menu Header -->
+    <div class="header-gradient px-6 py-6 flex justify-between items-center">
+      <div class="text-white font-black text-lg tracking-wider">
+        KALENJIN VIBES
+      </div>
+      <button onclick="closeMobileMenu()" type="button"
+              class="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-20 hover:bg-white hover:text-red-700 text-white transition-all">
+        <i class="fas fa-times text-xl"></i>
+      </button>
     </div>
     
-    <script>
-        // ULTRA-ROBUST Mobile Menu - WORKS ON ALL DEPLOYMENTS
-        (function() {
-            'use strict';
-            
-            console.log('🎯 Mobile Menu Script Loading...');
-            
-            // Wait for DOM to be ready
-            function initMobileMenu() {
-                const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-                const mobileMenu = document.getElementById('mobileMenu');
-                const mobileClose = document.getElementById('mobileClose');
-                const mobileOverlay = document.getElementById('mobileOverlay');
-                const body = document.body;
-                
-                // Verify all elements exist
-                if (!mobileMenuToggle || !mobileMenu || !mobileClose || !mobileOverlay) {
-                    console.error('❌ Mobile menu elements missing!');
-                    return;
-                }
-                
-                console.log('✅ All mobile menu elements found');
-                
-                // Open menu function
-                function openMenu(e) {
-                    if (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                    
-                    console.log('📱 Opening menu...');
-                    
-                    mobileMenu.classList.add('active');
-                    mobileOverlay.classList.add('active');
-                    body.classList.add('menu-open');
-                    
-                    // Force styles (for deployment issues)
-                    mobileMenu.style.left = '0';
-                    mobileOverlay.style.opacity = '1';
-                    mobileOverlay.style.visibility = 'visible';
-                    mobileOverlay.style.pointerEvents = 'auto';
-                    
-                    console.log('✅ Menu opened');
-                }
-                
-                // Close menu function
-                function closeMenu(e) {
-                    if (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
-                    
-                    console.log('📱 Closing menu...');
-                    
-                    mobileMenu.classList.remove('active');
-                    mobileOverlay.classList.remove('active');
-                    body.classList.remove('menu-open');
-                    
-                    // Force styles
-                    mobileMenu.style.left = '-100%';
-                    mobileOverlay.style.opacity = '0';
-                    mobileOverlay.style.visibility = 'hidden';
-                    mobileOverlay.style.pointerEvents = 'none';
-                    
-                    console.log('✅ Menu closed');
-                }
-                
-                // Add multiple event types for maximum compatibility
-                mobileMenuToggle.addEventListener('click', openMenu, true);
-                mobileMenuToggle.addEventListener('touchend', openMenu, true);
-                
-                mobileClose.addEventListener('click', closeMenu, true);
-                mobileClose.addEventListener('touchend', closeMenu, true);
-                
-                mobileOverlay.addEventListener('click', closeMenu, true);
-                mobileOverlay.addEventListener('touchend', closeMenu, true);
-                
-                // Close on navigation clicks
-                const navLinks = mobileMenu.querySelectorAll('a');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        setTimeout(closeMenu, 200);
-                    });
-                });
-                
-                // Close on Escape key
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                        closeMenu();
-                    }
-                });
-                
-                // Prevent scroll issues on iOS
-                let startY = 0;
-                mobileMenu.addEventListener('touchstart', function(e) {
-                    startY = e.touches[0].clientY;
-                }, { passive: true });
-                
-                mobileMenu.addEventListener('touchmove', function(e) {
-                    const nav = mobileMenu.querySelector('nav');
-                    const y = e.touches[0].clientY;
-                    const scrollTop = nav.scrollTop;
-                    const scrollHeight = nav.scrollHeight;
-                    const offsetHeight = nav.offsetHeight;
-                    
-                    if ((scrollTop <= 0 && y > startY) || 
-                        (scrollTop + offsetHeight >= scrollHeight && y < startY)) {
-                        e.preventDefault();
-                    }
-                }, { passive: false });
-                
-                console.log('✅ Mobile Menu Initialized Successfully!');
-            }
-            
-            // Initialize immediately if DOM is ready
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initMobileMenu);
-            } else {
-                initMobileMenu();
-            }
-            
-            // Backup initialization after a delay
-            setTimeout(initMobileMenu, 500);
-        })();
-    </script>
-</body>
-</html>
+    <!-- Menu Items -->
+    <nav class="px-6 py-8">
+      <ul class="space-y-3">
+        <li>
+          <a href="index.html" 
+             class="flex items-center gap-4 px-4 py-4 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all shadow-sm hover:shadow-md">
+            <i class="fas fa-home text-lg w-6"></i>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="eventslist.html" 
+             class="flex items-center gap-4 px-4 py-4 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all shadow-sm hover:shadow-md">
+            <i class="fas fa-calendar-alt text-lg w-6"></i>
+            <span>Events</span>
+          </a>
+        </li>
+        <li>
+          <a href="talentlist.html" 
+             class="flex items-center gap-4 px-4 py-4 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all shadow-sm hover:shadow-md">
+            <i class="fas fa-users text-lg w-6"></i>
+            <span>Talents</span>
+          </a>
+        </li>
+        <li>
+          <a href="shop.html" 
+             class="flex items-center gap-4 px-4 py-4 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all shadow-sm hover:shadow-md">
+            <i class="fas fa-store text-lg w-6"></i>
+            <span>Shop</span>
+          </a>
+        </li>
+        <li>
+          <a href="contact.html" 
+             class="flex items-center gap-4 px-4 py-4 rounded-xl bg-gray-50 hover:bg-gradient-to-r hover:from-red-700 hover:to-red-800 hover:text-white text-gray-700 font-semibold transition-all shadow-sm hover:shadow-md">
+            <i class="fas fa-headset text-lg w-6"></i>
+            <span>Contact</span>
+          </a>
+        </li>
+        
+        <!-- Download Ticket -->
+        <li class="pt-4">
+          <a href="ticket.html" 
+             class="flex items-center justify-center gap-3 px-4 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all">
+            <i class="fas fa-ticket-alt text-lg"></i>
+            <span>Download Ticket</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    
+    <!-- Social Media Footer -->
+    <div class="px-6 py-6 border-t border-gray-200">
+      <p class="text-sm font-bold text-red-700 mb-4 flex items-center gap-2">
+        <i class="fas fa-share-alt"></i>
+        Connect With Us
+      </p>
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <a href="https://www.facebook.com/profile.php?id=61586555704211" target="_blank" 
+           class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white font-semibold text-sm hover:bg-blue-700 transition shadow-md">
+          <i class="fab fa-facebook-f"></i>
+          <span>Facebook</span>
+        </a>
+        <a href="https://www.tiktok.com/@kalenjinvibezke?_r=1&_t=ZP-935QaDbYH0w" target="_blank" 
+           class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-black text-white font-semibold text-sm hover:bg-gray-800 transition shadow-md">
+          <i class="fab fa-tiktok"></i>
+          <span>TikTok</span>
+        </a>
+      </div>
+      <a href="https://wa.me/+254797265275" target="_blank" 
+         class="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-green-500 text-white font-semibold text-sm hover:bg-green-600 transition shadow-md w-full">
+        <i class="fab fa-whatsapp text-lg"></i>
+        <span>WhatsApp Us</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Script removed - functions are now in main HTML files -->

@@ -24,7 +24,6 @@
     </script>
     
     <style>
-        /* Minimal custom styles only for what Tailwind can't do */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
@@ -155,13 +154,56 @@
     <!-- Footer Container -->
     <div id="footer-container"></div>
 
-    <!-- Load Scripts -->
+    <!-- Mobile Menu Functions - MUST BE GLOBAL -->
+    <script>
+        // Global mobile menu functions
+        window.openMobileMenu = function() {
+            console.log('Opening mobile menu...');
+            const modal = document.getElementById('mobileMenuModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.classList.add('menu-open');
+                console.log('Menu opened!');
+            } else {
+                console.error('Modal not found!');
+            }
+        };
+
+        window.closeMobileMenu = function() {
+            console.log('Closing mobile menu...');
+            const modal = document.getElementById('mobileMenuModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                console.log('Menu closed!');
+            }
+        };
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                window.closeMobileMenu();
+            }
+        });
+    </script>
+
+    <!-- Load Header and Footer -->
     <script>
         // Load header
         fetch('partials/header.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-container').innerHTML = data;
+                
+                // Attach click handlers after header loads
+                setTimeout(function() {
+                    const menuLinks = document.querySelectorAll('.mobile-menu-content a');
+                    menuLinks.forEach(link => {
+                        link.addEventListener('click', function() {
+                            setTimeout(window.closeMobileMenu, 200);
+                        });
+                    });
+                }, 100);
             })
             .catch(error => console.error('Error loading header:', error));
 
