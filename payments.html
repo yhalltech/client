@@ -497,6 +497,507 @@
       });
     });
   </script>
+<script type="module">
+// Payment Form JavaScript with Firebase Firestore Integration - FIXED jQuery Error
+// Add this script to your payments.html page
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-analytics.js";
+
+// Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyARficcDI3R1ELfjkQxL-kkFQr-tzOgzgo",
+    authDomain: "k-vibez.firebaseapp.com",
+    projectId: "k-vibez",
+    storageBucket: "k-vibez.firebasestorage.app",
+    messagingSenderId: "1060235903242",
+    appId: "1:1060235903242:web:4649b48406879fb7fcfaf3",
+    measurementId: "G-6EHMMR974J"
+};
+
+// Initialize Firebase
+let app, analytics, db;
+
+try {
+    app = initializeApp(firebaseConfig);
+    analytics = getAnalytics(app);
+    db = getFirestore(app);
+    console.log('✅ Firebase initialized successfully');
+} catch (error) {
+    console.error('❌ Firebase initialization error:', error);
+}
+
+// Auto-extract transaction code from M-Pesa message
+function extractTransactionCode(text) {
+    // M-Pesa transaction codes are usually 10 characters (e.g., QX2A3B4C5D)
+    const patterns = [
+        /\b([A-Z]{2}\d{1}[A-Z0-9]{7})\b/i,  // QX2A3B4C5D format
+        /\b([A-Z]{3}\d{7})\b/i,               // ABC1234567 format
+        /\b([A-Z0-9]{10})\b/i,                // Any 10 char alphanumeric
+        /confirmed[.\s]*([A-Z0-9]{10})/i,     // After "confirmed"
+        /transaction[^:]*:?\s*([A-Z0-9]{10})/i
+    ];
+    
+    for (const pattern of patterns) {
+        const match = text.match(pattern);
+        if (match && match[1]) {
+            return match[1].toUpperCase();
+        }
+    }
+    return null;
+}
+
+// Payment Form Handler
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookingType = urlParams.get('type');
+    const amount = urlParams.get('amount');
+    const talentId = urlParams.get('talent_id');
+    const talentName = urlParams.get('talent_name');
+    
+    // Helper function to safely set values
+    function setFieldValue(id, value) {
+        const field = document.getElementById(id);
+        if (field && value) {
+            field.value = value;
+        }
+    }
+    
+    function setTextContent(id, value) {
+        const element = document.getElementById(id);
+        if (element && value) {
+            element.textContent = value;
+        }
+    }
+    
+    // Populate hidden fields
+    if (bookingType) setFieldValue('bookingType', bookingType);
+    if (amount) {
+        setFieldValue('bookingAmount', amount);
+        setTextContent('mpesaAmount', 'Ksh ' + amount);
+        setTextContent('paybillAmount', 'Ksh ' + amount);
+        setTextContent('total-amount-display', 'Ksh ' + amount);
+    }
+    if (talentId) setFieldValue('bookingTalentId', talentId);
+    if (talentName) {
+        setFieldValue('bookingTalentName', talentName);
+        setTextContent('summaryTalentName', talentName);
+    }
+    
+    // Show booking summary if talent booking
+    if (bookingType === 'talent' && talentName) {
+        const bookingSummary = document.getElementById('bookingSummary');
+        if (bookingSummary) bookingSummary.style.display = 'block';
+        setTextContent('summaryAmount', amount || '0');
+    }
+    
+    // Payment method change handler
+    const paymentMethodSelect = document.getElementById('payment_method');
+    if (paymentMethodSelect) {
+        paymentMethodSelect.addEventListener('change', function() {
+            const method = this.value;
+            
+            // Hide all payment details
+            const mpesaDetails = document.getElementById('mpesa-details');
+            const paybillDetails = document.getElementById('paybill-details');
+            const transactionGroup = document.getElementById('transaction-reference-group');
+            const transactionRef = document.getElementById('transaction_reference');
+            
+            if (mpesaDetails) mpesaDetails.style.display = 'none';
+            if (paybillDetails) paybillDetails.style.display = 'none';
+            if (transactionGroup) transactionGroup.style.display = 'none';
+            
+            // Show selected payment method details
+            if (method === 'mpesa' && mpesaDetails && transactionGroup) {
+                mpesaDetails.style.display = 'block';
+                transactionGroup.style.display = 'block';
+                if (transactionRef) transactionRef.required = true;
+            } else if (method === 'paybill' && paybillDetails && transactionGroup) {
+                paybillDetails.style.display = 'block';
+                transactionGroup.style.display = 'block';
+                if (transactionRef) transactionRef.required = true;
+            }
+        });
+    }
+    
+    // Auto-extract transaction code on paste
+    const transactionInput = document.getElementById('transaction_reference');
+    if (transactionInput) {
+        transactionInput.addEventListener('paste', function(e) {
+            setTimeout(() => {
+                const pastedText = this.value;
+                const extractedCode = extractTransactionCode(pastedText);
+                
+                if (extractedCode) {
+                    this.value = extractedCode;
+                    const errorDiv = document.getElementById('transaction-error');
+                    if (errorDiv) errorDiv.style.display = 'none';
+                    
+                    // Show success feedback
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Transaction Code Detected!',
+                        text: extractedCode,
+                        timer: 2000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                }
+            }, 100);
+        });
+        
+        // Also extract on input change
+        transactionInput.addEventListener('input', function() {
+            const text = this.value;
+            if (text.length > 15) {
+                const extractedCode = extractTransactionCode(text);
+                if (extractedCode) {
+                    this.value = extractedCode;
+                }
+            }
+        });
+    }
+    
+    // Add copy functionality to payment details
+    addCopyButtons();
+    
+    // Form submission handler
+    const paymentForm = document.getElementById('payment-form');
+    if (paymentForm) {
+        paymentForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const paymentMethod = document.getElementById('payment_method').value;
+            const transactionRef = document.getElementById('transaction_reference').value.trim();
+            
+            // Validate payment method selected
+            if (!paymentMethod) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Method Required',
+                    text: 'Please select a payment method',
+                    confirmButtonColor: '#BA0909'
+                });
+                return;
+            }
+            
+            // Validate transaction reference
+            if (!transactionRef) {
+                const errorDiv = document.getElementById('transaction-error');
+                if (errorDiv) errorDiv.style.display = 'block';
+                document.getElementById('transaction_reference').focus();
+                return;
+            }
+            
+            const errorDiv = document.getElementById('transaction-error');
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            // Show loading
+            Swal.fire({
+                title: 'Processing Payment...',
+                html: 'Please wait while we verify your transaction',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            
+            try {
+                // Prepare payment data
+                const paymentData = {
+                    // Contact Information
+                    fullName: document.getElementById('full_name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phoneNumber: document.getElementById('phone_number').value.trim(),
+                    
+                    // Payment Details
+                    paymentMethod: paymentMethod,
+                    transactionReference: transactionRef,
+                    amount: parseFloat(document.getElementById('bookingAmount').value) || 0,
+                    
+                    // Booking Details
+                    bookingType: document.getElementById('bookingType').value || 'general',
+                    talentId: document.getElementById('bookingTalentId').value || null,
+                    talentName: document.getElementById('bookingTalentName').value || null,
+                    eventName: document.getElementById('bookingEventName').value || 'Kalenjin Vibes Night',
+                    location: document.getElementById('bookingLocation').value || null,
+                    eventDate: document.getElementById('bookingEventDate').value || null,
+                    notes: document.getElementById('bookingNotes').value || null,
+                    
+                    // Metadata
+                    status: 'pending',
+                    createdAt: serverTimestamp(),
+                    paymentDate: new Date().toISOString(),
+                    source: 'website'
+                };
+                
+                // Save to Firestore
+                const docRef = await addDoc(collection(db, 'payments'), paymentData);
+                
+                console.log('✅ Payment saved to Firestore with ID:', docRef.id);
+                
+                // Close loading and show success modal
+                Swal.close();
+                
+                showSuccessModal(paymentData, docRef.id);
+                
+            } catch (error) {
+                console.error('❌ Error saving payment:', error);
+                
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Submission Error',
+                    html: `
+                        <p>There was an error submitting your payment.</p>
+                        <p class="text-sm text-gray-600 mt-2">Please contact support:</p>
+                        <p class="font-bold">Transaction: ${transactionRef}</p>
+                        <p class="text-xs text-red-600 mt-2">Error: ${error.message}</p>
+                    `,
+                    confirmButtonColor: '#BA0909'
+                });
+            }
+        });
+    }
+    
+    // Cancel button handler
+    const cancelBtn = document.getElementById('cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            Swal.fire({
+                title: 'Cancel Payment?',
+                text: 'Are you sure you want to cancel this payment?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#BA0909',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, cancel',
+                cancelButtonText: 'No, continue'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+    }
+    
+    // Initialize payment method if already selected
+    setTimeout(function() {
+        if (paymentMethodSelect && paymentMethodSelect.value) {
+            paymentMethodSelect.dispatchEvent(new Event('change'));
+        }
+    }, 100);
+});
+
+// Add copy buttons to payment details
+function addCopyButtons() {
+    const copyButtonHTML = (number, text) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'copy-btn-inline';
+        btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        btn.onclick = () => copyToClipboard(number, btn);
+        return btn;
+    };
+    
+    // M-Pesa Till Number
+    const mpesaTillItem = document.querySelector('#mpesa-details ul li:nth-child(4)');
+    if (mpesaTillItem) {
+        mpesaTillItem.appendChild(copyButtonHTML('3049015', 'Till Number'));
+    }
+    
+    // Paybill Business Number
+    const paybillBusinessItem = document.querySelector('#paybill-details ul li:nth-child(4)');
+    if (paybillBusinessItem) {
+        paybillBusinessItem.appendChild(copyButtonHTML('542542', 'Business Number'));
+    }
+    
+    // Paybill Account Number
+    const paybillAccountItem = document.querySelector('#paybill-details ul li:nth-child(5)');
+    if (paybillAccountItem) {
+        paybillAccountItem.appendChild(copyButtonHTML('79233', 'Account Number'));
+    }
+}
+
+// Copy to clipboard function
+window.copyToClipboard = function(text, button) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopySuccess(button);
+        }).catch(err => {
+            fallbackCopy(text, button);
+        });
+    } else {
+        fallbackCopy(text, button);
+    }
+};
+
+function showCopySuccess(button) {
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> ✓';
+    button.style.background = '#25D366';
+    
+    setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.style.background = '#28a745';
+    }, 2000);
+}
+
+function fallbackCopy(text, button) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    
+    try {
+        document.execCommand('copy');
+        showCopySuccess(button);
+    } catch (err) {
+        console.error('Failed to copy:', err);
+    }
+    
+    document.body.removeChild(textarea);
+}
+
+// Success Modal with Tailwind Gradient and Tick
+function showSuccessModal(paymentData, paymentId) {
+    const modalHTML = `
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" id="success-modal" style="z-index: 99999;">
+            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-fadeIn">
+                <!-- Gradient Header with Tick -->
+                <div class="bg-gradient-to-r from-green-400 via-emerald-500 to-teal-600 p-8 text-center">
+                    <div class="mb-4 flex justify-center">
+                        <div class="bg-white rounded-full p-4 shadow-lg" style="animation: bounce 1s infinite;">
+                            <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-2">Payment Received!</h2>
+                    <p class="text-green-50">Your transaction is being processed</p>
+                </div>
+                
+                <!-- Content -->
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border-l-4 border-purple-500">
+                            <p class="text-sm text-gray-600 mb-1">Transaction Reference</p>
+                            <p class="font-mono font-bold text-lg text-purple-700">${paymentData.transactionReference}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-600 mb-1">Amount</p>
+                                <p class="font-bold text-green-600">Ksh ${paymentData.amount.toLocaleString()}</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs text-gray-600 mb-1">Payment ID</p>
+                                <p class="font-mono text-xs text-gray-800">${paymentId.substring(0, 8)}...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                                <div>
+                                    <p class="text-sm font-semibold text-yellow-800">Confirmation Email Sent</p>
+                                    <p class="text-xs text-yellow-700 mt-1">Check ${paymentData.email} for details</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="mt-6 space-y-3">
+                        <button onclick="window.location.href='index.html'" 
+                                class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-4 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 shadow-lg text-sm">
+                            <i class="fas fa-home mr-2"></i>Back to Home
+                        </button>
+                        <button onclick="closeSuccessModal()" 
+                                class="w-full bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:bg-gray-200 transition-colors text-sm">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: scale(0.9); }
+                to { opacity: 1; transform: scale(1); }
+            }
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            .animate-fadeIn {
+                animation: fadeIn 0.3s ease-out;
+            }
+        </style>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Add confetti effect
+    setTimeout(() => {
+        createConfetti();
+    }, 300);
+}
+
+window.closeSuccessModal = function() {
+    const modal = document.getElementById('success-modal');
+    if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+};
+
+// Simple confetti effect
+function createConfetti() {
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
+    const confettiCount = 50;
+    
+    for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        Object.assign(confetti.style, {
+            position: 'fixed',
+            width: '10px',
+            height: '10px',
+            backgroundColor: colors[Math.floor(Math.random() * colors.length)],
+            left: Math.random() * 100 + '%',
+            top: '-10px',
+            opacity: Math.random(),
+            transform: `rotate(${Math.random() * 360}deg)`,
+            zIndex: '9998',
+            pointerEvents: 'none',
+            transition: 'all 3s ease-out'
+        });
+        
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => {
+            confetti.style.top = '100vh';
+            confetti.style.left = (parseFloat(confetti.style.left) + (Math.random() * 200 - 100)) + '%';
+        }, 10);
+        
+        setTimeout(() => {
+            confetti.remove();
+        }, 3000);
+    }
+}
+
+console.log('✅ Payment Form with Firebase Integration Ready');
+</script>
 
 </body>
 </html>
