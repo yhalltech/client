@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalenjin Vibes Festival - Get Your Ticket</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load QRCode library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Load html2canvas for image downloads -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --danger-gradient: linear-gradient(135deg, #f83600 0%, #f9d423 100%);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .ticket-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ticket-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .btn-primary-gradient {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .btn-success-gradient {
+            background: var(--success-gradient);
+            color: white;
+        }
+        
+        .btn-warning-gradient {
+            background: var(--warning-gradient);
+            color: white;
+        }
+        
+        .btn-danger-gradient {
+            background: var(--danger-gradient);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        .badge-verified {
+            background: var(--success-gradient);
+            color: white;
+        }
+        
+        .badge-pending {
+            background: var(--warning-gradient);
+            color: #000;
+        }
+        
+        .badge-rejected {
+            background: var(--danger-gradient);
+            color: white;
+        }
+        
+        .ticket-type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .early-bird-badge {
+            background: #FF6B6B;
+            color: white;
+        }
+        
+        .early-bird-couples-badge {
+            background: #4ECDC4;
+            color: white;
+        }
+        
+        .couples-badge {
+            background: #FFD166;
+            color: black;
+        }
+        
+        .regular-badge {
+            background: #06D6A0;
+            color: white;
+        }
+        
+        .qr-code-container {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            display: inline-block;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .qr-code-img {
+            width: 200px;
+            height: 200px;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: var(--primary-gradient);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+        
+        .loading-spinner {
+            text-align: center;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .countdown {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .ticket-details {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .rejected-ticket {
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+        
+        /* QR Code specific styles */
+        .qr-placeholder {
+            width: 200px;
+            height: 200px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        
+        .qr-success {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .qr-pending {
+            border-color: #ffc107;
+            background: #fff3cd;
+        }
+        
+        .qr-rejected {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <h3 class="text-white" id="loadingText">Loading...</h3>
+            <div class="progress-container mt-3" style="width: 300px;">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-white">Progress</span>
+                    <span class="text-white" id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="text-center mb-5">
+            <h1 class="gradient-text mb-3">
+                <i class="bi bi-ticket-perforated me-2"></i>Kalenjin Vibes Festival
+            </h1>
+            <p class="text-light mb-4">Retrieve Your Ticket</p>
+            
+            <!-- Countdown Timer -->
+            <div class="countdown">
+                <div>🎵 Festival Countdown 🎵</div>
+                <div id="countdownTimer" class="mt-2">00:00:00:00</div>
+                <small class="text-light">Event Date: December 25, 2024</small>
+            </div>
+        </div>
+
+        <!-- Ticket Retrieval Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="glass-card p-4">
+                    <h4 class="text-light mb-4">
+                        <i class="bi bi-search me-2"></i>Find Your Ticket
+                    </h4>
+                    
+                    <!-- Email Input -->
+                    <div class="mb-4">
+                        <label class="form-label text-light">Email Address *</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark text-light">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control bg-dark text-light" 
+                                   id="userEmail" placeholder="Enter the email you used to book" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Transaction Code Input -->
+                    <div class="mb-4">
+                        <label class="form-label text-light">Transaction Code</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark text-light">
+                                <i class="bi bi-credit-card"></i>
+                            </span>
+                            <input type="text" class="form-control bg-dark text-light" 
+                                   id="transactionCode" placeholder="Enter transaction code or paste M-Pesa message"
+                                   oninput="autoConvertToUpperCase(this)">
+                        </div>
+                        <small class="text-light/70">Paste your M-Pesa message or enter the transaction code manually</small>
+                    </div>
+                    
+                    <!-- Paste M-Pesa Message -->
+                    <div class="mb-4">
+                        <label class="form-label text-light">Or Paste Complete M-Pesa Message</label>
+                        <textarea class="form-control bg-dark text-light" 
+                                  id="mpesaMessage" rows="3" 
+                                  placeholder="Paste your complete M-Pesa SMS here..."></textarea>
+                        <small class="text-light/70">We'll automatically extract the transaction code</small>
+                    </div>
+                    
+                    <button class="action-btn btn-primary-gradient w-100" onclick="findTicket()">
+                        <i class="bi bi-search me-2"></i>Find My Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;">
+            <!-- Single Ticket Result -->
+            <div id="singleTicketResult" style="display: none;" class="mt-5">
+                <div class="text-center mb-4">
+                    <h3 class="gradient-text">
+                        <i class="bi bi-ticket-perforated me-2"></i>Your Ticket
+                    </h3>
+                    <p class="text-light">Present this QR code at the entrance</p>
+                </div>
+                
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-8">
+                        <div class="ticket-card" id="ticketDesign">
+                            <h3 class="mb-3">🎵 Kalenjin Vibes Festival 🎵</h3>
+                            <div class="ticket-details">
+                                <h5 id="ticketCustomerName">Loading...</h5>
+                                <div class="d-flex flex-column align-items-center mb-3">
+                                    <div class="qr-code-container mb-3">
+                                        <!-- QR Code will be generated here -->
+                                        <div id="qrCodeContainer">
+                                            <div class="qr-placeholder">
+                                                <i class="bi bi-qr-code text-muted" style="font-size: 48px;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-start w-100">
+                                        <p class="mb-1" id="ticketTransactionCode">Transaction: Loading...</p>
+                                        <p class="mb-1" id="ticketAmount">Amount: Loading...</p>
+                                        <p class="mb-1" id="ticketType">Ticket Type: Loading...</p>
+                                        <p class="mb-1" id="ticketEmail">Email: Loading...</p>
+                                        <p id="ticketDate">Date: Loading...</p>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="mb-2">📅 December 25, 2024</p>
+                                    <p class="mb-2">📍 Winter Villa Resort & Spa, Embu</p>
+                                    <p>⏰ 2:00 PM - Midnight</p>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="status-badge" id="ticketStatus">LOADING</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="text-center mt-4" id="ticketActions">
+                            <!-- Buttons will be dynamically added based on status -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiple Tickets Result -->
+            <div id="multipleTicketsResult" style="display: none;" class="mt-5">
+                <div class="text-center mb-4">
+                    <h3 class="gradient-text">
+                        <i class="bi bi-ticket-perforated me-2"></i>Your Tickets
+                    </h3>
+                    <p class="text-light" id="ticketCount">Found 0 tickets</p>
+                </div>
+                
+                <div id="ticketsList" class="row">
+                    <!-- Tickets will be listed here -->
+                </div>
+                
+                <!-- Action Buttons for Multiple Tickets -->
+                <div class="text-center mt-4" id="multiTicketActions">
+                    <!-- Buttons will be dynamically added -->
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorResult" style="display: none;" class="mt-5">
+                <div class="glass-card p-4 text-center">
+                    <i class="bi bi-exclamation-triangle text-warning fs-1 mb-3"></i>
+                    <h4 class="text-warning mb-3" id="errorTitle">Ticket Not Found</h4>
+                    <p class="text-light" id="errorMessage">We couldn't find your ticket. Please check your email and transaction code.</p>
+                    <button class="action-btn btn-primary-gradient mt-3" onclick="resetForm()">
+                        <i class="bi bi-arrow-clockwise me-2"></i>Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="glass-card p-4 mt-5">
+            <h5 class="text-light mb-3">
+                <i class="bi bi-info-circle me-2"></i>How to Retrieve Your Ticket
+            </h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                        <div class="rounded-circle bg-primary-gradient p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <span class="text-white">1</span>
+                        </div>
+                        <div>
+                            <h6 class="text-light">Enter Your Email</h6>
+                            <p class="text-light/70">Use the email address you provided when booking</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <div class="rounded-circle bg-primary-gradient p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <span class="text-white">2</span>
+                        </div>
+                        <div>
+                            <h6 class="text-light">Enter Transaction Code</h6>
+                            <p class="text-light/70">Enter the transaction code or paste M-Pesa message</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex mb-3">
+                        <div class="rounded-circle bg-primary-gradient p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <span class="text-white">3</span>
+                        </div>
+                        <div>
+                            <h6 class="text-light">Retrieve Ticket</h6>
+                            <p class="text-light/70">Click "Find My Ticket" to retrieve your ticket</p>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="rounded-circle bg-primary-gradient p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <span class="text-white">4</span>
+                        </div>
+                        <div>
+                            <h6 class="text-light">Download & Print</h6>
+                            <p class="text-light/70">Download your ticket as PDF or image for printing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Firebase Import -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyARficcDI3R1ELfjkQxL-kkFQr-tzOgzgo",
+            authDomain: "k-vibez.firebaseapp.com",
+            projectId: "k-vibez",
+            storageBucket: "k-vibez.firebasestorage.app",
+            messagingSenderId: "1060235903242",
+            appId: "1:1060235903242:web:4649b48406879fb7fcfaf3"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Global variables
+        let userTickets = [];
+        const { jsPDF } = window.jspdf;
+
+        // Auto-convert transaction code to uppercase
+        function autoConvertToUpperCase(input) {
+            input.value = input.value.toUpperCase();
+        }
+
+        // Extract transaction code from M-Pesa message
+        function extractTransactionCodeFromMessage(message) {
+            if (!message) return '';
+            
+            // Remove all whitespace and convert to uppercase
+            const cleanMessage = message.replace(/\s+/g, ' ').toUpperCase();
+            
+            // Look for transaction code patterns in M-Pesa messages
+            const patterns = [
+                // Pattern: Confirmation code is ABC123DEF4
+                /CONFIRMATION\s+CODE\s+IS\s+([A-Z0-9]{10,})/,
+                // Pattern: Transaction code ABC123DEF4
+                /TRANSACTION\s+CODE\s+([A-Z0-9]{10,})/,
+                // Pattern: ABC123DEF4 (standalone 10+ char alphanumeric)
+                /\b([A-Z0-9]{10,})\b/,
+                // Pattern: MPESA/ABC123DEF4
+                /MPESA\/([A-Z0-9]{10,})/,
+                // Pattern: ABC123DEF4 sent to
+                /([A-Z0-9]{10,})\s+SENT\s+TO/,
+                // Pattern: ABC123DEF4 has been
+                /([A-Z0-9]{10,})\s+HAS\s+BEEN/
+            ];
+            
+            for (const pattern of patterns) {
+                const match = cleanMessage.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            
+            // If no pattern matches, try to find any 10+ character alphanumeric string
+            const words = cleanMessage.split(' ');
+            for (const word of words) {
+                if (word.length >= 10 && /^[A-Z0-9]+$/.test(word)) {
+                    return word;
+                }
+            }
+            
+            return '';
+        }
+
+        // Show loading overlay
+        function showLoading(text = "Loading...") {
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            document.getElementById('loadingText').textContent = text;
+            updateProgress(0);
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // Update progress bar
+        function updateProgress(percent) {
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressPercent').textContent = Math.round(percent) + '%';
+        }
+
+        // Find ticket function
+        async function findTicket() {
+            const email = document.getElementById('userEmail').value.trim();
+            let transactionCode = document.getElementById('transactionCode').value.trim();
+            const mpesaMessage = document.getElementById('mpesaMessage').value.trim();
+            
+            // Validate email
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            // If transaction code is empty but M-Pesa message is provided, extract it
+            if (!transactionCode && mpesaMessage) {
+                transactionCode = extractTransactionCodeFromMessage(mpesaMessage);
+                if (transactionCode) {
+                    document.getElementById('transactionCode').value = transactionCode;
+                }
+            }
+            
+            if (!transactionCode) {
+                alert('Please enter a transaction code or paste your M-Pesa message');
+                return;
+            }
+            
+            // Show loading
+            showLoading('Searching for your ticket...');
+            
+            try {
+                // Build query based on what we have
+                const ticketsQuery = query(
+                    collection(db, "payments"),
+                    where("email", "==", email.toLowerCase())
+                );
+                
+                const querySnapshot = await getDocs(ticketsQuery);
+                userTickets = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const ticketData = doc.data();
+                    userTickets.push({
+                        id: doc.id,
+                        ...ticketData,
+                        date: ticketData.createdAt?.toDate() || new Date(),
+                        amount: parseFloat(ticketData.amount) || 0
+                    });
+                });
+                
+                // Filter by transaction code if provided
+                let matchedTickets = userTickets;
+                if (transactionCode) {
+                    matchedTickets = userTickets.filter(ticket => 
+                        (ticket.transactionReference && ticket.transactionReference.toUpperCase().includes(transactionCode.toUpperCase())) ||
+                        (ticket.transactionCode && ticket.transactionCode.toUpperCase().includes(transactionCode.toUpperCase()))
+                    );
+                }
+                
+                updateProgress(50);
+                
+                if (matchedTickets.length === 0) {
+                    showErrorResult('Ticket Not Found', 
+                        'No ticket found with the provided email and transaction code. Please check your details and try again.');
+                } else if (matchedTickets.length === 1) {
+                    await showSingleTicket(matchedTickets[0]);
+                } else {
+                    await showMultipleTickets(matchedTickets);
+                }
+                
+            } catch (error) {
+                console.error('Error finding ticket:', error);
+                showErrorResult('Search Error', 
+                    'An error occurred while searching for your ticket. Please try again.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Find all tickets for the user
+        async function findAllUserTickets() {
+            const email = document.getElementById('userEmail').value.trim();
+            
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            showLoading('Searching for all your tickets...');
+            
+            try {
+                const ticketsQuery = query(
+                    collection(db, "payments"),
+                    where("email", "==", email.toLowerCase())
+                );
+                
+                const querySnapshot = await getDocs(ticketsQuery);
+                userTickets = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const ticketData = doc.data();
+                    userTickets.push({
+                        id: doc.id,
+                        ...ticketData,
+                        date: ticketData.createdAt?.toDate() || new Date(),
+                        amount: parseFloat(ticketData.amount) || 0
+                    });
+                });
+                
+                updateProgress(50);
+                
+                if (userTickets.length === 0) {
+                    showErrorResult('No Tickets Found', 
+                        'No tickets found for this email address.');
+                } else if (userTickets.length === 1) {
+                    await showSingleTicket(userTickets[0]);
+                } else {
+                    await showMultipleTickets(userTickets);
+                }
+                
+            } catch (error) {
+                console.error('Error finding tickets:', error);
+                showErrorResult('Search Error', 
+                    'An error occurred while searching for your tickets. Please try again.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Show single ticket
+        async function showSingleTicket(ticket) {
+            // Hide other results
+            document.getElementById('multipleTicketsResult').style.display = 'none';
+            document.getElementById('errorResult').style.display = 'none';
+            
+            // Update ticket details
+            document.getElementById('ticketCustomerName').textContent = ticket.fullName || ticket.customerName || 'Customer';
+            document.getElementById('ticketTransactionCode').textContent = `Transaction: ${ticket.transactionReference || ticket.transactionCode || 'N/A'}`;
+            document.getElementById('ticketAmount').textContent = `Amount: KES ${ticket.amount.toLocaleString()}`;
+            document.getElementById('ticketType').textContent = `Ticket Type: ${ticket.ticketType || 'General Admission'}`;
+            document.getElementById('ticketEmail').textContent = `Email: ${ticket.email}`;
+            document.getElementById('ticketDate').textContent = `Date: ${new Date(ticket.date).toLocaleDateString()}`;
+            
+            // Update status badge
+            const statusBadge = document.getElementById('ticketStatus');
+            const status = ticket.status || 'pending';
+            statusBadge.textContent = status.toUpperCase();
+            
+            // Set status badge color
+            if (status === 'verified') {
+                statusBadge.className = 'status-badge badge-verified';
+                document.getElementById('ticketDesign').classList.remove('rejected-ticket');
+            } else if (status === 'pending') {
+                statusBadge.className = 'status-badge badge-pending';
+                document.getElementById('ticketDesign').classList.remove('rejected-ticket');
+            } else if (status === 'rejected') {
+                statusBadge.className = 'status-badge badge-rejected';
+                document.getElementById('ticketDesign').classList.add('rejected-ticket');
+            } else {
+                statusBadge.className = 'status-badge';
+                document.getElementById('ticketDesign').classList.remove('rejected-ticket');
+            }
+            
+            // Generate QR code if ticket is verified
+            const qrContainer = document.getElementById('qrCodeContainer');
+            
+            if (status === 'verified') {
+                await generateRealQRCode(ticket, qrContainer, 'verified');
+            } else if (status === 'pending') {
+                showQRPlaceholder(qrContainer, 'pending', 'Pending Verification');
+            } else if (status === 'rejected') {
+                showQRPlaceholder(qrContainer, 'rejected', 'Payment Rejected');
+            }
+            
+            // Update action buttons based on status
+            const actionsContainer = document.getElementById('ticketActions');
+            actionsContainer.innerHTML = '';
+            
+            if (status === 'verified') {
+                actionsContainer.innerHTML = `
+                    <button class="action-btn btn-primary-gradient me-3" onclick="downloadSingleTicket()">
+                        <i class="bi bi-download me-2"></i>Download Ticket
+                    </button>
+                    <button class="action-btn btn-warning-gradient" onclick="findAllUserTickets()">
+                        <i class="bi bi-list-check me-2"></i>Find All My Tickets
+                    </button>
+                `;
+            } else if (status === 'pending') {
+                actionsContainer.innerHTML = `
+                    <button class="action-btn btn-warning-gradient me-3">
+                        <i class="bi bi-clock-history me-2"></i>Pending Verification
+                    </button>
+                    <button class="action-btn btn-primary-gradient" onclick="findAllUserTickets()">
+                        <i class="bi bi-list-check me-2"></i>Find All My Tickets
+                    </button>
+                `;
+            } else if (status === 'rejected') {
+                actionsContainer.innerHTML = `
+                    <button class="action-btn btn-danger-gradient me-3">
+                        <i class="bi bi-x-circle me-2"></i>Payment Rejected
+                    </button>
+                    <button class="action-btn btn-primary-gradient" onclick="findAllUserTickets()">
+                        <i class="bi bi-list-check me-2"></i>Find All My Tickets
+                    </button>
+                    <button class="action-btn btn-warning-gradient mt-2" onclick="contactSupport()">
+                        <i class="bi bi-headset me-2"></i>Contact Support
+                    </button>
+                `;
+            }
+            
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('singleTicketResult').style.display = 'block';
+            
+            updateProgress(100);
+        }
+
+        // Show multiple tickets
+        async function showMultipleTickets(tickets) {
+            // Hide other results
+            document.getElementById('singleTicketResult').style.display = 'none';
+            document.getElementById('errorResult').style.display = 'none';
+            
+            // Update ticket count
+            const verifiedCount = tickets.filter(t => t.status === 'verified').length;
+            const pendingCount = tickets.filter(t => t.status === 'pending').length;
+            const rejectedCount = tickets.filter(t => t.status === 'rejected').length;
+            
+            document.getElementById('ticketCount').innerHTML = `
+                Found ${tickets.length} ticket${tickets.length > 1 ? 's' : ''}<br>
+                <small class="text-light/70">
+                    Verified: ${verifiedCount} | Pending: ${pendingCount} | Rejected: ${rejectedCount}
+                </small>
+            `;
+            
+            // Clear and populate tickets list
+            const ticketsList = document.getElementById('ticketsList');
+            ticketsList.innerHTML = '';
+            
+            showLoading(`Processing ${tickets.length} tickets...`);
+            
+            for (let i = 0; i < tickets.length; i++) {
+                const ticket = tickets[i];
+                const progress = ((i + 1) / tickets.length) * 100;
+                updateProgress(progress);
+                
+                const ticketCol = document.createElement('div');
+                ticketCol.className = 'col-md-6 col-lg-4 mb-4';
+                
+                const ticketTypeClass = getTicketTypeClass(ticket.ticketType);
+                const status = ticket.status || 'pending';
+                const statusClass = status === 'verified' ? 'badge-verified' : 
+                                   status === 'pending' ? 'badge-pending' : 'badge-rejected';
+                
+                ticketCol.innerHTML = `
+                    <div class="ticket-card ${status === 'rejected' ? 'rejected-ticket' : ''}" id="ticketCard${i}">
+                        <h5 class="mb-2">${ticket.fullName || ticket.customerName || 'Customer'}</h5>
+                        <div class="ticket-details">
+                            <p class="mb-1"><strong>Transaction:</strong> ${ticket.transactionReference || ticket.transactionCode || 'N/A'}</p>
+                            <p class="mb-1"><strong>Amount:</strong> KES ${ticket.amount.toLocaleString()}</p>
+                            <p class="mb-1">
+                                <strong>Type:</strong> 
+                                <span class="ticket-type-badge ${ticketTypeClass}">${ticket.ticketType || 'General'}</span>
+                            </p>
+                            <p class="mb-1"><strong>Status:</strong> <span class="status-badge ${statusClass}">${status.toUpperCase()}</span></p>
+                            <p><strong>Date:</strong> ${new Date(ticket.date).toLocaleDateString()}</p>
+                        </div>
+                        <div id="qrCodeContainer${i}" class="mt-3">
+                            <!-- QR code will be generated here -->
+                            <div class="qr-placeholder ${status === 'verified' ? 'qr-success' : status === 'pending' ? 'qr-pending' : 'qr-rejected'}">
+                                <i class="bi bi-${status === 'verified' ? 'check-circle' : status === 'pending' ? 'clock-history' : 'x-circle'} text-${status === 'verified' ? 'success' : status === 'pending' ? 'warning' : 'danger'}" style="font-size: 36px;"></i>
+                                <p class="mt-2" style="color: #666;">${status === 'verified' ? 'Loading QR...' : status === 'pending' ? 'Pending' : 'Rejected'}</p>
+                            </div>
+                        </div>
+                        ${status === 'verified' ? 
+                            `<button class="action-btn btn-primary-gradient w-100 mt-3" onclick="downloadIndividualTicket(${i})">
+                                <i class="bi bi-download me-2"></i>Download Ticket
+                            </button>` : 
+                            status === 'pending' ?
+                            `<div class="text-center mt-3 text-light/70">
+                                <i class="bi bi-clock-history me-2"></i>Pending Verification
+                            </div>` :
+                            `<div class="text-center mt-3">
+                                <button class="action-btn btn-danger-gradient w-100" onclick="contactSupport()">
+                                    <i class="bi bi-headset me-2"></i>Contact Support
+                                </button>
+                            </div>`
+                        }
+                    </div>
+                `;
+                
+                ticketsList.appendChild(ticketCol);
+                
+                // Generate QR code for verified tickets
+                if (status === 'verified') {
+                    setTimeout(() => {
+                        const qrContainer = document.getElementById(`qrCodeContainer${i}`);
+                        generateRealQRCode(ticket, qrContainer, 'verified', true);
+                    }, 100);
+                }
+            }
+            
+            // Store tickets globally for PDF generation
+            userTickets = tickets;
+            
+            // Update action buttons for multiple tickets
+            const actionsContainer = document.getElementById('multiTicketActions');
+            const verifiedTickets = tickets.filter(t => t.status === 'verified');
+            
+            actionsContainer.innerHTML = '';
+            
+            if (verifiedTickets.length > 0) {
+                actionsContainer.innerHTML += `
+                    <button class="action-btn btn-primary-gradient me-3" onclick="generateAllTicketsPDF()">
+                        <i class="bi bi-file-pdf me-2"></i>Download All Verified as PDF
+                    </button>
+                `;
+                
+                if (verifiedTickets.length <= 5) {
+                    actionsContainer.innerHTML += `
+                        <button class="action-btn btn-success-gradient" onclick="downloadAllTickets()">
+                            <i class="bi bi-download me-2"></i>Download All Verified as Images
+                        </button>
+                    `;
+                }
+            }
+            
+            if (pendingCount > 0) {
+                actionsContainer.innerHTML += `
+                    <div class="mt-3">
+                        <p class="text-light/70">
+                            <i class="bi bi-info-circle me-1"></i>
+                            ${pendingCount} ticket${pendingCount > 1 ? 's' : ''} pending verification
+                        </p>
+                    </div>
+                `;
+            }
+            
+            if (rejectedCount > 0) {
+                actionsContainer.innerHTML += `
+                    <div class="mt-2">
+                        <button class="action-btn btn-danger-gradient" onclick="contactSupport()">
+                            <i class="bi bi-headset me-2"></i>Contact Support for ${rejectedCount} Rejected Ticket${rejectedCount > 1 ? 's' : ''}
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('multipleTicketsResult').style.display = 'block';
+            
+            hideLoading();
+        }
+
+        // Generate real QR code using QRCode library
+        function generateRealQRCode(ticket, container, status, isList = false) {
+            // Clear container
+            container.innerHTML = '';
+            
+            // Check if QRCode library is available
+            if (typeof QRCode === 'undefined') {
+                console.error('QRCode library not available');
+                showQRPlaceholder(container, status, 'QR Error');
+                return;
+            }
+            
+            // Create QR data string
+            const qrData = JSON.stringify({
+                id: ticket.id,
+                transactionCode: ticket.transactionReference || ticket.transactionCode,
+                customerName: ticket.fullName || ticket.customerName,
+                email: ticket.email,
+                ticketType: ticket.ticketType,
+                amount: ticket.amount,
+                event: "Kalenjin Vibes Festival",
+                date: new Date().toISOString(),
+                status: ticket.status
+            });
+            
+            // Create canvas for QR code
+            const canvas = document.createElement('canvas');
+            const size = isList ? 150 : 200;
+            
+            // Generate QR code
+            try {
+                QRCode.toCanvas(canvas, qrData, {
+                    width: size,
+                    margin: 1,
+                    color: {
+                        dark: '#000000',  // Black squares
+                        light: '#FFFFFF'  // White background
+                    },
+                    errorCorrectionLevel: 'H' // High error correction
+                }, function(error) {
+                    if (error) {
+                        console.error('QR generation error:', error);
+                        showQRPlaceholder(container, status, 'QR Error');
+                    } else {
+                        // Clear and add the canvas
+                        container.innerHTML = '';
+                        container.appendChild(canvas);
+                        
+                        // Add QR code styling
+                        canvas.style.border = '5px solid white';
+                        canvas.style.borderRadius = '10px';
+                        canvas.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                        canvas.style.display = 'block';
+                        canvas.style.margin = '0 auto';
+                        
+                        // Add scan instructions for single ticket
+                        if (!isList) {
+                            const scanText = document.createElement('p');
+                            scanText.innerHTML = '<small class="text-dark">Scan at entrance</small>';
+                            scanText.style.textAlign = 'center';
+                            scanText.style.marginTop = '10px';
+                            scanText.style.fontSize = '12px';
+                            container.appendChild(scanText);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('QR code generation failed:', error);
+                showQRPlaceholder(container, status, 'QR Error');
+            }
+        }
+
+        // Show QR placeholder
+        function showQRPlaceholder(container, status, message) {
+            let icon = 'bi-qr-code';
+            let colorClass = 'text-muted';
+            
+            if (status === 'verified') {
+                icon = 'bi-check-circle';
+                colorClass = 'text-success';
+            } else if (status === 'pending') {
+                icon = 'bi-clock-history';
+                colorClass = 'text-warning';
+            } else if (status === 'rejected') {
+                icon = 'bi-x-circle';
+                colorClass = 'text-danger';
+            }
+            
+            container.innerHTML = `
+                <div class="qr-placeholder ${status === 'verified' ? 'qr-success' : status === 'pending' ? 'qr-pending' : 'qr-rejected'}" style="width: 200px; height: 200px;">
+                    <i class="bi ${icon} ${colorClass}" style="font-size: 48px;"></i>
+                    <p class="mt-2" style="color: #666;">${message}</p>
+                </div>
+            `;
+        }
+
+        // Get ticket type CSS class
+        function getTicketTypeClass(ticketType) {
+            switch(ticketType) {
+                case 'Early Bird Ticket': return 'early-bird-badge';
+                case 'Early Bird Couples': return 'early-bird-couples-badge';
+                case 'Couples Ticket': return 'couples-badge';
+                case 'Regular Ticket': return 'regular-badge';
+                default: return '';
+            }
+        }
+
+        // Show error result
+        function showErrorResult(title, message) {
+            document.getElementById('singleTicketResult').style.display = 'none';
+            document.getElementById('multipleTicketsResult').style.display = 'none';
+            
+            document.getElementById('errorTitle').textContent = title;
+            document.getElementById('errorMessage').textContent = message;
+            
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('errorResult').style.display = 'block';
+        }
+
+        // Reset form
+        function resetForm() {
+            document.getElementById('userEmail').value = '';
+            document.getElementById('transactionCode').value = '';
+            document.getElementById('mpesaMessage').value = '';
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        // Contact support function
+        function contactSupport() {
+            const email = document.getElementById('userEmail').value;
+            const subject = encodeURIComponent('Support Request - Kalenjin Vibes Festival Ticket');
+            const body = encodeURIComponent(`Hello,\n\nI need assistance with my ticket.\nEmail: ${email}\n\nPlease help me resolve this issue.`);
+            window.open(`mailto:support@kalenjinvibes.co.ke?subject=${subject}&body=${body}`, '_blank');
+        }
+
+        // Download single ticket as image
+        async function downloadSingleTicket() {
+            showLoading('Generating ticket image...');
+            
+            try {
+                const ticketElement = document.getElementById('ticketDesign');
+                
+                // Check if html2canvas is available
+                if (typeof html2canvas !== 'undefined') {
+                    const canvas = await html2canvas(ticketElement, {
+                        backgroundColor: null,
+                        scale: 2,
+                        useCORS: true
+                    });
+                    
+                    const link = document.createElement('a');
+                    const ticket = userTickets[0];
+                    const fileName = `Kalenjin_Ticket_${(ticket.fullName || ticket.customerName || 'Customer').replace(/[^a-z0-9]/gi, '_')}.png`;
+                    link.download = fileName;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    showSuccess('Ticket downloaded successfully!');
+                } else {
+                    // Fallback: open in new window for printing
+                    const ticket = userTickets[0];
+                    const ticketWindow = window.open('', '_blank');
+                    ticketWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Kalenjin Vibes Ticket</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; }
+                                .ticket { border: 2px solid #667eea; border-radius: 15px; padding: 20px; max-width: 400px; margin: 0 auto; }
+                                h2 { color: #667eea; text-align: center; }
+                                .qr-code { text-align: center; margin: 20px 0; }
+                                @media print { button { display: none; } }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="ticket">
+                                <h2>🎵 Kalenjin Vibes Festival 🎵</h2>
+                                <p><strong>Name:</strong> ${ticket.fullName || ticket.customerName}</p>
+                                <p><strong>Transaction:</strong> ${ticket.transactionReference || ticket.transactionCode}</p>
+                                <p><strong>Amount:</strong> KES ${ticket.amount.toLocaleString()}</p>
+                                <p><strong>Ticket Type:</strong> ${ticket.ticketType}</p>
+                                <div class="qr-code">
+                                    <p>Present QR code at entrance</p>
+                                    <div>${document.getElementById('qrCodeContainer').innerHTML}</div>
+                                </div>
+                                <p><strong>Event Date:</strong> December 25, 2024</p>
+                                <p><strong>Venue:</strong> Winter Villa Resort & Spa, Embu</p>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px;">
+                                <button onclick="window.print()">Print Ticket</button>
+                                <button onclick="window.close()" style="margin-left: 10px;">Close</button>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+                    ticketWindow.document.close();
+                }
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Error downloading ticket. You can take a screenshot instead.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Download individual ticket from list
+        async function downloadIndividualTicket(index) {
+            showLoading('Preparing ticket download...');
+            
+            // Store current ticket
+            const currentTicket = userTickets[index];
+            userTickets = [currentTicket];
+            
+            // Show single ticket view temporarily
+            await showSingleTicket(currentTicket);
+            
+            // Download after a short delay
+            setTimeout(() => {
+                downloadSingleTicket();
+            }, 500);
+        }
+
+        // Generate PDF with all verified tickets
+        async function generateAllTicketsPDF() {
+            showLoading('Generating PDF with all tickets...');
+            
+            try {
+                const verifiedTickets = userTickets.filter(ticket => ticket.status === 'verified');
+                
+                if (verifiedTickets.length === 0) {
+                    alert('No verified tickets available for PDF generation');
+                    hideLoading();
+                    return;
+                }
+                
+                const pdf = new jsPDF();
+                let yPos = 20;
+                
+                // Title
+                pdf.setFontSize(20);
+                pdf.setTextColor(102, 126, 234);
+                pdf.text('Kalenjin Vibes Festival - Tickets', 20, yPos);
+                
+                pdf.setFontSize(12);
+                pdf.setTextColor(0, 0, 0);
+                yPos += 15;
+                pdf.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, yPos);
+                pdf.text(`Total Tickets: ${verifiedTickets.length}`, 120, yPos);
+                
+                yPos += 20;
+                
+                // Generate QR code canvases for each ticket
+                for (let i = 0; i < verifiedTickets.length; i++) {
+                    const ticket = verifiedTickets[i];
+                    const progress = ((i + 1) / verifiedTickets.length) * 100;
+                    updateProgress(progress);
+                    
+                    // Add new page if needed
+                    if (yPos > 250) {
+                        pdf.addPage();
+                        yPos = 20;
+                    }
+                    
+                    // Create QR code
+                    const qrData = JSON.stringify({
+                        id: ticket.id,
+                        transactionCode: ticket.transactionReference || ticket.transactionCode,
+                        customerName: ticket.fullName || ticket.customerName,
+                        email: ticket.email,
+                        ticketType: ticket.ticketType,
+                        amount: ticket.amount,
+                        event: "Kalenjin Vibes Festival",
+                        date: new Date().toISOString()
+                    });
+                    
+                    // Generate QR code as data URL
+                    const qrCanvas = await generateQRCodeCanvas(qrData);
+                    const qrDataUrl = qrCanvas.toDataURL('image/png');
+                    
+                    // Add ticket to PDF
+                    pdf.setFontSize(14);
+                    pdf.setTextColor(0, 0, 0);
+                    pdf.text(`Ticket ${i + 1}: ${ticket.fullName || ticket.customerName}`, 20, yPos);
+                    
+                    pdf.setFontSize(10);
+                    yPos += 7;
+                    pdf.text(`Transaction: ${ticket.transactionReference || ticket.transactionCode}`, 20, yPos);
+                    yPos += 5;
+                    pdf.text(`Amount: KES ${ticket.amount.toLocaleString()}`, 20, yPos);
+                    yPos += 5;
+                    pdf.text(`Ticket Type: ${ticket.ticketType}`, 20, yPos);
+                    yPos += 5;
+                    pdf.text(`Email: ${ticket.email}`, 20, yPos);
+                    
+                    // Add QR code
+                    pdf.addImage(qrDataUrl, 'PNG', 140, yPos - 20, 50, 50);
+                    
+                    yPos += 30;
+                    
+                    // Add separator
+                    if (i < verifiedTickets.length - 1) {
+                        pdf.setDrawColor(200, 200, 200);
+                        pdf.line(20, yPos, 190, yPos);
+                        yPos += 10;
+                    }
+                }
+                
+                // Save PDF
+                pdf.save(`Kalenjin_Tickets_${new Date().toISOString().split('T')[0]}.pdf`);
+                showSuccess('PDF generated successfully!');
+                
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                alert('Error generating PDF. Please try again.');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Generate QR code canvas for PDF
+        function generateQRCodeCanvas(data) {
+            return new Promise((resolve) => {
+                // Check if QRCode library is available
+                if (typeof QRCode === 'undefined') {
+                    // Create fallback canvas
+                    const fallbackCanvas = document.createElement('canvas');
+                    fallbackCanvas.width = 200;
+                    fallbackCanvas.height = 200;
+                    const ctx = fallbackCanvas.getContext('2d');
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, 200, 200);
+                    ctx.fillStyle = '#000000';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('QR Code', 100, 100);
+                    resolve(fallbackCanvas);
+                    return;
+                }
+                
+                const canvas = document.createElement('canvas');
+                QRCode.toCanvas(canvas, data, {
+                    width: 200,
+                    margin: 1,
+                    color: {
+                        dark: '#000000',
+                        light: '#FFFFFF'
+                    }
+                }, function(error) {
+                    if (error) {
+                        console.error('QR generation error:', error);
+                        // Create fallback canvas
+                        const fallbackCanvas = document.createElement('canvas');
+                        fallbackCanvas.width = 200;
+                        fallbackCanvas.height = 200;
+                        const ctx = fallbackCanvas.getContext('2d');
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, 200, 200);
+                        ctx.fillStyle = '#000000';
+                        ctx.font = '12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('QR Code', 100, 100);
+                        resolve(fallbackCanvas);
+                    } else {
+                        resolve(canvas);
+                    }
+                });
+            });
+        }
+
+        // Download all verified tickets as images
+        async function downloadAllTickets() {
+            const verifiedTickets = userTickets.filter(ticket => ticket.status === 'verified');
+            
+            if (verifiedTickets.length === 0) {
+                alert('No verified tickets available for download');
+                return;
+            }
+            
+            if (verifiedTickets.length === 1) {
+                downloadSingleTicket();
+                return;
+            }
+            
+            if (verifiedTickets.length > 5) {
+                const confirmDownload = confirm(`You have ${verifiedTickets.length} tickets. Downloading many files individually may be inconvenient. Would you prefer to generate a PDF instead?`);
+                if (confirmDownload) {
+                    generateAllTicketsPDF();
+                    return;
+                }
+            }
+            
+            showLoading(`Preparing ${verifiedTickets.length} tickets for download...`);
+            
+            // Create multiple downloads
+            for (let i = 0; i < Math.min(verifiedTickets.length, 5); i++) {
+                const ticket = verifiedTickets[i];
+                updateProgress(((i + 1) / Math.min(verifiedTickets.length, 5)) * 100);
+                
+                // Temporarily show single ticket to capture it
+                userTickets = [ticket];
+                await showSingleTicket(ticket);
+                
+                // Wait for QR code to generate
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Use html2canvas if available
+                if (typeof html2canvas !== 'undefined') {
+                    const ticketElement = document.getElementById('ticketDesign');
+                    const canvas = await html2canvas(ticketElement, {
+                        backgroundColor: null,
+                        scale: 2,
+                        useCORS: true
+                    });
+                    
+                    const link = document.createElement('a');
+                    const fileName = `Ticket_${i+1}_${(ticket.fullName || ticket.customerName).replace(/[^a-z0-9]/gi, '_')}.png`;
+                    link.download = fileName;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }
+                
+                // Small delay between downloads
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            // Reset to multiple tickets view
+            if (userTickets.length > 1) {
+                await showMultipleTickets(userTickets);
+            }
+            
+            hideLoading();
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            alert(message);
+        }
+
+        // Initialize countdown timer
+        function initializeCountdown() {
+            const eventDate = new Date('December 25, 2024 14:00:00').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeLeft = eventDate - now;
+                
+                if (timeLeft < 0) {
+                    document.getElementById('countdownTimer').textContent = 'EVENT IN PROGRESS!';
+                    return;
+                }
+                
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                
+                document.getElementById('countdownTimer').textContent = 
+                    `${days.toString().padStart(2, '0')}d : ${hours.toString().padStart(2, '0')}h : ${minutes.toString().padStart(2, '0')}m : ${seconds.toString().padStart(2, '0')}s`;
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        // Initialize page
+        function initializePage() {
+            initializeCountdown();
+            
+            // Auto-extract transaction code when pasting M-Pesa message
+            document.getElementById('mpesaMessage').addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    const message = e.target.value;
+                    const extractedCode = extractTransactionCodeFromMessage(message);
+                    if (extractedCode) {
+                        document.getElementById('transactionCode').value = extractedCode;
+                    }
+                }, 100);
+            });
+        }
+
+        // Expose functions to global scope
+        window.autoConvertToUpperCase = autoConvertToUpperCase;
+        window.findTicket = findTicket;
+        window.findAllUserTickets = findAllUserTickets;
+        window.downloadSingleTicket = downloadSingleTicket;
+        window.downloadIndividualTicket = downloadIndividualTicket;
+        window.generateAllTicketsPDF = generateAllTicketsPDF;
+        window.downloadAllTickets = downloadAllTickets;
+        window.contactSupport = contactSupport;
+        window.resetForm = resetForm;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializePage);
+
+        console.log('✅ Ticket Retrieval System Loaded');
+
+    </script>
+</body>
+</html>
