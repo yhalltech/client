@@ -94,7 +94,7 @@
     /* Breadcrumb Styles */
     .breadcumb-wrapper {
       position: relative;
-      padding: 100px 0;
+      padding: 80px 0; /* Reduced padding */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -118,9 +118,9 @@
     }
     
     .breadcumb-title {
-      font-size: 3rem;
+      font-size: 2rem; /* Smaller font */
       font-weight: 700;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
     
     .breadcumb-menu {
@@ -129,10 +129,11 @@
       list-style: none;
       padding: 0;
       margin: 0;
+      font-size: 0.9rem;
     }
     
     .breadcumb-menu li {
-      margin: 0 10px;
+      margin: 0 8px;
     }
     
     .breadcumb-menu a {
@@ -148,17 +149,107 @@
     
     .breadcumb-menu li:not(:last-child)::after {
       content: '/';
-      margin-left: 10px;
+      margin-left: 8px;
       color: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Payment Form Specific Styles */
+    .payment-method-option {
+      margin-bottom: 25px !important; /* More spacing between options */
+    }
+    
+    .payment-instructions {
+      padding: 12px !important;
+      margin-bottom: 15px !important;
+      font-size: 14px !important;
+    }
+    
+    .payment-instructions h4 {
+      font-size: 16px !important;
+      margin-bottom: 12px !important;
+    }
+    
+    .payment-instructions ul {
+      margin-bottom: 8px !important;
+      padding-left: 20px !important;
+    }
+    
+    .payment-instructions li {
+      margin-bottom: 6px !important;
+      line-height: 1.4 !important;
+    }
+    
+    /* Smaller buttons */
+    .form-btn-small {
+      padding: 6px 12px !important;
+      font-size: 13px !important;
+      min-height: 36px !important;
+      border-radius: 4px !important;
+    }
+    
+    /* Action buttons container */
+    .action-buttons {
+      display: flex !important;
+      gap: 10px !important;
+      justify-content: center !important;
+      margin-top: 20px !important;
+    }
+    
+    /* Transaction reference group */
+    .transaction-group {
+      margin-top: 15px !important;
+      margin-bottom: 15px !important;
+    }
+    
+    /* M-Pesa logo */
+    .mpesa-logo {
+      max-width: 150px !important;
+      height: auto !important;
+      margin: 0 auto 10px !important;
+      display: block !important;
+    }
+    
+    /* Form labels */
+    .form-label-small {
+      font-size: 14px !important;
+      margin-bottom: 5px !important;
+      font-weight: 500 !important;
+    }
+    
+    /* Form controls */
+    .form-control-small {
+      padding: 8px 10px !important;
+      font-size: 14px !important;
+      border-radius: 4px !important;
+    }
+    
+    /* Card body padding */
+    .card-body-small {
+      padding: 20px 15px !important;
+    }
+    
+    /* Container padding */
+    .container-small {
+      padding-left: 10px !important;
+      padding-right: 10px !important;
+    }
+    
+    /* Success modal smaller */
+    .success-modal-small .modal-content {
+      padding: 15px !important;
+    }
+    
+    .success-modal-small .modal-title {
+      font-size: 18px !important;
     }
     
     @media (max-width: 768px) {
       .breadcumb-wrapper {
-        padding: 70px 0;
+        padding: 60px 0;
       }
       
       .breadcumb-title {
-        font-size: 2rem;
+        font-size: 1.5rem;
       }
       
       .whatsapp-button-payments {
@@ -172,6 +263,68 @@
         width: 28px;
         height: 28px;
       }
+      
+      .payment-method-option {
+        margin-bottom: 20px !important;
+      }
+      
+      .form-btn-small {
+        padding: 5px 10px !important;
+        font-size: 12px !important;
+        min-height: 34px !important;
+      }
+      
+      .action-buttons {
+        gap: 8px !important;
+      }
+      
+      .card-body-small {
+        padding: 15px 10px !important;
+      }
+      
+      .container-small {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .breadcumb-title {
+        font-size: 1.25rem;
+      }
+      
+      .breadcumb-menu {
+        font-size: 0.8rem;
+      }
+      
+      .payment-instructions {
+        padding: 10px !important;
+        font-size: 13px !important;
+      }
+      
+      .payment-instructions h4 {
+        font-size: 14px !important;
+      }
+      
+      .payment-instructions li {
+        font-size: 12px !important;
+        margin-bottom: 4px !important;
+      }
+      
+      .form-btn-small {
+        padding: 4px 8px !important;
+        font-size: 11px !important;
+        min-height: 32px !important;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        gap: 8px !important;
+      }
+      
+      .action-buttons button {
+        width: 100% !important;
+      }
     }
   </style>
 </head>
@@ -182,46 +335,49 @@
 
   <!-- Breadcrumb -->
   <div class="breadcumb-wrapper" style="background-image: url('assets/img/breadcumb/breadcumb-bg.jpg');">
-    <div class="container mx-auto px-4">
+    <div class="container mx-auto px-4 container-small">
       <div class="breadcumb-content">
+        <h1 class="breadcumb-title">Make Payment</h1>
         <div class="breadcumb-menu-wrap">
+          <ul class="breadcumb-menu">
+            <li><a href="index.html">Home</a></li>
+            <li>Payments</li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Payment Form Section -->
-  <div class="container py-5">
+  <div class="container py-4 container-small">
     <div class="col-xxl-6 col-xl-8 col-lg-10 col-md-12 bg-light card dashboard-bg-box mx-auto">
-      <div class="card-body p-4">
+      <div class="card-body p-0 card-body-small">
         <!-- Order Summary -->
-        <div id="orderSummary" class="mb-4" style="display: none;">
+        <div id="orderSummary" class="mb-3 px-3" style="display: none;">
           <div class="order-summary-box">
-            <h5 class="mb-3" style="color: #333; font-weight: 600;">Order Summary</h5>
-            <div id="order-items" style="margin-bottom: 15px;"></div>
+            <h5 class="mb-2" style="color: #333; font-weight: 600;">Order Summary</h5>
+            <div id="order-items" style="margin-bottom: 10px;"></div>
             <div class="order-total">
               <div class="d-flex justify-content-between align-items-center">
-                <span>Total Amount:</span>
-                <span id="total-amount-display">Ksh 0</span>
+                <span>Total:</span>
+                <span id="total-amount-display" class="fw-bold">Ksh 0</span>
               </div>
             </div>
           </div>
         </div>
         
         <!-- Booking Summary -->
-        <div id="bookingSummary" class="mb-4" style="display: none;">
-          <h4 class="mb-3">Booking Summary</h4>
-          <div class="alert alert-info">
-            <p><strong>Talent:</strong> <span id="summaryTalentName"></span></p>
-            <p><strong>Event:</strong> <span id="summaryEventName">Kalenjin Vibes Night</span></p>
-            <p><strong>Date:</strong> <span id="summaryEventDate"></span></p>
-            <p><strong>Location:</strong> <span id="summaryLocation"></span></p>
-            <p><strong>Amount:</strong> Ksh <span id="summaryAmount"></span></p>
+        <div id="bookingSummary" class="mb-3 px-3" style="display: none;">
+          <h5 class="mb-2">Booking Summary</h5>
+          <div class="alert alert-info py-2">
+            <p class="mb-1"><strong>Talent:</strong> <span id="summaryTalentName"></span></p>
+            <p class="mb-1"><strong>Event:</strong> <span id="summaryEventName">Kalenjin Vibes Night</span></p>
+            <p class="mb-1"><strong>Amount:</strong> Ksh <span id="summaryAmount"></span></p>
           </div>
         </div>
 
         <!-- Payment Form -->
-        <form id="payment-form">
+        <form id="payment-form" class="px-3">
           <input type="hidden" id="bookingType" name="booking_type" value="">
           <input type="hidden" id="bookingTalentId" name="talent_id" value="">
           <input type="hidden" id="bookingTalentName" name="talent_name" value="">
@@ -232,105 +388,119 @@
           <input type="hidden" id="bookingNotes" name="notes" value="">
           
           <!-- Contact Information -->
-          <div class="mb-4">
-            <h5 class="mb-3" style="color: #333; font-weight: 600;">Contact Information</h5>
-            <div class="row">
-              <div class="col-md-6 mb-3">
+          <div class="mb-3">
+            <h5 class="mb-2" style="color: #333; font-weight: 600;">Contact Information</h5>
+            <div class="row g-2">
+              <div class="col-md-6 mb-2">
                 <div class="form-group">
-                  <label for="full_name"><i class="fas fa-user"></i> Full Name <span class="text-danger">*</span></label>
-                  <input class="form-control" id="full_name" name="full_name" type="text" placeholder="Enter your full name" required>
+                  <label for="full_name" class="form-label-small"><i class="fas fa-user"></i> Full Name <span class="text-danger">*</span></label>
+                  <input class="form-control form-control-small" id="full_name" name="full_name" type="text" placeholder="Enter your full name" required>
                 </div>
               </div>
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6 mb-2">
                 <div class="form-group">
-                  <label for="email"><i class="fas fa-envelope"></i> Email <span class="text-danger">*</span></label>
-                  <input class="form-control" id="email" name="email" type="email" placeholder="your@email.com" required>
+                  <label for="email" class="form-label-small"><i class="fas fa-envelope"></i> Email <span class="text-danger">*</span></label>
+                  <input class="form-control form-control-small" id="email" name="email" type="email" placeholder="your@email.com" required>
                 </div>
               </div>
-              <div class="col-md-6 mb-3">
+              <div class="col-md-6 mb-2">
                 <div class="form-group">
-                  <label for="phone_number"><i class="fas fa-phone"></i> Phone Number <span class="text-danger">*</span></label>
-                  <input class="form-control" id="phone_number" name="phone_number" type="text" placeholder="e.g 07XX XXX XXX" required>
+                  <label for="phone_number" class="form-label-small"><i class="fas fa-phone"></i> Phone <span class="text-danger">*</span></label>
+                  <input class="form-control form-control-small" id="phone_number" name="phone_number" type="text" placeholder="07XX XXX XXX" required>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Payment Method Selection -->
-          <div class="form-group mb-4">
-            <label for="payment_method" style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 10px; text-align: center; display: block;">
+          <div class="form-group mb-3 payment-method-option">
+            <label for="payment_method" class="form-label-small d-block text-center">
               <i class="fas fa-credit-card"></i> Select Payment Method
             </label>
-            <select class="form-control" id="payment_method" name="payment_method" required style="max-width: 300px; margin: 0 auto; display: block;">
-              <option value="">Choose payment method...</option>
-              <option value="mpesa">📱 M-Pesa (Till Number)</option>
+            <select class="form-control form-control-small" id="payment_method" name="payment_method" required style="max-width: 250px; margin: 0 auto; display: block;">
+              <option value="">Choose method...</option>
+              <option value="mpesa">📱 M-Pesa Till</option>
               <option value="paybill">🏢 Paybill</option>
             </select>
           </div>
 
           <!-- M-Pesa Instructions -->
-          <div id="mpesa-details" style="display: none;">
-            <div class="alert alert-info">
-              <div class="form-group text-center mb-3">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/2560px-M-PESA_LOGO-01.svg.png" style="width:30%; max-width: 200px;" class="img-fluid" alt="M-Pesa">
+          <div id="mpesa-details" class="payment-method-option" style="display: none;">
+            <div class="alert alert-info payment-instructions">
+              <div class="form-group text-center mb-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/2560px-M-PESA_LOGO-01.svg.png" class="mpesa-logo" alt="M-Pesa">
               </div>
-              <div class="form-group text-center mb-3">
-                <h4><u>LIPA NA MPESA</u></h4>
+              <div class="form-group text-center mb-2">
+                <h4 class="fw-bold"><u>LIPA NA MPESA</u></h4>
               </div>
-              <ul>
+              <ul class="mb-2">
                 <li>1. Go to M-PESA on your phone</li>
                 <li>2. Select <strong>Lipa Na M-PESA</strong></li>
                 <li>3. Select <strong>Buy Goods and Services</strong></li>
-                <li>4. Enter Till Number: <strong style="color: #28a745; font-size: 18px;">3049015</strong></li>
-                <li>5. Enter Amount: <strong id="mpesaAmount" style="color: #28a745; font-size: 18px;">Ksh 0</strong></li>
+                <li>4. Enter Till: <strong class="text-success">3049015</strong>
+                  <button type="button" class="btn btn-sm btn-outline-success py-0 px-1 ms-1 form-btn-small" onclick="copyToClipboard('3049015', this)">
+                    <i class="fas fa-copy"></i> Copy
+                  </button>
+                </li>
+                <li>5. Enter Amount: <strong class="text-success" id="mpesaAmount">Ksh 0</strong></li>
                 <li>6. Enter your M-PESA PIN and confirm</li>
-                <li>7. After payment, enter the Transaction Code below</li>
+                <li>7. After payment, enter Transaction Code below</li>
               </ul>
+              <p class="mb-0 text-center"><small><i class="fas fa-info-circle"></i> Copy Till Number above</small></p>
             </div>
           </div>
 
           <!-- Paybill Instructions -->
-          <div id="paybill-details" style="display: none;">
-            <div class="alert alert-info">
-              <div class="form-group text-center mb-3">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/2560px-M-PESA_LOGO-01.svg.png" style="width:30%; max-width: 200px;" class="img-fluid" alt="M-Pesa">
+          <div id="paybill-details" class="payment-method-option" style="display: none;">
+            <div class="alert alert-info payment-instructions">
+              <div class="form-group text-center mb-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/2560px-M-PESA_LOGO-01.svg.png" class="mpesa-logo" alt="M-Pesa">
               </div>
-              <div class="form-group text-center mb-3">
-                <h4><u>LIPA NA MPESA - PAYBILL</u></h4>
+              <div class="form-group text-center mb-2">
+                <h4 class="fw-bold"><u>LIPA NA MPESA - PAYBILL</u></h4>
               </div>
-              <ul>
+              <ul class="mb-2">
                 <li>1. Go to M-PESA on your phone</li>
                 <li>2. Select <strong>Lipa Na M-PESA</strong></li>
                 <li>3. Select <strong>Pay Bill</strong></li>
-                <li>4. Enter Business Number: <strong style="color: #28a745; font-size: 18px;">542542</strong></li>
-                <li>5. Enter Account Number: <strong style="color: #28a745; font-size: 18px;">79233</strong></li>
-                <li>6. Enter Amount: <strong id="paybillAmount" style="color: #28a745; font-size: 18px;">Ksh 0</strong></li>
+                <li>4. Enter Business No: <strong class="text-success">542542</strong>
+                  <button type="button" class="btn btn-sm btn-outline-success py-0 px-1 ms-1 form-btn-small" onclick="copyToClipboard('542542', this)">
+                    <i class="fas fa-copy"></i> Copy
+                  </button>
+                </li>
+                <li>5. Enter Account No: <strong class="text-success">79233</strong>
+                  <button type="button" class="btn btn-sm btn-outline-success py-0 px-1 ms-1 form-btn-small" onclick="copyToClipboard('79233', this)">
+                    <i class="fas fa-copy"></i> Copy
+                  </button>
+                </li>
+                <li>6. Enter Amount: <strong class="text-success" id="paybillAmount">Ksh 0</strong></li>
                 <li>7. Enter your M-PESA PIN and confirm</li>
-                <li>8. After payment, enter the Transaction Code below</li>
+                <li>8. After payment, enter Transaction Code below</li>
               </ul>
+              <p class="mb-0 text-center"><small><i class="fas fa-info-circle"></i> Copy numbers above</small></p>
             </div>
           </div>
 
           <!-- Transaction Reference -->
-          <div class="form-group mb-4" id="transaction-reference-group" style="display: none;">
-            <label for="transaction_reference">
-              <i class="fas fa-receipt"></i> Transaction Code
+          <div class="form-group transaction-group" id="transaction-reference-group" style="display: none;">
+            <label for="transaction_reference" class="form-label-small">
+              <i class="fas fa-receipt"></i> Transaction Code <span class="text-danger">*</span>
             </label>
-            <input type="text" class="form-control" id="transaction_reference" name="transaction_reference" placeholder="Enter your M-Pesa code (e.g., QX2A3B4C5D)" required>
-            <small class="form-text text-muted mt-2">
-              <i class="fas fa-info-circle"></i> Enter the transaction code you received via SMS after completing the payment
+            <input type="text" class="form-control form-control-small" id="transaction_reference" name="transaction_reference" placeholder="Paste M-Pesa message or enter code" required>
+            <small class="form-text text-muted mt-1 d-block">
+              <i class="fas fa-info-circle"></i> Paste entire M-Pesa SMS or type code (auto uppercase)
             </small>
-            <div id="transaction-error" class="text-danger mt-2" style="display: none;">
-              <i class="fas fa-exclamation-circle"></i> You must enter transaction code
+            <div id="transaction-error" class="text-danger mt-1" style="display: none;">
+              <i class="fas fa-exclamation-circle"></i> Enter transaction code
             </div>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="d-flex gap-3 justify-content-center mt-4">
-            <button type="submit" class="btn btn-success" id="complete-purchase-btn">
-              <i class="fas fa-check-circle"></i> Complete Payment
+          <!-- Action Buttons - SMALL -->
+          <div class="action-buttons">
+            <button type="submit" class="btn btn-success form-btn-small" id="complete-purchase-btn">
+              <i class="fas fa-check-circle"></i> Complete
             </button>
-            <button type="button" class="btn btn-secondary" id="cancel-btn">
+            <button type="button" class="btn btn-secondary form-btn-small" id="cancel-btn">
               <i class="fas fa-times"></i> Cancel
             </button>
           </div>
@@ -343,8 +513,8 @@
   <div id="footer-container"></div>
 
   <!-- Scroll To Top -->
-  <a href="#" class="scrollToTop scroll-btn fixed bottom-8 right-8 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-red-800 transition-colors duration-300 z-50 hidden">
-    <i class="fas fa-arrow-up"></i>
+  <a href="#" class="scrollToTop scroll-btn fixed bottom-8 right-8 bg-primary text-white p-2 rounded-full shadow-lg hover:bg-red-800 transition-colors duration-300 z-50 hidden">
+    <i class="fas fa-arrow-up text-sm"></i>
   </a>
   
   <!-- WhatsApp Button -->
@@ -497,9 +667,10 @@
       });
     });
   </script>
+
+<!-- Payment JavaScript -->
 <script type="module">
-// Payment Form JavaScript with Firebase Firestore Integration - FIXED jQuery Error
-// Add this script to your payments.html page
+// Payment Form JavaScript with Firebase Firestore Integration - COMPACT VERSION
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
@@ -523,26 +694,28 @@ try {
     app = initializeApp(firebaseConfig);
     analytics = getAnalytics(app);
     db = getFirestore(app);
-    console.log('✅ Firebase initialized successfully');
+    console.log('✅ Firebase initialized');
 } catch (error) {
-    console.error('❌ Firebase initialization error:', error);
+    console.error('❌ Firebase error:', error);
 }
 
-// Auto-extract transaction code from M-Pesa message
+// Extract transaction code from M-Pesa message
 function extractTransactionCode(text) {
-    // M-Pesa transaction codes are usually 10 characters (e.g., QX2A3B4C5D)
+    if (!text) return null;
+    
+    const cleanText = text.trim().toUpperCase();
+    
+    // M-Pesa codes: usually 10 alphanumeric chars, often at start
     const patterns = [
-        /\b([A-Z]{2}\d{1}[A-Z0-9]{7})\b/i,  // QX2A3B4C5D format
-        /\b([A-Z]{3}\d{7})\b/i,               // ABC1234567 format
-        /\b([A-Z0-9]{10})\b/i,                // Any 10 char alphanumeric
-        /confirmed[.\s]*([A-Z0-9]{10})/i,     // After "confirmed"
-        /transaction[^:]*:?\s*([A-Z0-9]{10})/i
+        /^([A-Z0-9]{10})\b/,
+        /\b([A-Z0-9]{10})\b/,
+        /([A-Z0-9]{8,12})/
     ];
     
     for (const pattern of patterns) {
-        const match = text.match(pattern);
+        const match = cleanText.match(pattern);
         if (match && match[1]) {
-            return match[1].toUpperCase();
+            return match[1];
         }
     }
     return null;
@@ -558,28 +731,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const talentId = urlParams.get('talent_id');
     const talentName = urlParams.get('talent_name');
     
-    // Helper function to safely set values
+    // Helper functions
     function setFieldValue(id, value) {
         const field = document.getElementById(id);
-        if (field && value) {
-            field.value = value;
-        }
+        if (field && value) field.value = value;
     }
     
     function setTextContent(id, value) {
         const element = document.getElementById(id);
-        if (element && value) {
-            element.textContent = value;
-        }
+        if (element && value) element.textContent = value;
     }
     
-    // Populate hidden fields
+    // Populate fields
     if (bookingType) setFieldValue('bookingType', bookingType);
     if (amount) {
         setFieldValue('bookingAmount', amount);
         setTextContent('mpesaAmount', 'Ksh ' + amount);
         setTextContent('paybillAmount', 'Ksh ' + amount);
         setTextContent('total-amount-display', 'Ksh ' + amount);
+        setTextContent('summaryAmount', amount);
     }
     if (talentId) setFieldValue('bookingTalentId', talentId);
     if (talentName) {
@@ -591,41 +761,42 @@ document.addEventListener('DOMContentLoaded', function() {
     if (bookingType === 'talent' && talentName) {
         const bookingSummary = document.getElementById('bookingSummary');
         if (bookingSummary) bookingSummary.style.display = 'block';
-        setTextContent('summaryAmount', amount || '0');
     }
     
-    // Payment method change handler
+    // Payment method change
     const paymentMethodSelect = document.getElementById('payment_method');
     if (paymentMethodSelect) {
         paymentMethodSelect.addEventListener('change', function() {
             const method = this.value;
-            
-            // Hide all payment details
             const mpesaDetails = document.getElementById('mpesa-details');
             const paybillDetails = document.getElementById('paybill-details');
             const transactionGroup = document.getElementById('transaction-reference-group');
-            const transactionRef = document.getElementById('transaction_reference');
             
             if (mpesaDetails) mpesaDetails.style.display = 'none';
             if (paybillDetails) paybillDetails.style.display = 'none';
             if (transactionGroup) transactionGroup.style.display = 'none';
             
-            // Show selected payment method details
             if (method === 'mpesa' && mpesaDetails && transactionGroup) {
                 mpesaDetails.style.display = 'block';
                 transactionGroup.style.display = 'block';
-                if (transactionRef) transactionRef.required = true;
             } else if (method === 'paybill' && paybillDetails && transactionGroup) {
                 paybillDetails.style.display = 'block';
                 transactionGroup.style.display = 'block';
-                if (transactionRef) transactionRef.required = true;
             }
         });
     }
     
-    // Auto-extract transaction code on paste
+    // Transaction code handling
     const transactionInput = document.getElementById('transaction_reference');
     if (transactionInput) {
+        // Auto uppercase
+        transactionInput.addEventListener('input', function() {
+            const cursorPos = this.selectionStart;
+            this.value = this.value.toUpperCase();
+            this.setSelectionRange(cursorPos, cursorPos);
+        });
+        
+        // Auto-extract on paste
         transactionInput.addEventListener('paste', function(e) {
             setTimeout(() => {
                 const pastedText = this.value;
@@ -633,149 +804,107 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (extractedCode) {
                     this.value = extractedCode;
-                    const errorDiv = document.getElementById('transaction-error');
-                    if (errorDiv) errorDiv.style.display = 'none';
-                    
-                    // Show success feedback
+                    // Brief success notification
                     Swal.fire({
                         icon: 'success',
-                        title: 'Transaction Code Detected!',
-                        text: extractedCode,
-                        timer: 2000,
+                        title: 'Code extracted!',
+                        timer: 1200,
                         showConfirmButton: false,
                         toast: true,
                         position: 'top-end'
                     });
                 }
-            }, 100);
-        });
-        
-        // Also extract on input change
-        transactionInput.addEventListener('input', function() {
-            const text = this.value;
-            if (text.length > 15) {
-                const extractedCode = extractTransactionCode(text);
-                if (extractedCode) {
-                    this.value = extractedCode;
-                }
-            }
+            }, 10);
         });
     }
     
-    // Add copy functionality to payment details
-    addCopyButtons();
-    
-    // Form submission handler
+    // Form submission
     const paymentForm = document.getElementById('payment-form');
     if (paymentForm) {
         paymentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const paymentMethod = document.getElementById('payment_method').value;
-            const transactionRef = document.getElementById('transaction_reference').value.trim();
+            let transactionRef = document.getElementById('transaction_reference').value.trim().toUpperCase();
             
-            // Validate payment method selected
+            // Validate
             if (!paymentMethod) {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Payment Method Required',
-                    text: 'Please select a payment method',
+                    title: 'Select Method',
+                    text: 'Choose M-Pesa or Paybill',
                     confirmButtonColor: '#BA0909'
                 });
                 return;
             }
             
-            // Validate transaction reference
             if (!transactionRef) {
-                const errorDiv = document.getElementById('transaction-error');
-                if (errorDiv) errorDiv.style.display = 'block';
                 document.getElementById('transaction_reference').focus();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Enter Code',
+                    text: 'Enter M-Pesa transaction code',
+                    confirmButtonColor: '#BA0909'
+                });
                 return;
             }
             
-            const errorDiv = document.getElementById('transaction-error');
-            if (errorDiv) errorDiv.style.display = 'none';
-            
             // Show loading
             Swal.fire({
-                title: 'Processing Payment...',
-                html: 'Please wait while we verify your transaction',
+                title: 'Processing...',
                 allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+                didOpen: () => Swal.showLoading()
             });
             
             try {
-                // Prepare payment data
+                // Prepare data
                 const paymentData = {
-                    // Contact Information
                     fullName: document.getElementById('full_name').value.trim(),
                     email: document.getElementById('email').value.trim(),
                     phoneNumber: document.getElementById('phone_number').value.trim(),
-                    
-                    // Payment Details
                     paymentMethod: paymentMethod,
                     transactionReference: transactionRef,
                     amount: parseFloat(document.getElementById('bookingAmount').value) || 0,
-                    
-                    // Booking Details
                     bookingType: document.getElementById('bookingType').value || 'general',
                     talentId: document.getElementById('bookingTalentId').value || null,
                     talentName: document.getElementById('bookingTalentName').value || null,
-                    eventName: document.getElementById('bookingEventName').value || 'Kalenjin Vibes Night',
-                    location: document.getElementById('bookingLocation').value || null,
-                    eventDate: document.getElementById('bookingEventDate').value || null,
-                    notes: document.getElementById('bookingNotes').value || null,
-                    
-                    // Metadata
                     status: 'pending',
                     createdAt: serverTimestamp(),
-                    paymentDate: new Date().toISOString(),
-                    source: 'website'
+                    paymentDate: new Date().toISOString()
                 };
                 
                 // Save to Firestore
                 const docRef = await addDoc(collection(db, 'payments'), paymentData);
                 
-                console.log('✅ Payment saved to Firestore with ID:', docRef.id);
-                
-                // Close loading and show success modal
                 Swal.close();
-                
-                showSuccessModal(paymentData, docRef.id);
+                showSimpleSuccess(paymentData, docRef.id);
                 
             } catch (error) {
-                console.error('❌ Error saving payment:', error);
-                
+                console.error('❌ Error:', error);
                 Swal.fire({
                     icon: 'error',
-                    title: 'Payment Submission Error',
-                    html: `
-                        <p>There was an error submitting your payment.</p>
-                        <p class="text-sm text-gray-600 mt-2">Please contact support:</p>
-                        <p class="font-bold">Transaction: ${transactionRef}</p>
-                        <p class="text-xs text-red-600 mt-2">Error: ${error.message}</p>
-                    `,
+                    title: 'Failed',
+                    html: `Error: ${error.message}<br>
+                           <small>Code: ${transactionRef}</small>`,
                     confirmButtonColor: '#BA0909'
                 });
             }
         });
     }
     
-    // Cancel button handler
+    // Cancel button
     const cancelBtn = document.getElementById('cancel-btn');
     if (cancelBtn) {
         cancelBtn.addEventListener('click', function() {
             Swal.fire({
-                title: 'Cancel Payment?',
-                text: 'Are you sure you want to cancel this payment?',
+                title: 'Cancel?',
+                text: 'Cancel this payment?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#BA0909',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, cancel',
-                cancelButtonText: 'No, continue'
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No'
             }).then((result) => {
                 if (result.isConfirmed) {
                     window.location.href = 'index.html';
@@ -784,7 +913,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Initialize payment method if already selected
+    // Initialize payment method
     setTimeout(function() {
         if (paymentMethodSelect && paymentMethodSelect.value) {
             paymentMethodSelect.dispatchEvent(new Event('change'));
@@ -792,211 +921,74 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
-// Add copy buttons to payment details
-function addCopyButtons() {
-    const copyButtonHTML = (number, text) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'copy-btn-inline';
-        btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
-        btn.onclick = () => copyToClipboard(number, btn);
-        return btn;
-    };
-    
-    // M-Pesa Till Number
-    const mpesaTillItem = document.querySelector('#mpesa-details ul li:nth-child(4)');
-    if (mpesaTillItem) {
-        mpesaTillItem.appendChild(copyButtonHTML('3049015', 'Till Number'));
-    }
-    
-    // Paybill Business Number
-    const paybillBusinessItem = document.querySelector('#paybill-details ul li:nth-child(4)');
-    if (paybillBusinessItem) {
-        paybillBusinessItem.appendChild(copyButtonHTML('542542', 'Business Number'));
-    }
-    
-    // Paybill Account Number
-    const paybillAccountItem = document.querySelector('#paybill-details ul li:nth-child(5)');
-    if (paybillAccountItem) {
-        paybillAccountItem.appendChild(copyButtonHTML('79233', 'Account Number'));
-    }
-}
-
-// Copy to clipboard function
-window.copyToClipboard = function(text, button) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-            showCopySuccess(button);
-        }).catch(err => {
-            fallbackCopy(text, button);
-        });
-    } else {
-        fallbackCopy(text, button);
-    }
-};
-
-function showCopySuccess(button) {
-    const originalHTML = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-check"></i> ✓';
-    button.style.background = '#25D366';
-    
-    setTimeout(() => {
-        button.innerHTML = originalHTML;
-        button.style.background = '#28a745';
-    }, 2000);
-}
-
-function fallbackCopy(text, button) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    
-    try {
-        document.execCommand('copy');
-        showCopySuccess(button);
-    } catch (err) {
-        console.error('Failed to copy:', err);
-    }
-    
-    document.body.removeChild(textarea);
-}
-
-// Success Modal with Tailwind Gradient and Tick
-function showSuccessModal(paymentData, paymentId) {
+// Simple success modal
+function showSimpleSuccess(paymentData, paymentId) {
     const modalHTML = `
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" id="success-modal" style="z-index: 99999;">
-            <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-fadeIn">
-                <!-- Gradient Header with Tick -->
-                <div class="bg-gradient-to-r from-green-400 via-emerald-500 to-teal-600 p-8 text-center">
-                    <div class="mb-4 flex justify-center">
-                        <div class="bg-white rounded-full p-4 shadow-lg" style="animation: bounce 1s infinite;">
-                            <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <h2 class="text-3xl font-bold text-white mb-2">Payment Received!</h2>
-                    <p class="text-green-50">Your transaction is being processed</p>
+        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3">
+            <div class="bg-white rounded-lg shadow-xl max-w-xs w-full">
+                <div class="bg-green-500 p-4 text-center rounded-t-lg">
+                    <i class="fas fa-check-circle text-white text-3xl mb-2"></i>
+                    <h2 class="text-lg font-bold text-white">Payment Submitted</h2>
                 </div>
-                
-                <!-- Content -->
-                <div class="p-6">
-                    <div class="space-y-4">
-                        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border-l-4 border-purple-500">
-                            <p class="text-sm text-gray-600 mb-1">Transaction Reference</p>
-                            <p class="font-mono font-bold text-lg text-purple-700">${paymentData.transactionReference}</p>
+                <div class="p-4">
+                    <div class="mb-3 text-center">
+                        <p class="text-sm text-gray-600 mb-1">Transaction Code</p>
+                        <p class="font-mono font-bold text-gray-800">${paymentData.transactionReference}</p>
+                    </div>
+                    <div class="flex justify-between mb-3">
+                        <div>
+                            <p class="text-xs text-gray-600">Amount</p>
+                            <p class="font-bold text-green-600">Ksh ${paymentData.amount}</p>
                         </div>
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-gray-50 rounded-lg p-3">
-                                <p class="text-xs text-gray-600 mb-1">Amount</p>
-                                <p class="font-bold text-green-600">Ksh ${paymentData.amount.toLocaleString()}</p>
-                            </div>
-                            <div class="bg-gray-50 rounded-lg p-3">
-                                <p class="text-xs text-gray-600 mb-1">Payment ID</p>
-                                <p class="font-mono text-xs text-gray-800">${paymentId.substring(0, 8)}...</p>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4">
-                            <div class="flex items-start">
-                                <svg class="w-5 h-5 text-yellow-600 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                                </svg>
-                                <div>
-                                    <p class="text-sm font-semibold text-yellow-800">Confirmation Email Sent</p>
-                                    <p class="text-xs text-yellow-700 mt-1">Check ${paymentData.email} for details</p>
-                                </div>
-                            </div>
+                        <div>
+                            <p class="text-xs text-gray-600">Status</p>
+                            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 rounded text-xs">Pending</span>
                         </div>
                     </div>
-                    
-                    <!-- Buttons -->
-                    <div class="mt-6 space-y-3">
+                    <div class="space-y-2">
                         <button onclick="window.location.href='index.html'" 
-                                class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-4 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 shadow-lg text-sm">
-                            <i class="fas fa-home mr-2"></i>Back to Home
+                                class="w-full bg-primary text-white font-medium py-2 px-3 rounded text-sm">
+                            <i class="fas fa-home mr-1"></i>Home
                         </button>
-                        <button onclick="closeSuccessModal()" 
-                                class="w-full bg-gray-100 text-gray-700 font-semibold py-3 px-4 rounded-xl hover:bg-gray-200 transition-colors text-sm">
+                        <button onclick="document.getElementById('success-modal-close').click()" 
+                                class="w-full bg-gray-200 text-gray-700 font-medium py-2 px-3 rounded text-sm">
                             Close
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <style>
-            @keyframes fadeIn {
-                from { opacity: 0; transform: scale(0.9); }
-                to { opacity: 1; transform: scale(1); }
-            }
-            @keyframes bounce {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-10px); }
-            }
-            .animate-fadeIn {
-                animation: fadeIn 0.3s ease-out;
-            }
-        </style>
     `;
     
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    const modalDiv = document.createElement('div');
+    modalDiv.innerHTML = modalHTML;
+    modalDiv.id = 'success-modal-close';
+    modalDiv.querySelector('[onclick*="success-modal-close"]').addEventListener('click', function() {
+        modalDiv.remove();
+    });
     
-    // Add confetti effect
-    setTimeout(() => {
-        createConfetti();
-    }, 300);
+    document.body.appendChild(modalDiv);
 }
 
-window.closeSuccessModal = function() {
-    const modal = document.getElementById('success-modal');
-    if (modal) {
-        modal.style.opacity = '0';
-        setTimeout(() => {
-            modal.remove();
-        }, 300);
+// Copy to clipboard function (for copy buttons)
+window.copyToClipboard = function(text, button) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            const original = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.classList.remove('btn-outline-success');
+            button.classList.add('btn-success');
+            
+            setTimeout(() => {
+                button.innerHTML = original;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-success');
+            }, 1500);
+        });
     }
 };
 
-// Simple confetti effect
-function createConfetti() {
-    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
-    const confettiCount = 50;
-    
-    for (let i = 0; i < confettiCount; i++) {
-        const confetti = document.createElement('div');
-        Object.assign(confetti.style, {
-            position: 'fixed',
-            width: '10px',
-            height: '10px',
-            backgroundColor: colors[Math.floor(Math.random() * colors.length)],
-            left: Math.random() * 100 + '%',
-            top: '-10px',
-            opacity: Math.random(),
-            transform: `rotate(${Math.random() * 360}deg)`,
-            zIndex: '9998',
-            pointerEvents: 'none',
-            transition: 'all 3s ease-out'
-        });
-        
-        document.body.appendChild(confetti);
-        
-        setTimeout(() => {
-            confetti.style.top = '100vh';
-            confetti.style.left = (parseFloat(confetti.style.left) + (Math.random() * 200 - 100)) + '%';
-        }, 10);
-        
-        setTimeout(() => {
-            confetti.remove();
-        }, 3000);
-    }
-}
-
-console.log('✅ Payment Form with Firebase Integration Ready');
+console.log('✅ Payment Form Ready');
 </script>
 
 </body>
