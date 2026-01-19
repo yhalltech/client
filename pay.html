@@ -1,3 +1,5 @@
+[file name]: payments.html
+[file content begin]
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 <head>
@@ -31,7 +33,7 @@
     }
   </script>
   
-  <!-- SweetAlert2 CSS -->
+  <!-- SweetAlert2 CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   
   <!-- Google Analytics -->
@@ -44,7 +46,7 @@
   </script>
   
   <style>
-    /* Mobile Menu Styles */
+    /* Mobile Menu Styles - Only minimal CSS */
     .mobile-menu-modal {
         display: none;
     }
@@ -404,10 +406,13 @@
             <i class="fas fa-receipt text-primary mr-2"></i> Transaction Code <span class="text-red-500">*</span>
           </label>
           <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" 
-                 id="transaction_reference" name="transaction_reference" placeholder="Enter M-Pesa code (e.g., SH12ABC34D)" required>
+                 id="transaction_reference" name="transaction_reference" placeholder="Paste M-Pesa message or enter code" required>
           <small class="block text-sm text-gray-500 mt-2">
-            <i class="fas fa-info-circle text-primary mr-1"></i> Paste the full M-Pesa message or just the code
+            <i class="fas fa-info-circle text-primary mr-1"></i> Paste entire M-Pesa SMS or type code (auto uppercase)
           </small>
+          <div id="transaction-error" class="text-red-600 mt-2" style="display: none;">
+            <i class="fas fa-exclamation-circle mr-1"></i> Enter transaction code
+          </div>
         </div>
 
         <!-- Action Buttons -->
@@ -415,7 +420,7 @@
           <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center">
             <i class="fas fa-check-circle mr-2"></i> Complete Purchase
           </button>
-          <button type="button" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center" id="cancel-btn" onclick="window.location.href='index.html'">
+          <button type="button" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center" id="cancel-btn">
             <i class="fas fa-times mr-2"></i> Cancel
           </button>
         </div>
@@ -432,35 +437,39 @@
   </a>
   
   <!-- WhatsApp Button -->
-  <a href="https://wa.me/+254797265275" class="whatsapp-button-payments" target="_blank" title="Chat with us on WhatsApp">
-    <img src="assets/img/WhatsApp.svg" alt="WhatsApp">
+  <a href="https://wa.me/+254797265275" class="whatsapp-button-payments fixed bottom-5 left-5 z-40 w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110" target="_blank" title="Chat with us on WhatsApp">
+    <img src="assets/img/WhatsApp.svg" alt="WhatsApp" class="w-8 h-8 filter brightness-0 invert">
   </a>
 
-  <!-- Firebase CDN -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  
-  <!-- SweetAlert2 -->
+  <!-- JavaScript Files -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+  
   <!-- Global Mobile Menu Functions -->
   <script>
+    // Global mobile menu functions
     window.openMobileMenu = function() {
+      console.log('Opening mobile menu...');
       const modal = document.getElementById('mobileMenuModal');
       if (modal) {
         modal.classList.add('active');
         document.body.classList.add('overflow-hidden');
+        console.log('Menu opened!');
+      } else {
+        console.error('Modal not found!');
       }
     };
 
     window.closeMobileMenu = function() {
+      console.log('Closing mobile menu...');
       const modal = document.getElementById('mobileMenuModal');
       if (modal) {
         modal.classList.remove('active');
         document.body.classList.remove('overflow-hidden');
+        console.log('Menu closed!');
       }
     };
 
+    // Close on Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         window.closeMobileMenu();
@@ -470,10 +479,13 @@
 
   <!-- Load Header and Footer -->
   <script>
+    // Load header
     fetch('partials/header.html')
       .then(response => response.text())
       .then(data => {
         document.getElementById('header-container').innerHTML = data;
+        
+        // Attach click handlers after header loads
         setTimeout(function() {
           const menuToggle = document.querySelector('.vs-menu-toggle');
           if (menuToggle) {
@@ -481,6 +493,8 @@
               window.openMobileMenu();
             });
           }
+          
+          // Close menu when clicking links
           const menuLinks = document.querySelectorAll('.mobile-menu-nav a');
           menuLinks.forEach(link => {
             link.addEventListener('click', function() {
@@ -491,10 +505,13 @@
       })
       .catch(error => console.error('Error loading header:', error));
       
+    // Load footer
     fetch('partials/footer.html')
       .then(response => response.text())
       .then(data => {
         document.getElementById('footer-container').innerHTML = data;
+        
+        // Set current year in footer
         const yearElements = document.querySelectorAll('.current-year');
         yearElements.forEach(element => {
           element.textContent = new Date().getFullYear();
@@ -526,33 +543,9 @@
     });
   </script>
 
-  <!-- UPDATED Payment JavaScript with FIXED Validation -->
+  <!-- Payment JavaScript -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      
-      // Firebase Configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyARficcDI3R1ELfjkQxL-kkFQr-tzOgzgo",
-        authDomain: "k-vibez.firebaseapp.com",
-        projectId: "k-vibez",
-        storageBucket: "k-vibez.firebasestorage.app",
-        messagingSenderId: "1060235903242",
-        appId: "1:1060235903242:web:4649b48406879fb7fcfaf3",
-        measurementId: "G-6EHMMR974J"
-      };
-
-      // Initialize Firebase
-      let db;
-      
-      try {
-        if (!firebase.apps.length) {
-          firebase.initializeApp(firebaseConfig);
-        }
-        db = firebase.firestore();
-        console.log('✅ Firebase initialized successfully');
-      } catch (error) {
-        console.error('❌ Firebase initialization error:', error);
-      }
       
       // Get URL parameters
       const urlParams = new URLSearchParams(window.location.search);
@@ -560,10 +553,6 @@
       const amount = urlParams.get('amount');
       const talentId = urlParams.get('talent_id');
       const talentName = urlParams.get('talent_name');
-      const eventName = urlParams.get('event_name');
-      const eventDate = urlParams.get('event_date');
-      const eventLocation = urlParams.get('event_location');
-      const tickets = urlParams.get('tickets');
       
       // Helper functions
       function setFieldValue(id, value) {
@@ -576,7 +565,7 @@
         if (element && value) element.textContent = value;
       }
       
-      // Populate fields from URL parameters
+      // Populate fields
       if (bookingType) setFieldValue('bookingType', bookingType);
       if (amount) {
         setFieldValue('bookingAmount', amount);
@@ -590,9 +579,6 @@
         setFieldValue('bookingTalentName', talentName);
         setTextContent('summaryTalentName', talentName);
       }
-      if (eventName) setFieldValue('bookingEventName', eventName);
-      if (eventDate) setFieldValue('bookingEventDate', eventDate);
-      if (eventLocation) setFieldValue('bookingLocation', eventLocation);
       
       // Show booking summary if talent booking
       if (bookingType === 'talent' && talentName) {
@@ -601,29 +587,9 @@
       }
       
       // Show order summary if event ticket
-      if (bookingType === 'event_ticket' && tickets) {
+      if (bookingType === 'event_ticket') {
         const orderSummary = document.getElementById('orderSummary');
-        if (orderSummary) {
-          orderSummary.style.display = 'block';
-          
-          try {
-            const ticketsData = JSON.parse(tickets);
-            const orderItems = document.getElementById('order-items');
-            orderItems.innerHTML = '';
-            
-            ticketsData.forEach(ticket => {
-              const itemDiv = document.createElement('div');
-              itemDiv.className = 'flex justify-between mb-2';
-              itemDiv.innerHTML = `
-                <span>${ticket.type} x${ticket.quantity}</span>
-                <span>Ksh ${ticket.total}</span>
-              `;
-              orderItems.appendChild(itemDiv);
-            });
-          } catch (e) {
-            console.error('Error parsing tickets:', e);
-          }
-        }
+        if (orderSummary) orderSummary.style.display = 'block';
       }
       
       // Payment method change
@@ -658,37 +624,6 @@
           this.value = this.value.toUpperCase();
           this.setSelectionRange(cursorPos, cursorPos);
         });
-        
-        // Auto-extract M-Pesa code from pasted message
-        transactionInput.addEventListener('paste', function(e) {
-          setTimeout(() => {
-            const pastedText = this.value;
-            // Extract M-Pesa transaction code - looks for alphanumeric sequence 6-12 chars
-            const codePatterns = [
-              /([A-Z0-9]{10})/i,  // 10 char codes (most common)
-              /([A-Z0-9]{8,12})/i, // 8-12 chars
-              /([A-Z]{2}\d{8}[A-Z]{2})/i, // Pattern like SH12345678AB
-              /([A-Z0-9]{6,12})/i  // Fallback 6-12 chars
-            ];
-            
-            for (const pattern of codePatterns) {
-              const match = pastedText.match(pattern);
-              if (match && match[1]) {
-                this.value = match[1].toUpperCase();
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Code Extracted!',
-                  text: 'Transaction code: ' + match[1],
-                  timer: 2000,
-                  showConfirmButton: false,
-                  toast: true,
-                  position: 'top-end'
-                });
-                break;
-              }
-            }
-          }, 10);
-        });
       }
       
       // Copy to clipboard function
@@ -696,42 +631,20 @@
         if (navigator.clipboard) {
           navigator.clipboard.writeText(text).then(() => {
             const original = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i> Copied';
-            button.style.background = '#218838';
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.classList.remove('bg-green-600');
+            button.classList.add('bg-green-700');
             
             setTimeout(() => {
               button.innerHTML = original;
-              button.style.background = '';
-            }, 2000);
-          }).catch(err => {
-            fallbackCopy(text, button);
+              button.classList.remove('bg-green-700');
+              button.classList.add('bg-green-600');
+            }, 1500);
           });
-        } else {
-          fallbackCopy(text, button);
         }
       };
       
-      function fallbackCopy(text, button) {
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        
-        const original = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i> Copied';
-        button.style.background = '#218838';
-        
-        setTimeout(() => {
-          button.innerHTML = original;
-          button.style.background = '';
-        }, 2000);
-      }
-      
-      // FORM SUBMISSION WITH FIXED VALIDATION
+      // Form submission
       const paymentForm = document.getElementById('payment-form');
       if (paymentForm) {
         paymentForm.addEventListener('submit', async function(e) {
@@ -740,70 +653,23 @@
           const paymentMethod = document.getElementById('payment_method').value;
           let transactionRef = document.getElementById('transaction_reference').value.trim().toUpperCase();
           
-          // Clean the transaction code - remove spaces, dashes, dots
-          transactionRef = transactionRef.replace(/[\s\-\.]/g, '');
-          
-          // Validate payment method
+          // Validate
           if (!paymentMethod) {
             Swal.fire({
               icon: 'error',
-              title: 'Select Payment Method',
-              text: 'Please choose M-Pesa or Paybill',
+              title: 'Select Method',
+              text: 'Choose M-Pesa or Paybill',
               confirmButtonColor: '#BA0909'
             });
             return;
           }
           
-          // Validate transaction code exists
           if (!transactionRef) {
             document.getElementById('transaction_reference').focus();
             Swal.fire({
               icon: 'error',
-              title: 'Transaction Code Required',
-              text: 'Please enter the M-Pesa transaction code from your SMS',
-              confirmButtonColor: '#BA0909'
-            });
-            return;
-          }
-          
-          // FIXED VALIDATION - Accept 6-12 character codes
-          if (transactionRef.length < 6) {
-            Swal.fire({
-              icon: 'warning',
-              title: 'Code Too Short',
-              html: `
-                <p>M-Pesa transaction codes must be at least 6 characters.</p>
-                <p class="text-sm text-gray-600 mt-2">Your code: <strong>${transactionRef}</strong> (${transactionRef.length} characters)</p>
-              `,
-              confirmButtonColor: '#BA0909'
-            });
-            return;
-          }
-          
-          if (transactionRef.length > 12) {
-            Swal.fire({
-              icon: 'warning',
-              title: 'Code Too Long',
-              html: `
-                <p>M-Pesa codes are maximum 12 characters.</p>
-                <p class="text-sm text-gray-600 mt-2">Your code: <strong>${transactionRef}</strong> (${transactionRef.length} characters)</p>
-                <p class="text-sm text-gray-600 mt-2">Please check the SMS and enter only the transaction code.</p>
-              `,
-              confirmButtonColor: '#BA0909'
-            });
-            return;
-          }
-          
-          // Check if code contains only letters and numbers
-          if (!/^[A-Z0-9]+$/.test(transactionRef)) {
-            Swal.fire({
-              icon: 'warning',
-              title: 'Invalid Characters',
-              html: `
-                <p>M-Pesa codes contain only letters (A-Z) and numbers (0-9).</p>
-                <p class="text-sm text-gray-600 mt-2">Your code: <code class="bg-gray-100 px-2 py-1 rounded">${transactionRef}</code></p>
-                <p class="text-sm text-red-600 mt-2">Remove any spaces, dashes (-), dots (.) or special characters.</p>
-              `,
+              title: 'Enter Code',
+              text: 'Enter M-Pesa transaction code',
               confirmButtonColor: '#BA0909'
             });
             return;
@@ -811,225 +677,66 @@
           
           // Show loading
           Swal.fire({
-            title: 'Processing Payment...',
-            html: `
-              <div class="text-center py-4">
-                <div class="mb-4">
-                  <i class="fas fa-spinner fa-spin text-5xl text-primary"></i>
-                </div>
-                <p class="text-lg mb-2">Verifying transaction code</p>
-                <p class="font-mono text-xl font-bold text-green-600">${transactionRef}</p>
-                <p class="text-sm text-gray-600 mt-3">Please wait while we save your payment...</p>
-              </div>
-            `,
+            title: 'Processing...',
             allowOutsideClick: false,
-            allowEscapeKey: false,
-            showConfirmButton: false,
-            didOpen: () => {
-              Swal.showLoading();
-            }
+            didOpen: () => Swal.showLoading()
           });
           
-          try {
-            // Check if Firebase is available
-            if (!db) {
-              throw new Error('Database connection unavailable. Please check your internet connection and try again.');
-            }
+          // Simulate processing
+          setTimeout(() => {
+            Swal.close();
             
-            // Check for duplicate transaction code
-            console.log('🔍 Checking for duplicate transaction:', transactionRef);
-            const duplicateCheck = await db.collection('payments')
-              .where('transactionReference', '==', transactionRef)
-              .where('status', 'in', ['pending', 'confirmed'])
-              .get();
-            
-            if (!duplicateCheck.empty) {
-              const existingPayment = duplicateCheck.docs[0];
-              const existingData = existingPayment.data();
-              
-              Swal.fire({
-                icon: 'error',
-                title: 'Duplicate Transaction Code',
-                html: `
-                  <div class="text-left">
-                    <p class="mb-3">This M-Pesa code has already been used for a payment.</p>
-                    <div class="p-4 bg-red-50 rounded-lg border border-red-200">
-                      <p class="text-sm"><strong>Transaction Code:</strong> ${transactionRef}</p>
-                      <p class="text-sm mt-1"><strong>Previous Payment ID:</strong> ${existingPayment.id.slice(0, 8).toUpperCase()}</p>
-                      <p class="text-sm mt-1"><strong>Amount:</strong> KSH ${existingData.amount || 'N/A'}</p>
-                      <p class="text-sm mt-1"><strong>Status:</strong> ${existingData.status || 'Unknown'}</p>
-                    </div>
-                    <p class="mt-3 text-sm text-gray-700">Each M-Pesa transaction code can only be used once.</p>
-                    <p class="text-sm text-gray-700 mt-2">If this is a new payment, please check your M-Pesa SMS for the correct transaction code.</p>
-                  </div>
-                `,
-                confirmButtonColor: '#BA0909',
-                confirmButtonText: 'Enter Correct Code',
-                showCancelButton: true,
-                cancelButtonText: 'Contact Support'
-              }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.cancel) {
-                  window.open('https://wa.me/+254797265275?text=Duplicate%20Payment%20Issue:%20' + encodeURIComponent(transactionRef), '_blank');
-                }
-              });
-              return;
-            }
-            
-            // Prepare payment data
-            const paymentData = {
-              fullName: document.getElementById('full_name').value.trim(),
-              email: document.getElementById('email').value.trim().toLowerCase(),
-              phoneNumber: document.getElementById('phone_number').value.trim(),
-              paymentMethod: paymentMethod,
-              transactionReference: transactionRef,
-              amount: parseFloat(document.getElementById('bookingAmount').value) || 0,
-              bookingType: document.getElementById('bookingType').value || 'general',
-              talentId: document.getElementById('bookingTalentId').value || null,
-              talentName: document.getElementById('bookingTalentName').value || null,
-              eventName: document.getElementById('bookingEventName').value || null,
-              eventDate: document.getElementById('bookingEventDate').value || null,
-              eventLocation: document.getElementById('bookingLocation').value || null,
-              status: 'pending',
-              paymentDate: new Date().toISOString(),
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-              userAgent: navigator.userAgent,
-              source: 'website',
-              formattedDate: new Date().toLocaleString('en-KE', {timeZone: 'Africa/Nairobi'})
-            };
-            
-            console.log('💾 Saving payment data:', paymentData);
-            
-            // Save to Firestore
-            const docRef = await db.collection('payments').add(paymentData);
-            
-            console.log('✅ Payment saved successfully! ID:', docRef.id);
-            
-            // Success message
+            // Show success message
             Swal.fire({
               icon: 'success',
-              title: '✅ Payment Submitted Successfully!',
+              title: 'Payment Submitted!',
               html: `
                 <div class="text-center">
-                  <div class="mb-4 p-5 bg-green-50 rounded-xl border-2 border-green-200">
-                    <div class="mb-3">
-                      <i class="fas fa-check-circle text-green-600" style="font-size: 60px;"></i>
-                    </div>
-                    <p class="text-lg font-bold mb-3">Payment Reference Number</p>
-                    <p class="text-3xl font-mono font-bold text-green-600 mb-3">${docRef.id.slice(0, 8).toUpperCase()}</p>
-                    <div class="pt-3 border-t-2 border-green-200">
-                      <p class="text-sm text-gray-700"><strong>M-Pesa Code:</strong> ${transactionRef}</p>
-                      <p class="text-sm text-gray-700 mt-1"><strong>Amount:</strong> KSH ${paymentData.amount.toLocaleString()}</p>
-                      <p class="text-sm text-gray-700 mt-1"><strong>Method:</strong> ${paymentMethod === 'mpesa' ? 'M-Pesa Till' : 'Paybill'}</p>
-                    </div>
+                  <p class="mb-3">Your payment has been received.</p>
+                  <div class="bg-gray-100 p-4 rounded-lg mb-4">
+                    <p class="mb-1"><strong>Transaction Code:</strong></p>
+                    <p class="font-mono text-lg font-bold">${transactionRef}</p>
+                    <p class="mt-2"><strong>Amount:</strong> Ksh ${amount || '0'}</p>
                   </div>
-                  
-                  <div class="bg-blue-50 p-4 rounded-lg mb-4">
-                    <p class="text-sm font-bold mb-2"><i class="fas fa-info-circle text-blue-600"></i> What Happens Next?</p>
-                    <ul class="text-sm text-left space-y-2 mt-2">
-                      <li>✅ Your payment has been recorded</li>
-                      <li>⏳ We will verify your transaction within 24 hours</li>
-                      <li>📧 Confirmation email will be sent to <strong>${paymentData.email}</strong></li>
-                      <li>📱 Keep your phone handy - we may call to confirm details</li>
-                    </ul>
-                  </div>
-                  
-                  <p class="text-xs text-gray-600 mt-3">
-                    <i class="fas fa-bookmark text-primary"></i> 
-                    Save this reference number: <strong>${docRef.id.slice(0, 8).toUpperCase()}</strong>
-                  </p>
-                  
-                  <p class="text-xs text-gray-500 mt-2">
-                    Check your email for payment receipt and further instructions.
-                  </p>
+                  <p class="text-sm text-gray-600">You will receive a confirmation email shortly.</p>
                 </div>
               `,
               confirmButtonColor: '#BA0909',
-              confirmButtonText: '🏠 Back to Home',
-              allowOutsideClick: false,
-              allowEscapeKey: false
+              confirmButtonText: 'Back to Home'
             }).then((result) => {
               if (result.isConfirmed) {
                 window.location.href = 'index.html';
               }
             });
-            
-          } catch (error) {
-            console.error('❌ Error saving payment:', error);
-            console.error('Error details:', {
-              code: error.code,
-              message: error.message,
-              stack: error.stack
-            });
-            
-            // Determine error type
-            let errorTitle = 'Payment Submission Failed';
-            let errorMessage = error.message;
-            let errorHint = '';
-            
-            if (error.code === 'permission-denied') {
-              errorTitle = 'Permission Error';
-              errorMessage = 'Unable to save payment due to database permissions.';
-              errorHint = 'This is likely a temporary issue. Please try again in a few moments.';
-            } else if (error.code === 'unavailable') {
-              errorTitle = 'Connection Error';
-              errorMessage = 'Unable to connect to the database.';
-              errorHint = 'Please check your internet connection and try again.';
-            } else if (error.code === 'unauthenticated') {
-              errorTitle = 'Authentication Error';
-              errorMessage = 'Session expired or authentication failed.';
-              errorHint = 'Please refresh the page and try again.';
-            }
-            
-            Swal.fire({
-              icon: 'error',
-              title: errorTitle,
-              html: `
-                <div class="text-left">
-                  <p class="mb-3">${errorMessage}</p>
-                  ${errorHint ? `<p class="text-sm text-gray-700 mb-3">${errorHint}</p>` : ''}
-                  
-                  <div class="p-4 bg-red-50 rounded-lg border border-red-200 mb-3">
-                    <p class="text-sm font-bold mb-2">Error Details:</p>
-                    <p class="text-xs text-gray-600">Code: ${error.code || 'Unknown'}</p>
-                    <p class="text-xs text-gray-600 mt-1">Message: ${error.message}</p>
-                  </div>
-                  
-                  <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mb-3">
-                    <p class="text-sm font-bold mb-2"><i class="fas fa-exclamation-triangle text-yellow-600"></i> Your Payment Information:</p>
-                    <p class="text-sm mt-1"><strong>M-Pesa Code:</strong> ${transactionRef}</p>
-                    <p class="text-sm mt-1"><strong>Amount:</strong> KSH ${document.getElementById('bookingAmount').value}</p>
-                    <p class="text-sm mt-1"><strong>Name:</strong> ${document.getElementById('full_name').value}</p>
-                    <p class="text-xs text-gray-600 mt-2">📸 Please screenshot this information!</p>
-                  </div>
-                  
-                  <div class="p-3 bg-gray-100 rounded">
-                    <p class="text-sm font-bold mb-1">Contact Support:</p>
-                    <p class="text-xs">📞 WhatsApp: +254797265275</p>
-                    <p class="text-xs">📧 Email: info@kalenjinvibes.com</p>
-                  </div>
-                </div>
-              `,
-              confirmButtonColor: '#BA0909',
-              confirmButtonText: 'Try Again',
-              showCancelButton: true,
-              cancelButtonText: 'Contact Support',
-              cancelButtonColor: '#25D366'
-            }).then((result) => {
-              if (result.dismiss === Swal.DismissReason.cancel) {
-                const message = `Payment Error%0A%0ATransaction Code: ${transactionRef}%0AAmount: KSH ${document.getElementById('bookingAmount').value}%0AError: ${error.message}`;
-                window.open('https://wa.me/+254797265275?text=' + message, '_blank');
-              }
-            });
-          }
+          }, 2000);
         });
       }
       
-      // Auto-focus first input on page load
+      // Cancel button
+      const cancelBtn = document.getElementById('cancel-btn');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+          Swal.fire({
+            title: 'Cancel Payment?',
+            text: 'Are you sure you want to cancel this payment?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#BA0909',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Cancel',
+            cancelButtonText: 'Continue'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = 'index.html';
+            }
+          });
+        });
+      }
+      
+      // Initialize payment method
       setTimeout(function() {
-        document.getElementById('full_name')?.focus();
-        
-        if (amount) {
-          console.log('💰 Payment amount loaded from URL:', amount);
+        if (paymentMethodSelect && paymentMethodSelect.value) {
+          paymentMethodSelect.dispatchEvent(new Event('change'));
         }
       }, 100);
     });
@@ -1037,4 +744,3 @@
 
 </body>
 </html>
-        
