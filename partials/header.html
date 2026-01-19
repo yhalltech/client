@@ -23,14 +23,48 @@
             background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
         }
         
-        /* Mobile menu animation */
+        /* CRITICAL: Mobile menu MUST be visible and clickable */
         .mobile-menu {
-            transform: translateX(-100%);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: fixed !important;
+            top: 0 !important;
+            left: -100% !important;
+            width: 85% !important;
+            max-width: 320px !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            background: white !important;
+            z-index: 99999 !important;
+            transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3) !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
         }
         
         .mobile-menu.active {
-            transform: translateX(0);
+            left: 0 !important;
+        }
+        
+        .mobile-overlay {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            height: 100dvh !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            z-index: 99998 !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: all 0.3s ease !important;
+            backdrop-filter: blur(3px) !important;
+            pointer-events: none !important;
+        }
+        
+        .mobile-overlay.active {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
         }
         
         /* Menu item slide-in animation */
@@ -59,7 +93,10 @@
         
         /* Prevent body scroll when menu is open */
         body.menu-open {
-            overflow: hidden;
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
         }
         
         /* Nav link hover effect */
@@ -80,6 +117,20 @@
         
         .nav-link:hover::after {
             width: 100%;
+        }
+        
+        /* Ensure buttons are always clickable */
+        button, a {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+        }
+        
+        /* Mobile menu toggle - FORCE CLICKABLE */
+        #mobileMenuToggle {
+            position: relative !important;
+            z-index: 100000 !important;
+            pointer-events: auto !important;
+            touch-action: manipulation !important;
         }
     </style>
 </head>
@@ -126,7 +177,7 @@
                     <!-- Left: Mobile Menu Toggle + Logo -->
                     <div class="flex items-center gap-3 lg:gap-4">
                         <!-- Mobile Menu Toggle - Only on Mobile/Tablet -->
-                        <button id="mobileMenuToggle" 
+                        <button type="button" id="mobileMenuToggle" aria-label="Open Menu"
                                 class="lg:hidden header-gradient text-white w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center hover:opacity-90 transition shadow-lg active:scale-95">
                             <i class="fas fa-bars text-lg sm:text-xl"></i>
                         </button>
@@ -190,21 +241,21 @@
         </header>
     </div>
     
-    <!-- Mobile Menu Overlay -->
+    <!-- Mobile Menu Overlay - MUST BE CLICKABLE -->
     <div id="mobileOverlay" 
-         class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm z-40 opacity-0 invisible transition-all duration-300">
+         class="mobile-overlay">
     </div>
     
-    <!-- Mobile Menu Sidebar -->
+    <!-- Mobile Menu Sidebar - MUST BE VISIBLE -->
     <div id="mobileMenu" 
-         class="mobile-menu fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white z-50 shadow-2xl flex flex-col overflow-hidden">
+         class="mobile-menu">
         
         <!-- Mobile Menu Header -->
-        <div class="header-gradient px-5 py-6 flex justify-between items-center">
+        <div class="header-gradient px-5 py-6 flex justify-content-between items-center">
             <div class="text-white font-black text-lg tracking-wider">
                 KALENJIN VIBES
             </div>
-            <button id="mobileClose" 
+            <button type="button" id="mobileClose" aria-label="Close Menu"
                     class="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-20 hover:bg-white hover:text-red-700 text-white transition-all duration-300 active:scale-95">
                 <i class="fas fa-times text-xl"></i>
             </button>
@@ -287,93 +338,128 @@
     </div>
     
     <script>
-        // Mobile Menu Functionality - ROBUST AND TESTED
+        // ULTRA-ROBUST Mobile Menu - WORKS ON ALL DEPLOYMENTS
         (function() {
-            console.log('🎯 Initializing Mobile Menu...');
+            'use strict';
             
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileMenu = document.getElementById('mobileMenu');
-            const mobileClose = document.getElementById('mobileClose');
-            const mobileOverlay = document.getElementById('mobileOverlay');
-            const body = document.body;
+            console.log('🎯 Mobile Menu Script Loading...');
             
-            // Check if all elements exist
-            if (!mobileMenuToggle || !mobileMenu || !mobileClose || !mobileOverlay) {
-                console.error('❌ Mobile menu elements not found!');
-                return;
-            }
-            
-            console.log('✅ All mobile menu elements found');
-            
-            // Open mobile menu
-            function openMobileMenu(e) {
-                if (e) e.preventDefault();
-                console.log('📱 Opening mobile menu...');
+            // Wait for DOM to be ready
+            function initMobileMenu() {
+                const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+                const mobileMenu = document.getElementById('mobileMenu');
+                const mobileClose = document.getElementById('mobileClose');
+                const mobileOverlay = document.getElementById('mobileOverlay');
+                const body = document.body;
                 
-                mobileMenu.classList.add('active');
-                mobileOverlay.classList.remove('invisible', 'opacity-0');
-                mobileOverlay.classList.add('visible', 'opacity-100');
-                body.classList.add('menu-open');
+                // Verify all elements exist
+                if (!mobileMenuToggle || !mobileMenu || !mobileClose || !mobileOverlay) {
+                    console.error('❌ Mobile menu elements missing!');
+                    return;
+                }
                 
-                console.log('✅ Mobile menu opened');
-            }
-            
-            // Close mobile menu
-            function closeMobileMenu(e) {
-                if (e) e.preventDefault();
-                console.log('📱 Closing mobile menu...');
+                console.log('✅ All mobile menu elements found');
                 
-                mobileMenu.classList.remove('active');
-                mobileOverlay.classList.remove('visible', 'opacity-100');
-                mobileOverlay.classList.add('invisible', 'opacity-0');
-                body.classList.remove('menu-open');
+                // Open menu function
+                function openMenu(e) {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    
+                    console.log('📱 Opening menu...');
+                    
+                    mobileMenu.classList.add('active');
+                    mobileOverlay.classList.add('active');
+                    body.classList.add('menu-open');
+                    
+                    // Force styles (for deployment issues)
+                    mobileMenu.style.left = '0';
+                    mobileOverlay.style.opacity = '1';
+                    mobileOverlay.style.visibility = 'visible';
+                    mobileOverlay.style.pointerEvents = 'auto';
+                    
+                    console.log('✅ Menu opened');
+                }
                 
-                console.log('✅ Mobile menu closed');
-            }
-            
-            // Event Listeners
-            mobileMenuToggle.addEventListener('click', openMobileMenu);
-            mobileClose.addEventListener('click', closeMobileMenu);
-            mobileOverlay.addEventListener('click', closeMobileMenu);
-            
-            // Close menu when clicking on navigation links
-            const mobileNavLinks = mobileMenu.querySelectorAll('nav a');
-            mobileNavLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    console.log('📱 Navigation link clicked, closing menu...');
-                    setTimeout(closeMobileMenu, 200);
+                // Close menu function
+                function closeMenu(e) {
+                    if (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    
+                    console.log('📱 Closing menu...');
+                    
+                    mobileMenu.classList.remove('active');
+                    mobileOverlay.classList.remove('active');
+                    body.classList.remove('menu-open');
+                    
+                    // Force styles
+                    mobileMenu.style.left = '-100%';
+                    mobileOverlay.style.opacity = '0';
+                    mobileOverlay.style.visibility = 'hidden';
+                    mobileOverlay.style.pointerEvents = 'none';
+                    
+                    console.log('✅ Menu closed');
+                }
+                
+                // Add multiple event types for maximum compatibility
+                mobileMenuToggle.addEventListener('click', openMenu, true);
+                mobileMenuToggle.addEventListener('touchend', openMenu, true);
+                
+                mobileClose.addEventListener('click', closeMenu, true);
+                mobileClose.addEventListener('touchend', closeMenu, true);
+                
+                mobileOverlay.addEventListener('click', closeMenu, true);
+                mobileOverlay.addEventListener('touchend', closeMenu, true);
+                
+                // Close on navigation clicks
+                const navLinks = mobileMenu.querySelectorAll('a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        setTimeout(closeMenu, 200);
+                    });
                 });
-            });
-            
-            // Close menu with Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                    console.log('⌨️ Escape key pressed, closing menu...');
-                    closeMobileMenu();
-                }
-            });
-            
-            // Prevent scrolling issues on iOS
-            let touchStartY = 0;
-            mobileMenu.addEventListener('touchstart', function(e) {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-            
-            mobileMenu.addEventListener('touchmove', function(e) {
-                const scrollableElement = mobileMenu.querySelector('nav');
-                const scrollTop = scrollableElement.scrollTop;
-                const scrollHeight = scrollableElement.scrollHeight;
-                const offsetHeight = scrollableElement.offsetHeight;
-                const touchY = e.touches[0].clientY;
-                const touchDelta = touchY - touchStartY;
                 
-                if ((scrollTop <= 0 && touchDelta > 0) || 
-                    (scrollTop + offsetHeight >= scrollHeight && touchDelta < 0)) {
-                    e.preventDefault();
-                }
-            }, { passive: false });
+                // Close on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                        closeMenu();
+                    }
+                });
+                
+                // Prevent scroll issues on iOS
+                let startY = 0;
+                mobileMenu.addEventListener('touchstart', function(e) {
+                    startY = e.touches[0].clientY;
+                }, { passive: true });
+                
+                mobileMenu.addEventListener('touchmove', function(e) {
+                    const nav = mobileMenu.querySelector('nav');
+                    const y = e.touches[0].clientY;
+                    const scrollTop = nav.scrollTop;
+                    const scrollHeight = nav.scrollHeight;
+                    const offsetHeight = nav.offsetHeight;
+                    
+                    if ((scrollTop <= 0 && y > startY) || 
+                        (scrollTop + offsetHeight >= scrollHeight && y < startY)) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                
+                console.log('✅ Mobile Menu Initialized Successfully!');
+            }
             
-            console.log('✅ Mobile Menu Initialized Successfully!');
+            // Initialize immediately if DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initMobileMenu);
+            } else {
+                initMobileMenu();
+            }
+            
+            // Backup initialization after a delay
+            setTimeout(initMobileMenu, 500);
         })();
     </script>
 </body>
