@@ -135,10 +135,10 @@ body {
 
 .qr-container {
   background: white;
-  border-radius: 20px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 10px;
   display: inline-block;
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
 }
 
 .status-active {
@@ -396,49 +396,49 @@ function renderTickets(tickets) {
     card.className = "ticket-individual";
 
     card.innerHTML = `
-      <div class="glass-morphism neon-border rounded-3xl p-8 ticket-glow hover:scale-105 transition-transform">
+      <div class="glass-morphism neon-border rounded-2xl p-4 ticket-glow hover:scale-105 transition-transform">
         <!-- Ticket Number Badge -->
-        <div class="flex justify-between items-start mb-6">
-          <div class="inline-block px-6 py-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600">
-            <span class="text-white font-bold text-lg">Ticket ${ticket.ticketIndex || index + 1}/${tickets.length}</span>
+        <div class="flex justify-between items-start mb-3">
+          <div class="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-purple-600 to-pink-600">
+            <span class="text-white font-bold text-xs">Ticket ${ticket.ticketIndex || index + 1}/${tickets.length}</span>
           </div>
-          <span class="px-6 py-2 rounded-full ${statusClass} font-bold text-sm uppercase tracking-wider">
+          <span class="px-3 py-1 rounded-full ${statusClass} font-bold text-xs uppercase">
             ${ticket.status || 'active'}
           </span>
         </div>
 
         <!-- Festival Header -->
-        <div class="text-center mb-8 pb-6 border-b-2 border-dashed border-cyan-500/30">
-          <h2 class="text-4xl font-black neon-text mb-2">🎵 KALENJIN VIBES</h2>
-          <p class="text-cyan-300 text-sm uppercase tracking-widest">Official Entry Ticket</p>
+        <div class="text-center mb-4 pb-3 border-b border-dashed border-cyan-500/30">
+          <h2 class="text-xl font-black neon-text mb-1">🎵 KALENJIN VIBES</h2>
+          <p class="text-cyan-300 text-xs uppercase tracking-wide">Official Entry Ticket</p>
         </div>
 
         <!-- Ticket Info Grid -->
-        <div class="grid grid-cols-2 gap-6 mb-8">
+        <div class="grid grid-cols-2 gap-3 mb-4">
           <div>
-            <p class="text-cyan-400 text-sm font-semibold mb-1">👤 NAME</p>
-            <p class="text-white font-bold text-lg">${ticket.customerName || 'Guest'}</p>
+            <p class="text-cyan-400 text-xs font-semibold mb-0.5">👤 NAME</p>
+            <p class="text-white font-bold text-sm">${ticket.customerName || 'Guest'}</p>
           </div>
           <div>
-            <p class="text-pink-400 text-sm font-semibold mb-1">🎫 TYPE</p>
-            <p class="text-white font-bold text-lg">${ticket.ticketType || 'General'}</p>
+            <p class="text-pink-400 text-xs font-semibold mb-0.5">🎫 TYPE</p>
+            <p class="text-white font-bold text-sm">${ticket.ticketType || 'General'}</p>
           </div>
           <div>
-            <p class="text-purple-400 text-sm font-semibold mb-1">📧 EMAIL</p>
-            <p class="text-white text-sm break-all">${ticket.customerEmail || 'N/A'}</p>
+            <p class="text-purple-400 text-xs font-semibold mb-0.5">📧 EMAIL</p>
+            <p class="text-white text-xs break-all">${ticket.customerEmail || 'N/A'}</p>
           </div>
           <div>
-            <p class="text-green-400 text-sm font-semibold mb-1">🔢 TRANSACTION</p>
-            <p class="text-white text-sm">${ticket.transactionReference || 'N/A'}</p>
+            <p class="text-green-400 text-xs font-semibold mb-0.5">🔢 TRANSACTION</p>
+            <p class="text-white text-xs">${ticket.transactionReference || 'N/A'}</p>
           </div>
           <div class="col-span-2">
-            <p class="text-yellow-400 text-sm font-semibold mb-1">📅 ISSUED</p>
-            <p class="text-white text-sm">${created}</p>
+            <p class="text-yellow-400 text-xs font-semibold mb-0.5">📅 ISSUED</p>
+            <p class="text-white text-xs">${created}</p>
           </div>
         </div>
 
         <!-- QR Code Section -->
-        <div id="qr-${index}" class="text-center bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-2xl p-6"></div>
+        <div id="qr-${index}" class="text-center bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-xl p-3"></div>
       </div>
     `;
 
@@ -456,40 +456,37 @@ function renderTickets(tickets) {
 
       new QRCode(qrBox, {
         text: ticket.id,
-        width: 220,
-        height: 220,
+        width: 150,
+        height: 150,
         correctLevel: QRCode.CorrectLevel.H
       });
 
       qrDiv.appendChild(container);
 
       const instruction = document.createElement("p");
-      instruction.className = "text-cyan-300 text-sm mt-4 font-semibold animate-pulse";
-      instruction.textContent = "📱 Show this QR code at venue entrance";
+      instruction.className = "text-cyan-300 text-xs mt-2 font-semibold animate-pulse";
+      instruction.textContent = "📱 Show at venue entrance";
       qrDiv.appendChild(instruction);
 
     } else if (ticket.status === "used") {
       qrDiv.innerHTML = `
-        <div class="py-8">
-          <div class="text-5xl mb-3">✅</div>
-          <p class="text-xl font-bold text-green-400">Ticket Already Used</p>
-          <p class="text-sm text-gray-400 mt-2">Entry has been granted</p>
+        <div class="py-4">
+          <div class="text-3xl mb-2">✅</div>
+          <p class="text-sm font-bold text-green-400">Already Used</p>
         </div>
       `;
     } else if (!ticket.verified) {
       qrDiv.innerHTML = `
-        <div class="py-8">
-          <div class="text-5xl mb-3">⏳</div>
-          <p class="text-xl font-bold text-yellow-400">Pending Verification</p>
-          <p class="text-sm text-gray-400 mt-2">Contact support if payment completed</p>
+        <div class="py-4">
+          <div class="text-3xl mb-2">⏳</div>
+          <p class="text-sm font-bold text-yellow-400">Pending</p>
         </div>
       `;
     } else {
       qrDiv.innerHTML = `
-        <div class="py-8">
-          <div class="text-5xl mb-3">❌</div>
-          <p class="text-xl font-bold text-red-400">QR Code Unavailable</p>
-          <p class="text-sm text-gray-400 mt-2">Status: ${ticket.status || 'Unknown'}</p>
+        <div class="py-4">
+          <div class="text-3xl mb-2">❌</div>
+          <p class="text-sm font-bold text-red-400">Unavailable</p>
         </div>
       `;
     }
@@ -516,17 +513,23 @@ window.downloadAllTickets = async function () {
     for (let i = 0; i < cards.length; i++) {
       if (i > 0) pdf.addPage();
 
+      // ✅ WAIT FOR QR CODE TO FULLY RENDER
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const canvas = await html2canvas(cards[i], {
-        scale: 2,
+        scale: 2.5, // ✅ OPTIMIZED FOR SMALLER SIZE BUT GOOD QUALITY
         backgroundColor: "#1a0033",
-        logging: false
+        logging: false,
+        useCORS: true,
+        allowTaint: true,
+        foreignObjectRendering: false
       });
 
       const imgData = canvas.toDataURL("image/png");
-      const imgWidth = 180;
+      const imgWidth = 160; // ✅ REDUCED FROM 180mm
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const x = (210 - imgWidth) / 2;
-      const y = 20;
+      const y = 15; // ✅ REDUCED TOP MARGIN
 
       pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
     }
