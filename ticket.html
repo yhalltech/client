@@ -163,6 +163,32 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding-top: 0;
+            }
+            
+            #headerContainer,
+            .glass-card,
+            #ticketActions,
+            .loading-overlay {
+                display: none !important;
+            }
+            
+            .ticket-card {
+                page-break-after: always;
+                margin: 20px auto;
+                box-shadow: none;
+            }
+            
+            .tickets-scroll-container {
+                max-height: none;
+                overflow: visible;
+            }
+        }
     </style>
 </head>
 <body>
@@ -372,8 +398,11 @@
                     
                     // Show download buttons
                     document.getElementById('ticketActions').innerHTML = `
-                        <button class="action-btn btn-primary-gradient me-2" onclick="downloadAllTickets()">
-                            <i class="bi bi-download me-2"></i>Download All Tickets
+                        <button class="action-btn btn-primary-gradient me-2" onclick="printTicketsPDF()">
+                            <i class="bi bi-printer me-2"></i>Print as PDF
+                        </button>
+                        <button class="action-btn btn-primary-gradient" onclick="downloadAllTickets()">
+                            <i class="bi bi-download me-2"></i>Download Images
                         </button>
                     `;
                 } else {
@@ -491,9 +520,15 @@
             }
         }
 
+        function printTicketsPDF() {
+            // Simple print - browser converts to PDF
+            window.print();
+        }
+
         // Make functions available globally
         window.findTicket = findTicket;
         window.downloadAllTickets = downloadAllTickets;
+        window.printTicketsPDF = printTicketsPDF;
 
         console.log('✅ Ticket System Loaded');
         console.log('✅ QRCode library available:', typeof QRCode !== 'undefined');
