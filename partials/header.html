@@ -1,6 +1,6 @@
 <!-- partials/header.html -->
 <style>
-  /* CRITICAL: Mobile menu MUST work */
+  /* CRITICAL: Mobile meNU */
   .mobile-menu-modal {
     display: none;
     position: fixed;
@@ -38,7 +38,7 @@
   }
   
   .header-gradient {
-    background: linear-gradient(135deg, #BA0909 0%, #8B0000 100%);
+    background: linear-gradient(135deg, #BA0909 0%, #835f5f 100%);
   }
   
   .logo-gradient {
@@ -151,19 +151,19 @@
                 <span>Contact</span>
               </a>
             </li>
+            <li>
+              <!-- Right: Download Ticket Button -->
+               <a href="ticket.html" 
+                 class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+                  style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);">
+                 <i class="fas fa-ticket-alt"></i>
+                 <span class="hidden sm:inline">Download Ticket</span>
+                 <span class="sm:hidden">Ticket</span>
+               </a>
+            </li>
           </ul>
         </nav>
         
-        <!-- Right: Download Ticket Button -->
-        <div>
-          <a href="ticket.html" 
-             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-semibold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-             style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);">
-            <i class="fas fa-ticket-alt"></i>
-            <span class="hidden sm:inline">Download Ticket</span>
-            <span class="sm:hidden">Ticket</span>
-          </a>
-        </div>
       </div>
     </div>
   </header>
