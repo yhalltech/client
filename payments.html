@@ -876,27 +876,75 @@
             }
             
             // Prepare payment data
-            const paymentData = {
-              fullName: document.getElementById('full_name').value.trim(),
-              email: document.getElementById('email').value.trim().toLowerCase(),
-              phoneNumber: document.getElementById('phone_number').value.trim(),
-              paymentMethod: paymentMethod,
-              transactionReference: transactionRef,
-              amount: parseFloat(document.getElementById('bookingAmount').value) || 0,
-              bookingType: document.getElementById('bookingType').value || 'general',
-              talentId: document.getElementById('bookingTalentId').value || null,
-              talentName: document.getElementById('bookingTalentName').value || null,
-              eventName: document.getElementById('bookingEventName').value || null,
-              eventDate: document.getElementById('bookingEventDate').value || null,
-              eventLocation: document.getElementById('bookingLocation').value || null,
-              status: 'pending',
-              paymentDate: new Date().toISOString(),
-              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-              userAgent: navigator.userAgent,
-              source: 'website',
-              formattedDate: new Date().toLocaleString('en-KE', {timeZone: 'Africa/Nairobi'})
-            };
+            // In the payment form submission section, update the paymentData object:
+const paymentData = {
+    fullName: document.getElementById('full_name').value.trim(),
+    email: document.getElementById('email').value.trim().toLowerCase(),
+    phoneNumber: document.getElementById('phone_number').value.trim(),
+    paymentMethod: paymentMethod,
+    transactionReference: transactionRef,
+    amount: parseFloat(document.getElementById('bookingAmount').value) || 0,
+    bookingType: document.getElementById('bookingType').value || 'general',
+    talentId: document.getElementById('bookingTalentId').value || null,
+    talentName: document.getElementById('bookingTalentName').value || null,
+    eventName: document.getElementById('bookingEventName').value || null,
+    eventDate: document.getElementById('bookingEventDate').value || null,
+    eventLocation: document.getElementById('bookingLocation').value || null,
+    
+    // NEW: Ticket details
+    ticketType: 'Event Ticket',
+    numberOfTickets: 1,
+    ticketPrice: parseFloat(document.getElementById('bookingAmount').value) || 0,
+    
+    // Handle multiple tickets from event booking
+    ticketDetails: [],
+    
+    status: 'pending',
+    paymentDate: new Date().toISOString(),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    userAgent: navigator.userAgent,
+    source: 'website',
+    formattedDate: new Date().toLocaleString('en-KE', {timeZone: 'Africa/Nairobi'})
+};
+
+// If there are multiple tickets (from event booking)
+if (bookingType === 'event_ticket' && tickets) {
+    try {
+        const ticketsData = JSON.parse(decodeURIComponent(tickets));
+        console.log('Parsed ticket data:', ticketsData);
+        
+        // Calculate total tickets and amount
+        let totalTickets = 0;
+        let totalAmount = 0;
+        const ticketDetails = [];
+        
+        ticketsData.forEach(ticket => {
+            const quantity = parseInt(ticket.quantity) || 1;
+            const price = parseFloat(ticket.price) || 0;
+            totalTickets += quantity;
+            totalAmount += price * quantity;
             
+            ticketDetails.push({
+                type: ticket.type,
+                quantity: quantity,
+                price: price,
+                total: price * quantity
+            });
+        });
+        
+        paymentData.numberOfTickets = totalTickets;
+        paymentData.amount = totalAmount;
+        paymentData.ticketDetails = ticketDetails;
+        
+        // Update amount display
+        document.getElementById('bookingAmount').value = totalAmount;
+        document.getElementById('mpesaAmount').textContent = 'Ksh ' + totalAmount;
+        document.getElementById('paybillAmount').textContent = 'Ksh ' + totalAmount;
+        
+    } catch (e) {
+        console.error('Error parsing tickets:', e);
+    }
+}
             console.log('💾 Saving payment data:', paymentData);
             
             // Save to Firestore

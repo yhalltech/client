@@ -365,279 +365,583 @@
             .catch(error => console.error('Error loading header:', error));
     </script>
     
-    <!-- Firebase & Ticket Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+   <script>
+    // Complete ticket.html script
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyARficcDI3R1ELfjkQxL-kkFQr-tzOgzgo",
-            authDomain: "k-vibez.firebaseapp.com",
-            projectId: "k-vibez",
-            storageBucket: "k-vibez.firebasestorage.app",
-            messagingSenderId: "1060235903242",
-            appId: "1:1060235903242:web:4649b48406879fb7fcfaf3"
+const firebaseConfig = {
+    apiKey: "AIzaSyARficcDI3R1ELfjkQxL-kkFQr-tzOgzgo",
+    authDomain: "k-vibez.firebaseapp.com",
+    projectId: "k-vibez",
+    storageBucket: "k-vibez.firebasestorage.app",
+    messagingSenderId: "1060235903242",
+    appId: "1:1060235903242:web:4649b48406879fb7fcfaf3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+let userTickets = [];
+let currentTicketData = null;
+const TICKET_CACHE_KEY = 'kalenjin_tickets_cache_v2';
+
+// Caching functions
+function cacheTicket(email, transactionCode, ticketData) {
+    try {
+        const cache = JSON.parse(localStorage.getItem(TICKET_CACHE_KEY) || '{}');
+        const cacheKey = `${email.toLowerCase()}_${transactionCode.toUpperCase()}`;
+        
+        cache[cacheKey] = {
+            data: ticketData,
+            cachedAt: new Date().toISOString(),
+            version: '2.0'
         };
+        
+        localStorage.setItem(TICKET_CACHE_KEY, JSON.stringify(cache));
+        console.log(`✅ Ticket cached: ${cacheKey}`);
+        return true;
+    } catch (error) {
+        console.error('Caching error:', error);
+        return false;
+    }
+}
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        let userTickets = [];
-        let currentTicketData = null;
-
-        function showLoading(text = "Loading...") {
-            const overlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
-            if (overlay && loadingText) {
-                overlay.style.display = 'flex';
-                loadingText.textContent = text;
+function getCachedTicket(email, transactionCode) {
+    try {
+        const cache = JSON.parse(localStorage.getItem(TICKET_CACHE_KEY) || '{}');
+        const cacheKey = `${email.toLowerCase()}_${transactionCode.toUpperCase()}`;
+        const cached = cache[cacheKey];
+        
+        if (cached) {
+            const cacheAge = new Date() - new Date(cached.cachedAt);
+            const maxAge = 24 * 60 * 60 * 1000; // 24 hours cache
+            
+            if (cacheAge < maxAge) {
+                console.log(`🔄 Using cached ticket: ${cacheKey}`);
+                return cached.data;
+            } else {
+                // Remove expired cache
+                delete cache[cacheKey];
+                localStorage.setItem(TICKET_CACHE_KEY, JSON.stringify(cache));
             }
         }
+    } catch (error) {
+        console.error('Cache retrieval error:', error);
+    }
+    return null;
+}
 
-        function hideLoading() {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) {
-                overlay.style.display = 'none';
-            }
+function clearCache() {
+    localStorage.removeItem(TICKET_CACHE_KEY);
+    console.log('🧹 Ticket cache cleared');
+}
+
+// Loading functions
+function showLoading(text = "Loading...") {
+    const overlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
+    if (overlay && loadingText) {
+        overlay.style.display = 'flex';
+        loadingText.textContent = text;
+    }
+}
+
+function hideLoading() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+// Main ticket retrieval function
+async function findTicket() {
+    const email = document.getElementById('userEmail').value.trim().toLowerCase();
+    const transactionCode = document.getElementById('transactionCode').value.trim().toUpperCase();
+    
+    if (!email) {
+        alert('Please enter your email address');
+        return;
+    }
+    
+    // Check cache first
+    if (transactionCode) {
+        const cached = getCachedTicket(email, transactionCode);
+        if (cached) {
+            showTickets(cached);
+            return;
         }
-
-        async function findTicket() {
-            const email = document.getElementById('userEmail').value.trim();
-            const transactionCode = document.getElementById('transactionCode').value.trim();
+    }
+    
+    showLoading('Searching for your tickets...');
+    
+    try {
+        // Search in payments collection
+        const paymentsQuery = query(
+            collection(db, "payments"),
+            where("email", "==", email)
+        );
+        
+        const paymentsSnapshot = await getDocs(paymentsQuery);
+        userTickets = [];
+        
+        paymentsSnapshot.forEach((doc) => {
+            const paymentData = doc.data();
+            userTickets.push({
+                id: doc.id,
+                ...paymentData,
+                date: paymentData.createdAt?.toDate() || new Date(),
+                amount: parseFloat(paymentData.amount) || 0,
+                numberOfTickets: parseInt(paymentData.numberOfTickets) || 1
+            });
+        });
+        
+        let matchedPayments = userTickets;
+        if (transactionCode) {
+            matchedPayments = userTickets.filter(ticket => 
+                (ticket.transactionReference && ticket.transactionReference.toUpperCase().includes(transactionCode)) ||
+                (ticket.transactionCode && ticket.transactionCode.toUpperCase().includes(transactionCode))
+            );
+        }
+        
+        if (matchedPayments.length === 0) {
+            alert('No tickets found with the provided details');
+            hideLoading();
+            return;
+        }
+        
+        // Get all tickets from these payments
+        const allIndividualTickets = [];
+        
+        for (const payment of matchedPayments) {
+            // Try to get individual tickets from tickets collection
+            const ticketsQuery = query(
+                collection(db, "tickets"),
+                where("paymentId", "==", payment.id)
+            );
             
-            if (!email) {
-                alert('Please enter your email address');
-                return;
-            }
+            const ticketsSnapshot = await getDocs(ticketsQuery);
+            const individualTickets = [];
             
-            showLoading('Searching for your tickets...');
+            ticketsSnapshot.forEach((doc) => {
+                individualTickets.push({
+                    ticketId: doc.id,
+                    ...doc.data()
+                });
+            });
             
-            try {
-                const ticketsQuery = query(
-                    collection(db, "payments"),
-                    where("email", "==", email.toLowerCase())
-                );
-                
-                const querySnapshot = await getDocs(ticketsQuery);
-                userTickets = [];
-                
-                querySnapshot.forEach((doc) => {
-                    const ticketData = doc.data();
-                    userTickets.push({
-                        id: doc.id,
-                        ...ticketData,
-                        date: ticketData.createdAt?.toDate() || new Date(),
-                        amount: parseFloat(ticketData.amount) || 0
+            // If no individual tickets exist and payment is verified, generate them
+            if (individualTickets.length === 0 && payment.status === 'verified') {
+                // Generate individual tickets
+                await generateIndividualTickets(payment);
+                // Fetch again
+                const newSnapshot = await getDocs(ticketsQuery);
+                newSnapshot.forEach((doc) => {
+                    individualTickets.push({
+                        ticketId: doc.id,
+                        ...doc.data()
                     });
                 });
-                
-                let matchedTickets = userTickets;
-                if (transactionCode) {
-                    matchedTickets = userTickets.filter(ticket => 
-                        (ticket.transactionReference && ticket.transactionReference.toUpperCase().includes(transactionCode.toUpperCase())) ||
-                        (ticket.transactionCode && ticket.transactionCode.toUpperCase().includes(transactionCode.toUpperCase()))
-                    );
-                }
-                
-                if (matchedTickets.length === 0) {
-                    alert('No tickets found with the provided details');
-                } else {
-                    showTickets(matchedTickets[0]);
-                }
-                
-            } catch (error) {
-                console.error('Error finding ticket:', error);
-                alert('An error occurred while searching for your tickets');
-            } finally {
-                hideLoading();
+            }
+            
+            // Add to main array
+            allIndividualTickets.push(...individualTickets);
+            
+            // Cache the payment data
+            if (transactionCode) {
+                cacheTicket(email, transactionCode, {
+                    payment: payment,
+                    individualTickets: individualTickets,
+                    searchTime: new Date().toISOString()
+                });
             }
         }
+        
+        // Show tickets
+        const enhancedData = {
+            payment: matchedPayments[0],
+            individualTickets: allIndividualTickets,
+            allPayments: matchedPayments
+        };
+        
+        showTickets(enhancedData);
+        
+    } catch (error) {
+        console.error('Error finding ticket:', error);
+        alert('An error occurred while searching for your tickets: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
 
-        function showTickets(ticket) {
-            currentTicketData = ticket;
-            const numberOfTickets = parseInt(ticket.numberOfTickets) || 1;
-            const ticketType = ticket.ticketType || 'General Admission';
-            const transactionCode = ticket.transactionReference || ticket.transactionCode || 'N/A';
-            const status = ticket.status || 'pending';
-            const customerName = ticket.fullName || ticket.customerName || 'Guest';
-            const email = ticket.email;
+// Generate individual tickets in Firestore
+async function generateIndividualTickets(paymentData) {
+    try {
+        const numberOfTickets = parseInt(paymentData.numberOfTickets) || 1;
+        const ticketType = paymentData.ticketType || 'General Admission';
+        const transactionCode = paymentData.transactionReference || paymentData.transactionCode || paymentData.id;
+        
+        console.log(`Generating ${numberOfTickets} tickets for payment ${paymentData.id}`);
+        
+        for (let i = 1; i <= numberOfTickets; i++) {
+            const ticketData = {
+                paymentId: paymentData.id,
+                transactionCode: transactionCode,
+                ticketNumber: i,
+                totalTickets: numberOfTickets,
+                ticketType: ticketType,
+                customerName: paymentData.fullName || paymentData.customerName,
+                customerEmail: paymentData.email,
+                customerPhone: paymentData.phoneNumber,
+                amount: paymentData.amount,
+                status: paymentData.status === 'verified' ? 'active' : 'pending',
+                qrData: `${transactionCode}-T${i}-${ticketType}`,
+                createdAt: new Date().toISOString(),
+                verified: paymentData.status === 'verified'
+            };
             
-            // Update summary
-            document.getElementById('ticketSummary').textContent = 
-                `${numberOfTickets} Ticket${numberOfTickets > 1 ? 's' : ''} Found`;
-            
-            // Generate individual tickets
-            const ticketsContainer = document.getElementById('ticketsContainer');
-            ticketsContainer.innerHTML = '';
-            
-            for (let i = 1; i <= numberOfTickets; i++) {
-                const ticketHTML = `
-                    <div class="row justify-content-center">
-                        <div class="col-lg-6 col-md-8">
-                            <div class="ticket-card ticket-individual" id="ticket${i}">
-                                <div class="ticket-number-badge">Ticket #${i} of ${numberOfTickets}</div>
-                                <h3 class="mb-3">🎵 Kalenjin Vibes Festival 🎵</h3>
-                                <div>
-                                    <h5 class="mb-3">${customerName}</h5>
-                                    <p class="mb-2"><strong>Email:</strong> ${email}</p>
-                                    <div class="qr-code-container" id="qrContainer${i}">
-                                        <div id="qrCode${i}"></div>
-                                    </div>
-                                    <div class="mt-3">
-                                        <span class="status-badge ${status === 'verified' ? 'badge-verified' : status === 'pending' ? 'badge-pending' : 'badge-rejected'}">
-                                            ${status.toUpperCase()}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+            await addDoc(collection(db, "tickets"), ticketData);
+            console.log(`✅ Generated ticket ${i}/${numberOfTickets}: ${ticketData.qrData}`);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error generating individual tickets:', error);
+        return false;
+    }
+}
+
+// Display tickets
+function showTickets(ticketData) {
+    currentTicketData = ticketData;
+    const payment = ticketData.payment;
+    const individualTickets = ticketData.individualTickets || [];
+    const allPayments = ticketData.allPayments || [];
+    
+    const totalTickets = individualTickets.length || payment.numberOfTickets || 1;
+    
+    // Update summary
+    document.getElementById('ticketSummary').textContent = 
+        `${totalTickets} Ticket${totalTickets > 1 ? 's' : ''} Found ${allPayments.length > 1 ? `(from ${allPayments.length} transactions)` : ''}`;
+    
+    // Generate individual tickets
+    const ticketsContainer = document.getElementById('ticketsContainer');
+    ticketsContainer.innerHTML = '';
+    
+    if (individualTickets.length > 0) {
+        // Show individual tickets from tickets collection
+        individualTickets.forEach((ticket, index) => {
+            const ticketHTML = createTicketHTML(ticket, index + 1);
+            ticketsContainer.innerHTML += ticketHTML;
+        });
+    } else {
+        // Fallback: Generate tickets based on payment data
+        const numberOfTickets = payment.numberOfTickets || 1;
+        for (let i = 1; i <= numberOfTickets; i++) {
+            const fakeTicket = {
+                ticketNumber: i,
+                status: payment.status,
+                ticketType: payment.ticketType,
+                customerName: payment.fullName,
+                customerEmail: payment.email,
+                paymentId: payment.id,
+                transactionCode: payment.transactionReference || payment.transactionCode
+            };
+            const ticketHTML = createTicketHTML(fakeTicket, i);
+            ticketsContainer.innerHTML += ticketHTML;
+        }
+    }
+    
+    // Show results section
+    document.getElementById('resultsSection').style.display = 'block';
+    
+    // Generate QR codes and show download buttons
+    setTimeout(() => {
+        generateAllQRCodes(ticketData);
+        setupDownloadButtons(ticketData);
+    }, 100);
+}
+
+// Create HTML for individual ticket
+function createTicketHTML(ticketData, index) {
+    const status = ticketData.status || 'pending';
+    const statusClass = status === 'verified' || status === 'active' ? 'badge-verified' : 
+                       status === 'pending' ? 'badge-pending' : 
+                       'badge-rejected';
+    const statusText = status === 'active' ? 'ACTIVE' : status.toUpperCase();
+    
+    return `
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-6 col-md-8">
+                <div class="ticket-card ticket-individual" id="ticket${index}" data-ticket-id="${ticketData.ticketId || ''}">
+                    <div class="ticket-number-badge">Ticket #${ticketData.ticketNumber || index}</div>
+                    <h3 class="mb-3">🎵 Kalenjin Vibes Festival 🎵</h3>
+                    <div>
+                        <h5 class="mb-3">${ticketData.customerName || currentTicketData.payment.fullName}</h5>
+                        <p class="mb-2"><strong>Email:</strong> ${ticketData.customerEmail || currentTicketData.payment.email}</p>
+                        <p class="mb-2"><strong>Ticket Type:</strong> ${ticketData.ticketType || currentTicketData.payment.ticketType}</p>
+                        <p class="mb-2"><strong>Status:</strong> <span class="status-badge ${statusClass}">${statusText}</span></p>
+                        <div class="qr-code-container" id="qrContainer${index}">
+                            <div id="qrCode${index}"></div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-light">Transaction: ${ticketData.transactionCode?.substring(0, 15) || 'N/A'}</small>
                         </div>
                     </div>
-                `;
-                ticketsContainer.innerHTML += ticketHTML;
-            }
-            
-            // Generate QR codes after DOM is ready
-            setTimeout(() => {
-                if (status === 'verified') {
-                    for (let i = 1; i <= numberOfTickets; i++) {
-                        generateQRCodeAsImage(transactionCode, i, ticketType);
-                    }
-                    
-                    // Show download buttons
-                    document.getElementById('ticketActions').innerHTML = `
-                        <button class="action-btn btn-primary-gradient me-2" onclick="printTicketsPDF()">
-                            <i class="bi bi-printer me-2"></i>Print as PDF
-                        </button>
-                        <button class="action-btn btn-primary-gradient" onclick="downloadAllTickets()">
-                            <i class="bi bi-download me-2"></i>Download Images
-                        </button>
-                    `;
-                } else {
-                    for (let i = 1; i <= numberOfTickets; i++) {
-                        const qrContainer = document.getElementById(`qrCode${i}`);
-                        if (qrContainer) {
-                            qrContainer.innerHTML = status === 'pending' ? 
-                                '<p class="text-dark">Pending Verification</p>' : 
-                                '<p class="text-dark">Payment Rejected</p>';
-                        }
-                    }
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Generate all QR codes
+function generateAllQRCodes(ticketData) {
+    const individualTickets = ticketData.individualTickets || [];
+    const payment = ticketData.payment;
+    
+    if (individualTickets.length > 0) {
+        // Generate QR codes from individual tickets
+        individualTickets.forEach((ticket, index) => {
+            if (ticket.status === 'verified' || ticket.status === 'active') {
+                generateQRCodeAsImage(ticket.qrData || `${ticket.transactionCode}-T${ticket.ticketNumber}-${ticket.ticketType}`, index + 1);
+            } else {
+                const qrContainer = document.getElementById(`qrCode${index + 1}`);
+                if (qrContainer) {
+                    qrContainer.innerHTML = ticket.status === 'pending' ? 
+                        '<p class="text-dark text-center p-3">Pending Verification</p>' : 
+                        '<p class="text-dark text-center p-3">Payment Rejected</p>';
                 }
-            }, 100);
-            
-            document.getElementById('resultsSection').style.display = 'block';
-        }
-
-        function generateQRCodeAsImage(transactionCode, ticketNumber, ticketType) {
-            console.log(`🔄 Generating QR Code for Ticket #${ticketNumber}...`);
-            const qrContainer = document.getElementById(`qrCode${ticketNumber}`);
-            
-            if (!qrContainer) {
-                console.error(`❌ Container qrCode${ticketNumber} not found`);
-                return;
             }
-            
-            qrContainer.innerHTML = '';
-            
-            // QR Data: TRANSACTION-TICKETNUMBER-TYPE
-            const qrData = `${transactionCode}-T${ticketNumber}-${ticketType}`;
-            
-            console.log(`📝 QR Data for Ticket #${ticketNumber}:`, qrData);
-            
-            if (typeof QRCode === 'undefined') {
-                console.error('❌ QRCode library not loaded');
-                qrContainer.innerHTML = '<p class="text-dark">QR Code library not available</p>';
-                return;
-            }
-            
-            try {
-                // Create temporary container for QR generation
-                const tempDiv = document.createElement('div');
-                tempDiv.style.display = 'none';
-                document.body.appendChild(tempDiv);
-                
-                // Generate QR code
-                const qrCode = new QRCode(tempDiv, {
-                    text: qrData,
-                    width: 200,
-                    height: 200,
-                    colorDark: "#000000",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-                
-                // Wait for QR to be generated, then convert canvas to image
-                setTimeout(() => {
-                    const canvas = tempDiv.querySelector('canvas');
-                    if (canvas) {
-                        const img = document.createElement('img');
-                        img.src = canvas.toDataURL('image/png');
-                        img.alt = 'QR Code';
-                        img.style.width = '200px';
-                        img.style.height = '200px';
-                        img.style.display = 'block';
-                        img.style.margin = '0 auto';
-                        
-                        qrContainer.appendChild(img);
-                        console.log(`✅ QR Code image created for Ticket #${ticketNumber}`);
-                    }
-                    
-                    // Clean up temp div
-                    document.body.removeChild(tempDiv);
-                }, 200);
-                
-            } catch (error) {
-                console.error(`❌ QR generation error for Ticket #${ticketNumber}:`, error);
-                qrContainer.innerHTML = `<p class="text-dark">QR Error: ${error.message}</p>`;
-            }
-        }
-
-        async function downloadAllTickets() {
-            showLoading('Generating tickets...');
-            
-            try {
-                const tickets = document.querySelectorAll('.ticket-individual');
-                
-                for (let i = 0; i < tickets.length; i++) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    
-                    if (typeof html2canvas !== 'undefined') {
-                        const canvas = await html2canvas(tickets[i], {
-                            backgroundColor: '#667eea',
-                            scale: 2,
-                            useCORS: true,
-                            allowTaint: false,
-                            logging: false
-                        });
-                        
-                        const link = document.createElement('a');
-                        link.download = `Kalenjin_Vibes_Ticket_${i + 1}.png`;
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        
-                        await new Promise(resolve => setTimeout(resolve, 500));
-                    }
+        });
+    } else {
+        // Generate QR codes from payment data
+        const numberOfTickets = payment.numberOfTickets || 1;
+        const transactionCode = payment.transactionReference || payment.transactionCode || payment.id;
+        const ticketType = payment.ticketType || 'General Admission';
+        
+        for (let i = 1; i <= numberOfTickets; i++) {
+            if (payment.status === 'verified') {
+                generateQRCodeAsImage(`${transactionCode}-T${i}-${ticketType}`, i);
+            } else {
+                const qrContainer = document.getElementById(`qrCode${i}`);
+                if (qrContainer) {
+                    qrContainer.innerHTML = payment.status === 'pending' ? 
+                        '<p class="text-dark text-center p-3">Pending Verification</p>' : 
+                        '<p class="text-dark text-center p-3">Payment Rejected</p>';
                 }
-                
-                alert(`✅ ${tickets.length} ticket(s) downloaded successfully!`);
-            } catch (error) {
-                console.error('Download error:', error);
-                alert('Error downloading tickets. Please try again or take screenshots.');
-            } finally {
-                hideLoading();
             }
         }
+    }
+}
 
-        function printTicketsPDF() {
-            // Simple print - browser converts to PDF
-            window.print();
+// Generate individual QR code
+function generateQRCodeAsImage(qrData, ticketNumber) {
+    const qrContainer = document.getElementById(`qrCode${ticketNumber}`);
+    
+    if (!qrContainer || !qrData) {
+        console.error(`❌ Container or QR data not found for ticket ${ticketNumber}`);
+        return;
+    }
+    
+    qrContainer.innerHTML = '';
+    
+    if (typeof QRCode === 'undefined') {
+        console.error('❌ QRCode library not loaded');
+        qrContainer.innerHTML = '<p class="text-dark text-center p-3">QR Code library not available</p>';
+        return;
+    }
+    
+    try {
+        // Create temporary container for QR generation
+        const tempDiv = document.createElement('div');
+        tempDiv.style.display = 'none';
+        document.body.appendChild(tempDiv);
+        
+        // Generate QR code
+        const qrCode = new QRCode(tempDiv, {
+            text: qrData,
+            width: 200,
+            height: 200,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        // Wait for QR to be generated, then convert canvas to image
+        setTimeout(() => {
+            const canvas = tempDiv.querySelector('canvas');
+            if (canvas) {
+                const img = document.createElement('img');
+                img.src = canvas.toDataURL('image/png');
+                img.alt = 'QR Code';
+                img.style.width = '200px';
+                img.style.height = '200px';
+                img.style.display = 'block';
+                img.style.margin = '0 auto';
+                img.style.borderRadius = '10px';
+                
+                qrContainer.appendChild(img);
+                console.log(`✅ QR Code created for Ticket #${ticketNumber}`);
+            }
+            
+            // Clean up temp div
+            document.body.removeChild(tempDiv);
+        }, 300);
+        
+    } catch (error) {
+        console.error(`❌ QR generation error for Ticket #${ticketNumber}:`, error);
+        qrContainer.innerHTML = `<p class="text-dark text-center p-3">QR Error</p>`;
+    }
+}
+
+// Setup download buttons
+function setupDownloadButtons(ticketData) {
+    const individualTickets = ticketData.individualTickets || [];
+    const payment = ticketData.payment;
+    
+    if ((payment.status === 'verified' || payment.status === 'active') && individualTickets.length > 0) {
+        document.getElementById('ticketActions').innerHTML = `
+            <div class="d-flex flex-wrap gap-3 justify-content-center">
+                <button class="action-btn btn-primary-gradient" onclick="downloadAllTickets()">
+                    <i class="bi bi-download me-2"></i>Download All Tickets
+                </button>
+                <button class="action-btn btn-primary-gradient" onclick="downloadIndividualTickets()">
+                    <i class="bi bi-file-arrow-down me-2"></i>Download One by One
+                </button>
+                <button class="action-btn btn-primary-gradient" onclick="printTicketsPDF()">
+                    <i class="bi bi-printer me-2"></i>Print as PDF
+                </button>
+                <button class="action-btn btn-secondary" onclick="clearCache()">
+                    <i class="bi bi-trash me-2"></i>Clear Cache
+                </button>
+            </div>
+        `;
+    } else if (payment.status === 'verified') {
+        document.getElementById('ticketActions').innerHTML = `
+            <button class="action-btn btn-primary-gradient" onclick="printTicketsPDF()">
+                <i class="bi bi-printer me-2"></i>Print as PDF
+            </button>
+        `;
+    }
+}
+
+// Download all tickets as one PDF
+async function downloadAllTickets() {
+    showLoading('Generating ticket PDF...');
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const tickets = document.querySelectorAll('.ticket-individual');
+        const ticketData = currentTicketData;
+        const payment = ticketData.payment;
+        
+        // Add cover page
+        doc.setFontSize(24);
+        doc.setTextColor(102, 126, 234);
+        doc.text('KALENJIN VIBES FESTIVAL', 105, 40, { align: 'center' });
+        
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text('YOUR TICKETS', 105, 60, { align: 'center' });
+        
+        doc.setFontSize(12);
+        doc.text(`Customer: ${payment.fullName || payment.customerName}`, 20, 80);
+        doc.text(`Email: ${payment.email}`, 20, 90);
+        doc.text(`Total Tickets: ${tickets.length}`, 20, 100);
+        doc.text(`Transaction: ${payment.transactionReference || payment.transactionCode}`, 20, 110);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 120);
+        
+        // Add each ticket as a new page
+        for (let i = 0; i < tickets.length; i++) {
+            if (i > 0) doc.addPage();
+            
+            const canvas = await html2canvas(tickets[i], {
+                backgroundColor: '#667eea',
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                logging: false
+            });
+            
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 180;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const xPos = (doc.internal.pageSize.width - imgWidth) / 2;
+            
+            doc.addImage(imgData, 'PNG', xPos, 20, imgWidth, imgHeight);
+            
+            doc.setFontSize(10);
+            doc.text(`Ticket ${i + 1} of ${tickets.length}`, 105, doc.internal.pageSize.height - 10, { align: 'center' });
         }
+        
+        doc.save(`Kalenjin_Tickets_${payment.fullName.replace(/\s+/g, '_')}.pdf`);
+        showSuccess('All tickets downloaded as PDF!');
+        
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Error generating PDF. Please try individual downloads.');
+    } finally {
+        hideLoading();
+    }
+}
 
-        // Make functions available globally
-        window.findTicket = findTicket;
-        window.downloadAllTickets = downloadAllTickets;
-        window.printTicketsPDF = printTicketsPDF;
+// Download tickets one by one
+async function downloadIndividualTickets() {
+    showLoading('Preparing individual tickets...');
+    
+    try {
+        const tickets = document.querySelectorAll('.ticket-individual');
+        const payment = currentTicketData.payment;
+        
+        for (let i = 0; i < tickets.length; i++) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const canvas = await html2canvas(tickets[i], {
+                backgroundColor: '#667eea',
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                logging: false
+            });
+            
+            const link = document.createElement('a');
+            link.download = `Kalenjin_Ticket_${i + 1}_${payment.fullName.replace(/\s+/g, '_')}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+        
+        showSuccess(`${tickets.length} ticket(s) downloaded successfully!`);
+        
+    } catch (error) {
+        console.error('Download error:', error);
+        alert('Error downloading tickets. Please try the PDF option.');
+    } finally {
+        hideLoading();
+    }
+}
 
-        console.log('✅ Ticket System Loaded');
-        console.log('✅ QRCode library available:', typeof QRCode !== 'undefined');
-    </script>
+// Print tickets
+function printTicketsPDF() {
+    window.print();
+}
+
+// Show success message
+function showSuccess(message) {
+    alert(message);
+}
+
+// Make functions available globally
+window.findTicket = findTicket;
+window.downloadAllTickets = downloadAllTickets;
+window.downloadIndividualTickets = downloadIndividualTickets;
+window.printTicketsPDF = printTicketsPDF;
+window.clearCache = clearCache;
+
+console.log('✅ Ticket System Loaded Successfully');
+   </script>
+    
 </body>
 </html>
