@@ -1,5 +1,3 @@
-[file name]: eventslist-details.html
-[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -232,7 +230,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="cartItems">
-                                        <tr class="border-b border-gray-200">
+                                        <tr class="cart_item border-b border-gray-200">
                                             <td class="p-3">Early Bird Ticket</td>
                                             <td class="p-3">Ksh 350</td>
                                             <td class="p-3">
@@ -249,7 +247,7 @@
                                             <td class="p-3"><span class="total-price font-medium">Ksh 0</span></td>
                                         </tr>
                                         
-                                        <tr class="border-b border-gray-200">
+                                        <tr class="cart_item border-b border-gray-200">
                                             <td class="p-3">Early Bird Couples</td>
                                             <td class="p-3">Ksh 650</td>
                                             <td class="p-3">
@@ -266,7 +264,7 @@
                                             <td class="p-3"><span class="total-price font-medium">Ksh 0</span></td>
                                         </tr>
                                         
-                                        <tr class="border-b border-gray-200">
+                                        <tr class="cart_item border-b border-gray-200">
                                             <td class="p-3">Couples Ticket</td>
                                             <td class="p-3">Ksh 700</td>
                                             <td class="p-3">
@@ -283,7 +281,7 @@
                                             <td class="p-3"><span class="total-price font-medium">Ksh 0</span></td>
                                         </tr>
                                         
-                                        <tr class="border-b border-gray-200">
+                                        <tr class="cart_item border-b border-gray-200">
                                             <td class="p-3">Regular Ticket</td>
                                             <td class="p-3">Ksh 400</td>
                                             <td class="p-3">
@@ -449,9 +447,39 @@
         });
     </script>
     
-    <!-- Event Ticket Booking Script -->
+    <!-- Event Ticket Booking Script - FIXED -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Update Cart Function - FIXED TO USE .cart_item
+            function updateCart() {
+                let subtotal = 0;
+                
+                console.log('Updating cart...');
+                
+                // Loop through all cart items
+                document.querySelectorAll('.cart_item').forEach(row => {
+                    const input = row.querySelector('.qty-input');
+                    const price = parseFloat(input.getAttribute('data-price'));
+                    const quantity = parseInt(input.value) || 0;
+                    const total = price * quantity;
+                    
+                    console.log(`Item: ${input.getAttribute('data-category')}, Price: ${price}, Qty: ${quantity}, Total: ${total}`);
+                    
+                    const totalElement = row.querySelector('.total-price');
+                    if (totalElement) {
+                        totalElement.textContent = `Ksh ${total.toLocaleString()}`;
+                    }
+                    
+                    subtotal += total;
+                });
+                
+                console.log('Subtotal:', subtotal);
+                
+                // Update totals
+                document.getElementById('grandTotal').textContent = `Ksh ${subtotal.toLocaleString()}`;
+                document.getElementById('finalTotal').textContent = `Ksh ${subtotal.toLocaleString()}`;
+            }
+            
             // Quantity Controls
             function setupQuantityControls() {
                 document.querySelectorAll('.quantity-plus').forEach(button => {
@@ -494,29 +522,6 @@
                 });
             }
             
-            // Update Cart Function
-            function updateCart() {
-                let subtotal = 0;
-                
-                document.querySelectorAll('.cart_item').forEach(row => {
-                    const input = row.querySelector('.qty-input');
-                    const price = parseFloat(input.getAttribute('data-price'));
-                    const quantity = parseInt(input.value) || 0;
-                    const total = price * quantity;
-                    
-                    const totalElement = row.querySelector('.total-price');
-                    if (totalElement) {
-                        totalElement.textContent = `Ksh ${total.toLocaleString()}`;
-                    }
-                    
-                    subtotal += total;
-                });
-                
-                // Update totals
-                document.getElementById('grandTotal').textContent = `Ksh ${subtotal.toLocaleString()}`;
-                document.getElementById('finalTotal').textContent = `Ksh ${subtotal.toLocaleString()}`;
-            }
-            
             // Form Submission
             document.getElementById('EventForm').addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -541,7 +546,7 @@
                 
                 // Collect ticket data
                 const tickets = [];
-                document.querySelectorAll('tr.border-b').forEach(row => {
+                document.querySelectorAll('.cart_item').forEach(row => {
                     const input = row.querySelector('.qty-input');
                     if (input) {
                         const quantity = parseInt(input.value) || 0;
@@ -570,7 +575,7 @@
                 params.append('event_date', eventDate);
                 params.append('event_location', eventLocation);
                 params.append('tickets', JSON.stringify(tickets));
-                params.append('amount', totalAmount.replace('Ksh ', '').replace(',', ''));
+                params.append('amount', totalAmount.replace('Ksh ', '').replace(/,/g, ''));
                 
                 // Redirect to payments page
                 window.location.href = `payments.html?${params.toString()}`;
@@ -579,8 +584,9 @@
             // Initialize
             setupQuantityControls();
             updateCart();
+            
+            console.log('✅ Ticket booking system initialized');
         });
     </script>
 </body>
 </html>
-[file content end]
